@@ -1,14 +1,71 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
     <section class="min-h-[calc(100vh-6rem)] flex items-end px-6 py-8 sm:px-10 sm:py-10">
-        <p class="text-sm uppercase tracking-[0.35em] text-text sm:text-base">
-            Open-source developer * Thinker
+        <p
+            class="text-8xl uppercase tracking-[0.35em] text-text"
+            data-random-clone-text
+        >
+            <span data-random-clone-label>Open-source developer</span>
         </p>
     </section>
 </Layout>
+
+<script>
+    import { animate, splitText, utils } from 'animejs';
+
+    const label = document.querySelector('[data-random-clone-label]');
+
+    if (label instanceof HTMLElement) {
+        const { chars } = splitText(label, {
+            chars: {
+                wrap: 'clip',
+                clone: 'bottom',
+            },
+        });
+
+        const activeChars = new WeakSet();
+        const animatableChars = chars.filter((char) => char.textContent?.trim());
+        let timeoutId: number | undefined;
+
+        const triggerRandomClone = () => {
+            const availableChars = animatableChars.filter(
+                (char) => !activeChars.has(char),
+            );
+            const nextChar = availableChars.length
+                ? utils.randomPick(availableChars)
+                : null;
+
+            if (nextChar) {
+                activeChars.add(nextChar);
+
+                animate(nextChar, {
+                    y: '-100%',
+                    duration: utils.random(420, 920),
+                    ease: 'inOut(2)',
+                    onComplete: () => {
+                        nextChar.style.transform = 'translateY(0%)';
+                        activeChars.delete(nextChar);
+                    },
+                });
+            }
+
+            timeoutId = window.setTimeout(
+                triggerRandomClone,
+                utils.random(900, 3200),
+            );
+        };
+
+        timeoutId = window.setTimeout(triggerRandomClone, utils.random(700, 1800));
+
+        window.addEventListener(
+            'pagehide',
+            () => {
+                window.clearTimeout(timeoutId);
+            },
+            { once: true },
+        );
+    }
+</script>
