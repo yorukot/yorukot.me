@@ -11,6 +11,7 @@
     --boids-ring: hsl(0 0% 85%);
     --boids-bg-glow: 0 0% 78%;
     --boids-bg-sheen: 0 0% 100%;
+    --film-grain-opacity: 0.18;
 
     --font-sans: "Space Grotesk", sans-serif;
 }
