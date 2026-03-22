@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+	--background: #000000;
+	--border: #303030;
+	--text: #c7c7c7;
+	--font-sans: "Space Grotesk", sans-serif;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-border: var(--border);
+	--color-text: var(--text);
+	--font-sans: var(--font-sans);
+}
+
+html {
+	font-family: var(--font-sans);
+}
