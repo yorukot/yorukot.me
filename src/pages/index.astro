@@ -16,7 +16,47 @@ import Layout from '../layouts/Layout.astro';
             </p>
         </div>
     </section>
-    
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about">
+        <div class="mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+            <div class="max-w-sm space-y-5">
+                <p class="text-xs uppercase tracking-[0.38em] text-primary">Who am I</p>
+                <h2 class="text-3xl uppercase leading-tight tracking-[0.14em] text-white sm:text-4xl">
+                    I build calm, useful things for the web.
+                </h2>
+            </div>
+
+            <div class="max-w-3xl space-y-8">
+                <p class="max-w-2xl text-lg leading-8 text-text sm:text-xl">
+                    I am an open-source developer focused on thoughtful interfaces, solid engineering,
+                    and products that feel simple even when the work underneath is not.
+                </p>
+
+                <div class="grid gap-px overflow-hidden rounded-sm border border-border bg-border sm:grid-cols-3">
+                    <article class="bg-background p-6">
+                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Approach</p>
+                        <p class="mt-4 text-sm leading-7 text-text">
+                            Clear structure, deliberate details, and just enough motion to make things feel alive.
+                        </p>
+                    </article>
+
+                    <article class="bg-background p-6">
+                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Care About</p>
+                        <p class="mt-4 text-sm leading-7 text-text">
+                            Developer experience, maintainable systems, and interfaces people can understand fast.
+                        </p>
+                    </article>
+
+                    <article class="bg-background p-6">
+                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Now</p>
+                        <p class="mt-4 text-sm leading-7 text-text">
+                            Shipping personal ideas, contributing to open source, and refining this corner of the internet.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
 </Layout>
 
 <script>
