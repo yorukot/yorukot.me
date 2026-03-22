@@ -1,15 +1,20 @@
 ---
+import BoidsBackground from '../components/BoidsBackground.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout>
-    <section class="min-h-[calc(100vh-6rem)] flex items-end px-6 py-8 sm:px-10 sm:py-10">
-        <p
-            class="text-8xl uppercase tracking-[0.35em] text-text"
-            data-random-clone-text
-        >
-            <span data-random-clone-label>Open-source developer</span>
-        </p>
+    <section class="relative isolate min-h-[calc(100vh-6rem)] overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
+        <BoidsBackground />
+
+        <div class="relative z-10 flex min-h-[calc(100vh-14rem)] items-end">
+            <p
+                class="text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl"
+                data-random-clone-text
+            >
+                <span data-random-clone-label>Open-source developer</span>
+            </p>
+        </div>
     </section>
 </Layout>
 
