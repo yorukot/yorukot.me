@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="relative z-10 flex min-h-[calc(100vh-14rem)] items-end">
             <p
-                class="text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl"
+                class="text-6xl uppercase tracking-[0.26em] text-white sm:text-7xl lg:text-8xl"
                 data-random-clone-text
             >
                 <span data-random-clone-label>Open-source developer</span>
@@ -32,8 +32,13 @@ import Layout from '../layouts/Layout.astro';
         });
 
         const activeChars = new WeakSet();
+        const primaryChars = new WeakSet();
         const animatableChars = chars.filter((char) => char.textContent?.trim());
         let timeoutId: number | undefined;
+
+        animatableChars.forEach((char) => {
+            char.style.color = 'hsl(0 0% 100%)';
+        });
 
         const triggerRandomClone = () => {
             const availableChars = animatableChars.filter(
@@ -46,9 +51,18 @@ import Layout from '../layouts/Layout.astro';
             if (nextChar) {
                 activeChars.add(nextChar);
 
+                const isPrimary = primaryChars.has(nextChar);
+                nextChar.style.color = isPrimary ? 'hsl(0 0% 100%)' : 'var(--primary)';
+
+                if (isPrimary) {
+                    primaryChars.delete(nextChar);
+                } else {
+                    primaryChars.add(nextChar);
+                }
+
                 animate(nextChar, {
                     y: '-100%',
-                    duration: utils.random(420, 920),
+                    duration: utils.random(340, 680),
                     ease: 'inOut(2)',
                     onComplete: () => {
                         nextChar.style.transform = 'translateY(0%)';
@@ -59,11 +73,11 @@ import Layout from '../layouts/Layout.astro';
 
             timeoutId = window.setTimeout(
                 triggerRandomClone,
-                utils.random(900, 3200),
+                utils.random(420, 1100),
             );
         };
 
-        timeoutId = window.setTimeout(triggerRandomClone, utils.random(700, 1800));
+        timeoutId = window.setTimeout(triggerRandomClone, utils.random(380, 900));
 
         window.addEventListener(
             'pagehide',

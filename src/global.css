@@ -1,20 +1,28 @@
 @import "tailwindcss";
 
 :root {
-	--background: #000000;
-	--border: #303030;
-	--text: #c7c7c7;
-	--font-sans: "Space Grotesk", sans-serif;
+    --background: hsl(0 0% 0%);
+    --border: hsl(0 0% 19%);
+    --text: hsl(0 0% 78%);
+    --primary: hsl(28 100% 53%);
+
+    --boids-node: hsl(0 0% 95%);
+    --boids-line: hsl(0 0% 62%);
+    --boids-ring: hsl(0 0% 85%);
+    --boids-bg-glow: 0 0% 78%;
+    --boids-bg-sheen: 0 0% 100%;
+
+    --font-sans: "Space Grotesk", sans-serif;
 }
 
 @theme inline {
-	--color-background: var(--background);
-	--color-border: var(--border);
-	--color-text: var(--text);
+    --color-background: var(--background);
+    --color-border: var(--border);
+    --color-text: var(--text);
 
-	--font-sans: var(--font-sans);
+    --font-sans: var(--font-sans);
 }
 
 html {
-	font-family: var(--font-sans);
+    font-family: var(--font-sans);
 }

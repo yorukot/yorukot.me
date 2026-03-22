@@ -13,6 +13,7 @@ type Boid = {
     maxForce: number;
     size: number;
     pulseOffset: number;
+    isLeader: boolean;
 };
 
 const MOBILE_BREAKPOINT = 768;
@@ -27,6 +28,7 @@ const MIN_BOIDS_MOBILE = 22;
 const MAX_BOIDS_MOBILE = 54;
 const MIN_BOIDS_DESKTOP = 34;
 const MAX_BOIDS_DESKTOP = 96;
+const LEADER_RATIO = 0.3;
 const createVector = (x = 0, y = 0): Vector => ({ x, y });
 
 const add = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
@@ -60,19 +62,24 @@ const limit = (vector: Vector, max: number): Vector => {
 
 const distance = (a: Vector, b: Vector): number => Math.hypot(a.x - b.x, a.y - b.y);
 
-const hexToRgb = (value: string): [number, number, number] => {
-    const normalized = value.trim().replace('#', '');
-    const safeHex = normalized.length === 3
-        ? normalized
-              .split('')
-              .map((char) => `${char}${char}`)
-              .join('')
-        : normalized.padEnd(6, '0').slice(0, 6);
+const cssColorToRgb = (value: string, fallback: string): [number, number, number] => {
+    const sample = document.createElement('span');
+    sample.style.color = value.trim() || fallback;
+    document.body.append(sample);
+
+    const resolved = getComputedStyle(sample).color;
+    sample.remove();
+
+    const matches = resolved.match(/\d+(?:\.\d+)?/g);
+
+    if (!matches || matches.length < 3) {
+        return cssColorToRgb(fallback, 'rgb(255 255 255)');
+    }
 
     return [
-        Number.parseInt(safeHex.slice(0, 2), 16),
-        Number.parseInt(safeHex.slice(2, 4), 16),
-        Number.parseInt(safeHex.slice(4, 6), 16),
+        Number.parseInt(matches[0]!, 10),
+        Number.parseInt(matches[1]!, 10),
+        Number.parseInt(matches[2]!, 10),
     ];
 };
 
@@ -80,8 +87,10 @@ const getPalette = () => {
     const styles = getComputedStyle(document.documentElement);
 
     return {
-        text: hexToRgb(styles.getPropertyValue('--text') || '#c7c7c7'),
-        border: hexToRgb(styles.getPropertyValue('--border') || '#303030'),
+        node: cssColorToRgb(styles.getPropertyValue('--boids-node'), 'hsl(0 0% 95%)'),
+        line: cssColorToRgb(styles.getPropertyValue('--boids-line'), 'hsl(0 0% 62%)'),
+        ring: cssColorToRgb(styles.getPropertyValue('--boids-ring'), 'hsl(0 0% 85%)'),
+        leader: cssColorToRgb(styles.getPropertyValue('--primary'), 'hsl(28 100% 53%)'),
     };
 };
 
@@ -117,6 +126,7 @@ export const mountBoids = (root: HTMLElement) => {
         maxForce: 0.03 + Math.random() * 0.02,
         size: 24 + Math.random() * 14,
         pulseOffset: Math.random() * Math.PI * 2,
+        isLeader: Math.random() < LEADER_RATIO,
     });
 
     const resetBoids = () => {
@@ -245,18 +255,15 @@ export const mountBoids = (root: HTMLElement) => {
                 mouseRadiusTarget,
                 instance.mouseIsPressed ? 0.18 : 0.14,
             );
-            const [tr, tg, tb] = palette.text;
-            const [br, bg, bb] = palette.border;
-            const lineColor = [
-                Math.round(br + (tr - br) * 0.72),
-                Math.round(bg + (tg - bg) * 0.72),
-                Math.round(bb + (tb - bb) * 0.72),
-            ] as const;
+            const [nr, ng, nb] = palette.node;
+            const [lr, lg, lb] = palette.line;
+            const [rr, rg, rb] = palette.ring;
+            const [pr, pg, pb] = palette.leader;
 
             if (pointer) {
                 for (let ring = 1; ring <= 3; ring += 1) {
                     const alpha = (instance.mouseIsPressed ? 58 : 44) - ring * 8;
-                    instance.stroke(tr, tg, tb, alpha);
+                    instance.stroke(rr, rg, rb, alpha);
                     instance.strokeWeight(instance.mouseIsPressed ? 1.8 : 1.4);
                     instance.circle(pointer.x, pointer.y, animatedMouseRadius * 0.48 * ring);
                 }
@@ -285,7 +292,7 @@ export const mountBoids = (root: HTMLElement) => {
                               )
                             : 0;
                         const alpha = ((1 - d / CONNECTION_RADIUS) * 98) + 48 + pointerBoost * 52;
-                        instance.stroke(lineColor[0], lineColor[1], lineColor[2], alpha);
+                        instance.stroke(lr, lg, lb, alpha);
                         instance.strokeWeight(1.7 + pointerBoost * 1.2);
                         instance.line(
                             boid.position.x,
@@ -305,16 +312,16 @@ export const mountBoids = (root: HTMLElement) => {
                     ? Math.max(0, 1 - distance(boid.position, pointer) / animatedMouseRadius)
                     : 0;
                 const glyphAlpha = 182 + pulse * 26 + pointerBoost * 72;
-                const dotAlpha = 136 + pointerBoost * 96;
                 const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
                 const cursorHeight = nodeSize * 1.08;
                 const cursorWidth = nodeSize * 0.38;
+                const fillColor = boid.isLeader ? [pr, pg, pb] : [nr, ng, nb];
 
                 instance.push();
                 instance.translate(boid.position.x, boid.position.y);
                 instance.rotate(angle);
                 instance.noStroke();
-                instance.fill(tr, tg, tb, 188 + pointerBoost * 56);
+                instance.fill(fillColor[0], fillColor[1], fillColor[2], 188 + pointerBoost * 56);
                 instance.beginShape();
                 instance.vertex(cursorWidth * 0.72, 0);
                 instance.vertex(-cursorWidth * 0.52, -cursorHeight * 0.48);
@@ -322,10 +329,6 @@ export const mountBoids = (root: HTMLElement) => {
                 instance.vertex(-cursorWidth * 0.54, cursorHeight * 0.48);
                 instance.endShape(instance.CLOSE);
                 instance.pop();
-
-                instance.stroke(tr, tg, tb, dotAlpha);
-                instance.strokeWeight(5.8 + pointerBoost * 2.2);
-                instance.point(boid.position.x, boid.position.y);
             }
         };
     };
