@@ -21,6 +21,12 @@ const NEIGHBOR_RADIUS = 80;
 const SEPARATION_RADIUS = 68;
 const CONNECTION_RADIUS = 96;
 const MOUSE_RADIUS = 220;
+const MOUSE_PRESS_RADIUS_MULTIPLIER = 1.45;
+const BOID_AREA_DENSITY = 1 / 22000;
+const MIN_BOIDS_MOBILE = 22;
+const MAX_BOIDS_MOBILE = 54;
+const MIN_BOIDS_DESKTOP = 34;
+const MAX_BOIDS_DESKTOP = 96;
 const createVector = (x = 0, y = 0): Vector => ({ x, y });
 
 const add = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
@@ -89,7 +95,16 @@ export const mountBoids = (root: HTMLElement) => {
     let height = root.clientHeight;
     let palette = getPalette();
 
-    const getBoidCount = () => (window.innerWidth < MOBILE_BREAKPOINT ? 28 : 64);
+    const getBoidCount = () => {
+        const area = Math.max(width * height, 1);
+        const desired = Math.round(area * BOID_AREA_DENSITY);
+
+        if (window.innerWidth < MOBILE_BREAKPOINT) {
+            return Math.min(Math.max(desired, MIN_BOIDS_MOBILE), MAX_BOIDS_MOBILE);
+        }
+
+        return Math.min(Math.max(desired, MIN_BOIDS_DESKTOP), MAX_BOIDS_DESKTOP);
+    };
 
     const createBoid = (): Boid => ({
         position: createVector(Math.random() * width, Math.random() * height),
@@ -115,7 +130,7 @@ export const mountBoids = (root: HTMLElement) => {
         if (boid.position.y > height + EDGE_PADDING) boid.position.y = -EDGE_PADDING;
     };
 
-    const flock = (boid: Boid, pointer: Vector | null) => {
+    const flock = (boid: Boid, pointer: Vector | null, mouseRadius: number) => {
         let separation = createVector();
         let alignment = createVector();
         let cohesion = createVector();
@@ -165,9 +180,9 @@ export const mountBoids = (root: HTMLElement) => {
         if (pointer) {
             const d = distance(boid.position, pointer);
 
-            if (d < MOUSE_RADIUS) {
+            if (d < mouseRadius) {
                 const direction = subtract(pointer, boid.position);
-                const pull = 1 - d / MOUSE_RADIUS;
+                const pull = 1 - d / mouseRadius;
                 mouseForce = setMagnitude(direction, boid.maxSpeed * (0.2 + pull * 0.45));
                 mouseForce = subtract(mouseForce, boid.velocity);
                 mouseForce = limit(mouseForce, boid.maxForce * (0.65 + pull * 1.1));
@@ -189,6 +204,13 @@ export const mountBoids = (root: HTMLElement) => {
     resetBoids();
 
     const sketch = (instance: p5) => {
+        let animatedMouseRadius = MOUSE_RADIUS;
+
+        const getMouseRadiusTarget = () =>
+            instance.mouseIsPressed
+                ? MOUSE_RADIUS * MOUSE_PRESS_RADIUS_MULTIPLIER
+                : MOUSE_RADIUS;
+
         const getPointer = (): Vector | null => {
             if (instance.mouseX < 0 || instance.mouseY < 0 || instance.mouseX > width || instance.mouseY > height) {
                 return null;
@@ -217,20 +239,31 @@ export const mountBoids = (root: HTMLElement) => {
             instance.clear();
 
             const pointer = getPointer();
+            const mouseRadiusTarget = getMouseRadiusTarget();
+            animatedMouseRadius = instance.lerp(
+                animatedMouseRadius,
+                mouseRadiusTarget,
+                instance.mouseIsPressed ? 0.18 : 0.14,
+            );
             const [tr, tg, tb] = palette.text;
             const [br, bg, bb] = palette.border;
+            const lineColor = [
+                Math.round(br + (tr - br) * 0.72),
+                Math.round(bg + (tg - bg) * 0.72),
+                Math.round(bb + (tb - bb) * 0.72),
+            ] as const;
 
             if (pointer) {
                 for (let ring = 1; ring <= 3; ring += 1) {
-                    const alpha = 44 - ring * 8;
+                    const alpha = (instance.mouseIsPressed ? 58 : 44) - ring * 8;
                     instance.stroke(tr, tg, tb, alpha);
-                    instance.strokeWeight(1.4);
-                    instance.circle(pointer.x, pointer.y, MOUSE_RADIUS * 0.48 * ring);
+                    instance.strokeWeight(instance.mouseIsPressed ? 1.8 : 1.4);
+                    instance.circle(pointer.x, pointer.y, animatedMouseRadius * 0.48 * ring);
                 }
             }
 
             for (const boid of boids) {
-                flock(boid, pointer);
+                flock(boid, pointer, animatedMouseRadius);
                 boid.velocity = add(boid.velocity, boid.acceleration);
                 boid.velocity = limit(boid.velocity, boid.maxSpeed);
                 boid.position = add(boid.position, boid.velocity);
@@ -248,12 +281,12 @@ export const mountBoids = (root: HTMLElement) => {
                         const pointerBoost = pointer
                             ? Math.max(
                                   0,
-                                  1 - Math.min(distance(boid.position, pointer), distance(other.position, pointer)) / MOUSE_RADIUS,
+                                  1 - Math.min(distance(boid.position, pointer), distance(other.position, pointer)) / animatedMouseRadius,
                               )
                             : 0;
-                        const alpha = ((1 - d / CONNECTION_RADIUS) * 58) + 18 + pointerBoost * 34;
-                        instance.stroke(br, bg, bb, alpha);
-                        instance.strokeWeight(1.3 + pointerBoost * 1);
+                        const alpha = ((1 - d / CONNECTION_RADIUS) * 98) + 48 + pointerBoost * 52;
+                        instance.stroke(lineColor[0], lineColor[1], lineColor[2], alpha);
+                        instance.strokeWeight(1.7 + pointerBoost * 1.2);
                         instance.line(
                             boid.position.x,
                             boid.position.y,
@@ -269,38 +302,29 @@ export const mountBoids = (root: HTMLElement) => {
                 const angle = Math.atan2(heading.y, heading.x);
                 const pulse = (Math.sin(instance.frameCount * 0.018 + boid.pulseOffset) + 1) * 0.5;
                 const pointerBoost = pointer
-                    ? Math.max(0, 1 - distance(boid.position, pointer) / MOUSE_RADIUS)
+                    ? Math.max(0, 1 - distance(boid.position, pointer) / animatedMouseRadius)
                     : 0;
-                const glyphAlpha = 128 + pulse * 20 + pointerBoost * 56;
-                const dotAlpha = 84 + pointerBoost * 72;
+                const glyphAlpha = 182 + pulse * 26 + pointerBoost * 72;
+                const dotAlpha = 136 + pointerBoost * 96;
                 const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
-                const cursorHeight = nodeSize;
-                const cursorWidth = nodeSize * 0.56;
+                const cursorHeight = nodeSize * 1.08;
+                const cursorWidth = nodeSize * 0.38;
 
                 instance.push();
                 instance.translate(boid.position.x, boid.position.y);
                 instance.rotate(angle);
                 instance.noStroke();
-                instance.fill(tr, tg, tb, 28 + pointerBoost * 24);
+                instance.fill(tr, tg, tb, 188 + pointerBoost * 56);
                 instance.beginShape();
-                instance.vertex(cursorWidth * 0.55, 0);
-                instance.vertex(-cursorWidth * 0.45, -cursorHeight * 0.42);
-                instance.vertex(-cursorWidth * 0.12, 0);
-                instance.vertex(-cursorWidth * 0.46, cursorHeight * 0.42);
-                instance.endShape(instance.CLOSE);
-                instance.stroke(tr, tg, tb, glyphAlpha);
-                instance.strokeWeight(1.6 + pointerBoost * 0.4);
-                instance.noFill();
-                instance.beginShape();
-                instance.vertex(cursorWidth * 0.55, 0);
-                instance.vertex(-cursorWidth * 0.45, -cursorHeight * 0.42);
-                instance.vertex(-cursorWidth * 0.12, 0);
-                instance.vertex(-cursorWidth * 0.46, cursorHeight * 0.42);
+                instance.vertex(cursorWidth * 0.72, 0);
+                instance.vertex(-cursorWidth * 0.52, -cursorHeight * 0.48);
+                instance.vertex(-cursorWidth * 0.16, 0);
+                instance.vertex(-cursorWidth * 0.54, cursorHeight * 0.48);
                 instance.endShape(instance.CLOSE);
                 instance.pop();
 
                 instance.stroke(tr, tg, tb, dotAlpha);
-                instance.strokeWeight(4.8 + pointerBoost * 1.8);
+                instance.strokeWeight(5.8 + pointerBoost * 2.2);
                 instance.point(boid.position.x, boid.position.y);
             }
         };
