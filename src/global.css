@@ -5,6 +5,7 @@
     --border: hsl(0 0% 19%);
     --text: hsl(0 0% 78%);
     --primary: hsl(27, 99%, 59%);
+    --success: hsl(145 63% 49%);
 
     --boids-node: hsl(0 0% 95%);
     --boids-line: hsl(0 0% 62%);
@@ -21,6 +22,7 @@
     --color-border: var(--border);
     --color-text: var(--text);
     --color-primary: var(--primary);
+    --color-success: var(--success);
 
     --font-sans: var(--font-sans);
 }
