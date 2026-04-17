@@ -8,12 +8,21 @@ import Layout from '../layouts/Layout.astro';
         <BoidsBackground />
 
         <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
-            <p
-                class="select-none text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl font-extrabold"
-                data-random-clone-text
-            >
-                <span data-random-clone-label>Open-source developer</span>
-            </p>
+            <div class="select-none space-y-4">
+                <p class="text-xl font-medium tracking-[0.12em] text-text sm:text-2xl lg:text-3xl">
+                    <span data-hero-intro data-typewriter-text="This is Yorukot,"></span><span
+                        class="hero-intro-caret ml-1 inline-block h-[1em] w-px translate-y-[0.12em] bg-primary opacity-0"
+                        data-hero-intro-caret
+                        aria-hidden="true"></span>
+                </p>
+
+                <p
+                    class="text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl font-extrabold"
+                    data-random-clone-text
+                >
+                    <span data-random-clone-label>Open-source developer</span>
+                </p>
+            </div>
         </div>
     </section>
 
@@ -26,10 +35,54 @@ import Layout from '../layouts/Layout.astro';
     </section>
 </Layout>
 
+<style>
+    .hero-intro-caret.is-visible {
+        opacity: 1;
+        animation: hero-intro-caret-blink 700ms steps(1) infinite;
+    }
+
+    @keyframes hero-intro-caret-blink {
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
+
 <script>
     import { animate, splitText, utils } from 'animejs';
 
+    const intro = document.querySelector('[data-hero-intro]');
+    const introCaret = document.querySelector('[data-hero-intro-caret]');
     const label = document.querySelector('[data-random-clone-label]');
+
+    if (intro instanceof HTMLElement) {
+        const message = intro.dataset.typewriterText ?? '';
+        const typewriterState = { count: 0 };
+
+        intro.textContent = '';
+
+        if (introCaret instanceof HTMLElement) {
+            introCaret.classList.add('is-visible');
+        }
+
+        animate(typewriterState, {
+            count: message.length,
+            duration: message.length * 80,
+            ease: 'linear',
+            onUpdate: () => {
+                intro.textContent = message.slice(0, Math.floor(typewriterState.count));
+            },
+            onComplete: () => {
+                intro.textContent = message;
+
+                window.setTimeout(() => {
+                    if (introCaret instanceof HTMLElement) {
+                        introCaret.classList.remove('is-visible');
+                    }
+                }, 1200);
+            },
+        });
+    }
 
     if (label instanceof HTMLElement) {
         const { chars } = splitText(label, {
