@@ -9,7 +9,7 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
             <p
-                class="select-none text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl"
+                class="select-none text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl font-extrabold"
                 data-random-clone-text
             >
                 <span data-random-clone-label>Open-source developer</span>
@@ -20,40 +20,7 @@ import Layout from '../layouts/Layout.astro';
     <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about">
         <div class="mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             <div class="max-w-sm space-y-5">
-                <p class="text-xs uppercase tracking-[0.38em] text-primary">Who am I</p>
-                <h2 class="text-3xl uppercase leading-tight tracking-[0.14em] text-white sm:text-4xl">
-                    I build calm, useful things for the web.
-                </h2>
-            </div>
-
-            <div class="max-w-3xl space-y-8">
-                <p class="max-w-2xl text-lg leading-8 text-text sm:text-xl">
-                    I am an open-source developer focused on thoughtful interfaces, solid engineering,
-                    and products that feel simple even when the work underneath is not.
-                </p>
-
-                <div class="grid gap-px overflow-hidden rounded-sm border border-border bg-border sm:grid-cols-3">
-                    <article class="bg-background p-6">
-                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Approach</p>
-                        <p class="mt-4 text-sm leading-7 text-text">
-                            Clear structure, deliberate details, and just enough motion to make things feel alive.
-                        </p>
-                    </article>
-
-                    <article class="bg-background p-6">
-                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Care About</p>
-                        <p class="mt-4 text-sm leading-7 text-text">
-                            Developer experience, maintainable systems, and interfaces people can understand fast.
-                        </p>
-                    </article>
-
-                    <article class="bg-background p-6">
-                        <p class="text-xs uppercase tracking-[0.28em] text-primary">Now</p>
-                        <p class="mt-4 text-sm leading-7 text-text">
-                            Shipping personal ideas, contributing to open source, and refining this corner of the internet.
-                        </p>
-                    </article>
-                </div>
+                <h1 class="text-5xl uppercase text-primary">Who am I</h1    >
             </div>
         </div>
     </section>
@@ -76,7 +43,14 @@ import Layout from '../layouts/Layout.astro';
         const primaryChars = new WeakSet();
         const cooldownUntil = new WeakMap();
         const animatableChars = chars.filter((char) => char.textContent?.trim());
-        const directions = [
+        type CloneDirection = {
+            x: string;
+            y: string;
+            top: string;
+            left: string;
+        };
+
+        const directions: CloneDirection[] = [
             { x: '0%', y: '100%', top: '-100%', left: '0%' },
             { x: '-100%', y: '0%', top: '0%', left: '100%' },
             { x: '0%', y: '-100%', top: '100%', left: '0%' },
@@ -101,7 +75,7 @@ import Layout from '../layouts/Layout.astro';
                 activeChars.add(nextChar);
 
                 const nextClone = nextChar.children[1];
-                const direction = utils.randomPick(directions);
+                const direction = directions[utils.random(0, directions.length - 1)];
 
                 if (nextClone instanceof HTMLElement) {
                     nextClone.style.top = direction.top;

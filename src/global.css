@@ -20,6 +20,7 @@
     --color-background: var(--background);
     --color-border: var(--border);
     --color-text: var(--text);
+    --color-primary: var(--primary);
 
     --font-sans: var(--font-sans);
 }

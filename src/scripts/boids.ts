@@ -315,7 +315,7 @@ export const mountBoids = (root: HTMLElement) => {
                 const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
                 const cursorHeight = nodeSize * 1.08;
                 const cursorWidth = nodeSize * 0.38;
-                const fillColor = boid.isLeader ? [pr, pg, pb] : [nr, ng, nb];
+                const fillColor = [nr, ng, nb];
 
                 instance.push();
                 instance.translate(boid.position.x, boid.position.y);

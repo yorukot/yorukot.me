@@ -1,5 +1,9 @@
 ---
 import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
+import MdiGithub from "~icons/mdi/github";
+import IcBaselineDiscord from '~icons/ic/baseline-discord';
+import MdiTelegram from "~icons/mdi/telegram";
+import MdiEmailOutline from "~icons/mdi/email-outline";
 ---
 
 <header
@@ -23,7 +27,7 @@ import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
                         Try with ssh below
                     </div>
                     <div class="flex-1 flex items-center px-5">
-                        $ ssh yorukot.me
+                        $ ssh ssh.yorukot.me
                     </div>
                 </div>
             </div>
@@ -31,37 +35,98 @@ import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
                 <div
                     class="grid grid-cols-2 h-full gap-px bg-border border-x border-border"
                 >
-                    <div class="bg-background flex items-center px-4">
-                        <MdiKeyboardArrowRight /> About
+                    <div class="header-link px-4">
+                        <span class="header-link-content">
+                            <MdiKeyboardArrowRight /> About
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center px-4">
-                        <MdiKeyboardArrowRight /> Hire me
+                    <div class="header-link px-4">
+                        <span class="header-link-content">
+                            <MdiKeyboardArrowRight /> Blog
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center px-4">
-                        <MdiKeyboardArrowRight /> Project
+                    <div class="header-link px-4">
+                        <span class="header-link-content">
+                            <MdiKeyboardArrowRight /> Projects
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center px-4">
-                        <MdiKeyboardArrowRight />Contact
+                    <div class="header-link px-4">
+                        <span class="header-link-content">
+                            <MdiKeyboardArrowRight /> Contact
+                        </span>
                     </div>
                 </div>
 
                 <div
                     class="grid grid-cols-2 h-full aspect-square gap-px bg-border"
                 >
-                    <div class="bg-background flex items-center justify-center">
-                        1
+                    <div class="header-link header-link-icon">
+                        <span class="header-link-content header-link-content-icon">
+                            <MdiGithub />
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center justify-center">
-                        2
+                    <div class="header-link header-link-icon">
+                        <span class="header-link-content header-link-content-icon">
+                            <IcBaselineDiscord />
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center justify-center">
-                        3
+                    <div class="header-link header-link-icon">
+                        <span class="header-link-content header-link-content-icon">
+                            <MdiTelegram />
+                        </span>
                     </div>
-                    <div class="bg-background flex items-center justify-center">
-                        4
+                    <div class="header-link header-link-icon">
+                        <span class="header-link-content header-link-content-icon">
+                            <MdiEmailOutline />
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </header>
+
+<style>
+    .header-link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        background: var(--color-background);
+    }
+
+    .header-link::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: var(--color-text);
+        transition: transform 300ms ease-out;
+    }
+
+    .header-link:hover::before {
+        transform: scaleX(1);
+    }
+
+    .header-link-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        transition: color 300ms ease-out;
+    }
+
+    .header-link:hover .header-link-content {
+        color: var(--color-background);
+    }
+
+    .header-link-icon {
+        justify-content: center;
+    }
+
+    .header-link-content-icon {
+        font-size: 1.25rem;
+    }
+</style>
