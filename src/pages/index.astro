@@ -83,12 +83,10 @@ import Layout from '../layouts/Layout.astro';
                 }
 
                 const isPrimary = primaryChars.has(nextChar);
-                nextChar.style.color = isPrimary ? 'hsl(0 0% 100%)' : 'var(--primary)';
+                const nextColor = isPrimary ? 'hsl(0 0% 100%)' : 'var(--primary)';
 
-                if (isPrimary) {
-                    primaryChars.delete(nextChar);
-                } else {
-                    primaryChars.add(nextChar);
+                if (nextClone instanceof HTMLElement) {
+                    nextClone.style.color = nextColor;
                 }
 
                 animate(nextChar, {
@@ -98,6 +96,18 @@ import Layout from '../layouts/Layout.astro';
                     ease: 'inOut(2)',
                     onComplete: () => {
                         nextChar.style.transform = 'translateX(0%) translateY(0%)';
+                        nextChar.style.color = nextColor;
+
+                        if (isPrimary) {
+                            primaryChars.delete(nextChar);
+                        } else {
+                            primaryChars.add(nextChar);
+                        }
+
+                        if (nextClone instanceof HTMLElement) {
+                            nextClone.style.color = '';
+                        }
+
                         cooldownUntil.set(nextChar, Date.now() + utils.random(1800, 3200));
                         activeChars.delete(nextChar);
                     },
