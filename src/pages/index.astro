@@ -10,7 +10,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
             <div class="select-none space-y-4">
                 <p class="text-xl font-medium tracking-[0.12em] text-text sm:text-2xl lg:text-3xl">
-                    <span data-hero-intro data-typewriter-text="This is Yorukot,"></span><span
+                    <span data-hero-intro></span><span
                         class="hero-intro-caret ml-1 inline-block h-[1em] w-px translate-y-[0.12em] bg-primary opacity-0"
                         data-hero-intro-caret
                         aria-hidden="true"></span>
@@ -56,8 +56,23 @@ import Layout from '../layouts/Layout.astro';
     const label = document.querySelector('[data-random-clone-label]');
 
     if (intro instanceof HTMLElement) {
-        const message = intro.dataset.typewriterText ?? '';
+        type IntroRole = {
+            article: string;
+            label: string;
+        };
+
+        const introRoles: IntroRole[] = [
+            { article: 'a', label: 'CLI developer' },
+            { article: 'a', label: 'backend developer' },
+            { article: 'a', label: 'systems developer' },
+            { article: 'a', label: 'tooling developer' },
+            { article: 'an', label: 'infrastructure developer' },
+            { article: 'an', label: 'open-source maintainer' },
+        ];
+        const introPrefix = 'This is Yorukot,';
         const typewriterState = { count: 0 };
+        let introTimeoutId: number | undefined;
+        let previousRole: IntroRole | undefined;
 
         intro.textContent = '';
 
@@ -65,23 +80,66 @@ import Layout from '../layouts/Layout.astro';
             introCaret.classList.add('is-visible');
         }
 
-        animate(typewriterState, {
-            count: message.length,
-            duration: message.length * 80,
-            ease: 'linear',
-            onUpdate: () => {
-                intro.textContent = message.slice(0, Math.floor(typewriterState.count));
-            },
-            onComplete: () => {
-                intro.textContent = message;
+        const pickIntroRole = () => {
+            const availableRoles = introRoles.filter((role) => role !== previousRole);
+            const role = availableRoles[utils.random(0, availableRoles.length - 1)];
+            previousRole = role;
+            return role;
+        };
 
-                window.setTimeout(() => {
-                    if (introCaret instanceof HTMLElement) {
-                        introCaret.classList.remove('is-visible');
-                    }
-                }, 1200);
+        const createIntroMessage = () => {
+            const role = pickIntroRole();
+            return `${introPrefix} ${role.article} ${role.label} and`;
+        };
+
+        const typeIntroMessage = (message: string, startIndex = introPrefix.length) => {
+            typewriterState.count = startIndex;
+            intro.textContent = message.slice(0, startIndex);
+
+            animate(typewriterState, {
+                count: message.length,
+                duration: (message.length - startIndex) * 80,
+                ease: 'linear',
+                onUpdate: () => {
+                    intro.textContent = message.slice(0, Math.floor(typewriterState.count));
+                },
+                onComplete: () => {
+                    intro.textContent = message;
+                    introTimeoutId = window.setTimeout(() => {
+                        eraseIntroMessage(message);
+                    }, 2600);
+                },
+            });
+        };
+
+        const eraseIntroMessage = (message: string) => {
+            typewriterState.count = message.length;
+
+            animate(typewriterState, {
+                count: introPrefix.length,
+                duration: (message.length - introPrefix.length) * 35,
+                ease: 'linear',
+                onUpdate: () => {
+                    intro.textContent = message.slice(0, Math.ceil(typewriterState.count));
+                },
+                onComplete: () => {
+                    intro.textContent = introPrefix;
+                    introTimeoutId = window.setTimeout(() => {
+                        typeIntroMessage(createIntroMessage());
+                    }, 400);
+                },
+            });
+        };
+
+        typeIntroMessage(createIntroMessage(), 0);
+
+        window.addEventListener(
+            'pagehide',
+            () => {
+                window.clearTimeout(introTimeoutId);
             },
-        });
+            { once: true },
+        );
     }
 
     if (label instanceof HTMLElement) {
