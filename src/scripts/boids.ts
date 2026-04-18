@@ -1,4 +1,5 @@
 import p5 from 'p5';
+import { boidsConfig, boidsPaletteFallbacks } from '../data/boids';
 
 type Vector = {
     x: number;
@@ -16,19 +17,6 @@ type Boid = {
     isLeader: boolean;
 };
 
-const MOBILE_BREAKPOINT = 768;
-const EDGE_PADDING = 32;
-const NEIGHBOR_RADIUS = 80;
-const SEPARATION_RADIUS = 68;
-const CONNECTION_RADIUS = 96;
-const MOUSE_RADIUS = 220;
-const MOUSE_PRESS_RADIUS_MULTIPLIER = 1.45;
-const BOID_AREA_DENSITY = 1 / 22000;
-const MIN_BOIDS_MOBILE = 22;
-const MAX_BOIDS_MOBILE = 54;
-const MIN_BOIDS_DESKTOP = 34;
-const MAX_BOIDS_DESKTOP = 96;
-const LEADER_RATIO = 0.3;
 const createVector = (x = 0, y = 0): Vector => ({ x, y });
 
 const add = (a: Vector, b: Vector): Vector => ({ x: a.x + b.x, y: a.y + b.y });
@@ -87,10 +75,10 @@ const getPalette = () => {
     const styles = getComputedStyle(document.documentElement);
 
     return {
-        node: cssColorToRgb(styles.getPropertyValue('--boids-node'), 'hsl(0 0% 95%)'),
-        line: cssColorToRgb(styles.getPropertyValue('--boids-line'), 'hsl(0 0% 62%)'),
-        ring: cssColorToRgb(styles.getPropertyValue('--boids-ring'), 'hsl(0 0% 85%)'),
-        leader: cssColorToRgb(styles.getPropertyValue('--primary'), 'hsl(28 100% 53%)'),
+        node: cssColorToRgb(styles.getPropertyValue('--boids-node'), boidsPaletteFallbacks.node),
+        line: cssColorToRgb(styles.getPropertyValue('--boids-line'), boidsPaletteFallbacks.line),
+        ring: cssColorToRgb(styles.getPropertyValue('--boids-ring'), boidsPaletteFallbacks.ring),
+        leader: cssColorToRgb(styles.getPropertyValue('--primary'), boidsPaletteFallbacks.leader),
     };
 };
 
@@ -106,13 +94,13 @@ export const mountBoids = (root: HTMLElement) => {
 
     const getBoidCount = () => {
         const area = Math.max(width * height, 1);
-        const desired = Math.round(area * BOID_AREA_DENSITY);
+        const desired = Math.round(area * boidsConfig.boidAreaDensity);
 
-        if (window.innerWidth < MOBILE_BREAKPOINT) {
-            return Math.min(Math.max(desired, MIN_BOIDS_MOBILE), MAX_BOIDS_MOBILE);
+        if (window.innerWidth < boidsConfig.mobileBreakpoint) {
+            return Math.min(Math.max(desired, boidsConfig.minBoidsMobile), boidsConfig.maxBoidsMobile);
         }
 
-        return Math.min(Math.max(desired, MIN_BOIDS_DESKTOP), MAX_BOIDS_DESKTOP);
+        return Math.min(Math.max(desired, boidsConfig.minBoidsDesktop), boidsConfig.maxBoidsDesktop);
     };
 
     const createBoid = (): Boid => ({
@@ -126,7 +114,7 @@ export const mountBoids = (root: HTMLElement) => {
         maxForce: 0.03 + Math.random() * 0.02,
         size: 24 + Math.random() * 14,
         pulseOffset: Math.random() * Math.PI * 2,
-        isLeader: Math.random() < LEADER_RATIO,
+        isLeader: Math.random() < boidsConfig.leaderRatio,
     });
 
     const resetBoids = () => {
@@ -134,10 +122,10 @@ export const mountBoids = (root: HTMLElement) => {
     };
 
     const wrapEdges = (boid: Boid) => {
-        if (boid.position.x < -EDGE_PADDING) boid.position.x = width + EDGE_PADDING;
-        if (boid.position.x > width + EDGE_PADDING) boid.position.x = -EDGE_PADDING;
-        if (boid.position.y < -EDGE_PADDING) boid.position.y = height + EDGE_PADDING;
-        if (boid.position.y > height + EDGE_PADDING) boid.position.y = -EDGE_PADDING;
+        if (boid.position.x < -boidsConfig.edgePadding) boid.position.x = width + boidsConfig.edgePadding;
+        if (boid.position.x > width + boidsConfig.edgePadding) boid.position.x = -boidsConfig.edgePadding;
+        if (boid.position.y < -boidsConfig.edgePadding) boid.position.y = height + boidsConfig.edgePadding;
+        if (boid.position.y > height + boidsConfig.edgePadding) boid.position.y = -boidsConfig.edgePadding;
     };
 
     const flock = (boid: Boid, pointer: Vector | null, mouseRadius: number) => {
@@ -152,13 +140,13 @@ export const mountBoids = (root: HTMLElement) => {
 
             const d = distance(boid.position, other.position);
 
-            if (d > 0 && d < SEPARATION_RADIUS) {
+            if (d > 0 && d < boidsConfig.separationRadius) {
                 const diff = divide(subtract(boid.position, other.position), d * d);
                 separation = add(separation, diff);
                 separationTotal += 1;
             }
 
-            if (d > 0 && d < NEIGHBOR_RADIUS) {
+            if (d > 0 && d < boidsConfig.neighborRadius) {
                 alignment = add(alignment, other.velocity);
                 cohesion = add(cohesion, other.position);
                 total += 1;
@@ -214,12 +202,12 @@ export const mountBoids = (root: HTMLElement) => {
     resetBoids();
 
     const sketch = (instance: p5) => {
-        let animatedMouseRadius = MOUSE_RADIUS;
+        let animatedMouseRadius = boidsConfig.mouseRadius;
 
         const getMouseRadiusTarget = () =>
             instance.mouseIsPressed
-                ? MOUSE_RADIUS * MOUSE_PRESS_RADIUS_MULTIPLIER
-                : MOUSE_RADIUS;
+                ? boidsConfig.mouseRadius * boidsConfig.mousePressRadiusMultiplier
+                : boidsConfig.mouseRadius;
 
         const getPointer = (): Vector | null => {
             if (instance.mouseX < 0 || instance.mouseY < 0 || instance.mouseX > width || instance.mouseY > height) {
@@ -284,14 +272,14 @@ export const mountBoids = (root: HTMLElement) => {
                     const other = boids[inner];
                     const d = distance(boid.position, other.position);
 
-                    if (d < CONNECTION_RADIUS) {
+                    if (d < boidsConfig.connectionRadius) {
                         const pointerBoost = pointer
                             ? Math.max(
                                   0,
                                   1 - Math.min(distance(boid.position, pointer), distance(other.position, pointer)) / animatedMouseRadius,
                               )
                             : 0;
-                        const alpha = ((1 - d / CONNECTION_RADIUS) * 98) + 48 + pointerBoost * 52;
+                        const alpha = ((1 - d / boidsConfig.connectionRadius) * 98) + 48 + pointerBoost * 52;
                         instance.stroke(lr, lg, lb, alpha);
                         instance.strokeWeight(1.7 + pointerBoost * 1.2);
                         instance.line(

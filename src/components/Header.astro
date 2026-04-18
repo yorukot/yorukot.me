@@ -6,6 +6,15 @@ import MdiTelegram from "~icons/mdi/telegram";
 import MdiEmailOutline from "~icons/mdi/email-outline";
 import MdiContentCopy from "~icons/mdi/content-copy";
 import MdiCheck from "~icons/mdi/check";
+import { navigationItems, socialLinks } from "../data/navigation";
+import { site } from "../data/site";
+
+const socialIconMap = {
+    github: MdiGithub,
+    discord: IcBaselineDiscord,
+    telegram: MdiTelegram,
+    email: MdiEmailOutline,
+};
 ---
 
 <header
@@ -17,67 +26,45 @@ import MdiCheck from "~icons/mdi/check";
                 <div
                     class="flex h-full items-center border-r border-border px-5 text-lg"
                 >
-                    Yorukot
+                    {site.name}
                 </div>
                 <button
                     type="button"
                     class="ssh-copy-button flex h-full items-center border-r border-border px-5 text-left text-lg"
                     data-copy-ssh
-                    data-copy-value="ssh ssh.yorukot.me"
+                    data-copy-value={site.sshCommand}
                     aria-label="Copy SSH command"
                 >
-                    <span>$ssh ssh.yorukot.me</span>
+                    <span>${site.sshCommand}</span>
                 </button>
             </div>
             <div class="h-full flex items-stretch">
                 <div
                     class="grid grid-cols-2 h-full gap-px bg-border border-x border-border"
                 >
-                    <div class="header-link px-4">
-                        <span class="header-link-content">
-                            <MdiKeyboardArrowRight /> About
-                        </span>
-                    </div>
-                    <div class="header-link px-4">
-                        <span class="header-link-content">
-                            <MdiKeyboardArrowRight /> Blog
-                        </span>
-                    </div>
-                    <div class="header-link px-4">
-                        <span class="header-link-content">
-                            <MdiKeyboardArrowRight /> Projects
-                        </span>
-                    </div>
-                    <div class="header-link px-4">
-                        <span class="header-link-content">
-                            <MdiKeyboardArrowRight /> Contact
-                        </span>
-                    </div>
+                    {navigationItems.map((item) => (
+                        <a class="header-link px-4" href={item.href}>
+                            <span class="header-link-content">
+                                <MdiKeyboardArrowRight /> {item.label}
+                            </span>
+                        </a>
+                    ))}
                 </div>
 
                 <div
                     class="grid grid-cols-2 h-full aspect-square gap-px bg-border"
                 >
-                    <div class="header-link header-link-icon">
-                        <span class="header-link-content header-link-content-icon">
-                            <MdiGithub />
-                        </span>
-                    </div>
-                    <div class="header-link header-link-icon">
-                        <span class="header-link-content header-link-content-icon">
-                            <IcBaselineDiscord />
-                        </span>
-                    </div>
-                    <div class="header-link header-link-icon">
-                        <span class="header-link-content header-link-content-icon">
-                            <MdiTelegram />
-                        </span>
-                    </div>
-                    <div class="header-link header-link-icon">
-                        <span class="header-link-content header-link-content-icon">
-                            <MdiEmailOutline />
-                        </span>
-                    </div>
+                    {socialLinks.map((item) => {
+                        const Icon = socialIconMap[item.icon];
+
+                        return (
+                            <div class="header-link header-link-icon" aria-label={item.label}>
+                                <span class="header-link-content header-link-content-icon">
+                                    <Icon />
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>
@@ -164,6 +151,8 @@ import MdiCheck from "~icons/mdi/check";
         align-items: center;
         overflow: hidden;
         background: var(--color-background);
+        color: inherit;
+        text-decoration: none;
     }
 
     .header-link::before {

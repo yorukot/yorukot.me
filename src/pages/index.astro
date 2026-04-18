@@ -1,5 +1,7 @@
 ---
 import BoidsBackground from '../components/BoidsBackground.astro';
+import { about } from '../data/about';
+import { hero } from '../data/hero';
 import Layout from '../layouts/Layout.astro';
 ---
 
@@ -20,7 +22,7 @@ import Layout from '../layouts/Layout.astro';
                     class="text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl font-extrabold"
                     data-random-clone-text
                 >
-                    <span data-random-clone-label>Open-source developer</span>
+                    <span data-random-clone-label>{hero.headline}</span>
                 </p>
             </div>
         </div>
@@ -29,7 +31,18 @@ import Layout from '../layouts/Layout.astro';
     <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about">
         <div class="mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             <div class="max-w-sm space-y-5">
-                <h1 class="text-5xl uppercase text-text font-bold">Who am I</h1>
+                <h1 class="text-5xl uppercase text-text font-bold">{about.heading}</h1>
+            </div>
+            <div class="max-w-2xl space-y-8 text-text">
+                <div class="space-y-5 text-lg leading-8 text-text/80">
+                    {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                </div>
+
+                <div class="grid gap-px bg-border text-sm uppercase tracking-[0.16em] text-text sm:grid-cols-3">
+                    {about.interests.map((interest) => (
+                        <div class="bg-background p-4">{interest}</div>
+                    ))}
+                </div>
             </div>
         </div>
     </section>
@@ -50,29 +63,18 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
     import { animate, splitText, utils } from 'animejs';
+    import { hero } from '../data/hero';
 
     const intro = document.querySelector('[data-hero-intro]');
     const introCaret = document.querySelector('[data-hero-intro-caret]');
     const label = document.querySelector('[data-random-clone-label]');
 
     if (intro instanceof HTMLElement) {
-        type IntroRole = {
-            article: string;
-            label: string;
-        };
-
-        const introRoles: IntroRole[] = [
-            { article: 'a', label: 'CLI developer' },
-            { article: 'a', label: 'backend developer' },
-            { article: 'a', label: 'systems developer' },
-            { article: 'a', label: 'tooling developer' },
-            { article: 'an', label: 'infrastructure developer' },
-            { article: 'an', label: 'open-source maintainer' },
-        ];
-        const introPrefix = 'This is Yorukot,';
+        const introRoles = hero.introRoles;
+        const introPrefix = hero.introPrefix;
         const typewriterState = { count: 0 };
         let introTimeoutId: number | undefined;
-        let previousRole: IntroRole | undefined;
+        let previousRole: (typeof introRoles)[number] | undefined;
 
         intro.textContent = '';
 
@@ -154,19 +156,7 @@ import Layout from '../layouts/Layout.astro';
         const primaryChars = new WeakSet();
         const cooldownUntil = new WeakMap();
         const animatableChars = chars.filter((char) => char.textContent?.trim());
-        type CloneDirection = {
-            x: string;
-            y: string;
-            top: string;
-            left: string;
-        };
-
-        const directions: CloneDirection[] = [
-            { x: '0%', y: '100%', top: '-100%', left: '0%' },
-            { x: '-100%', y: '0%', top: '0%', left: '100%' },
-            { x: '0%', y: '-100%', top: '100%', left: '0%' },
-            { x: '100%', y: '0%', top: '0%', left: '-100%' },
-        ];
+        const directions = hero.cloneDirections;
         let timeoutId: number | undefined;
 
         animatableChars.forEach((char) => {

@@ -1,10 +1,11 @@
 ---
 import Header from "../components/Header.astro";
+import { site } from "../data/site";
 import "../global.css";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={site.language}>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -17,7 +18,7 @@ import "../global.css";
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro Basics</title>
+        <title>{site.title}</title>
     </head>
     <body>
         <Header />
