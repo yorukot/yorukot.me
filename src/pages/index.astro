@@ -28,10 +28,15 @@ import Layout from '../layouts/Layout.astro';
         </div>
     </section>
 
-    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about">
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about" data-about-section>
         <div class="mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             <div class="max-w-sm space-y-5">
-                <h1 class="text-5xl uppercase text-text font-bold">{about.heading}</h1>
+                <h1
+                    class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
+                    data-about-reveal
+                >
+                    <span>{about.heading}</span>
+                </h1>
             </div>
             <div class="max-w-2xl space-y-8 text-text">
                 <div class="space-y-5 text-lg leading-8 text-text/80">
@@ -39,8 +44,14 @@ import Layout from '../layouts/Layout.astro';
                 </div>
 
                 <div class="grid gap-px bg-border text-sm uppercase tracking-[0.16em] text-text sm:grid-cols-3">
-                    {about.interests.map((interest) => (
-                        <div class="bg-background p-4">{interest}</div>
+                    {about.interests.map((interest, index) => (
+                        <div
+                            class="about-reveal about-reveal-cell bg-background p-4"
+                            data-about-reveal
+                            style={`--about-reveal-delay: ${180 + index * 100}ms`}
+                        >
+                            <span>{interest}</span>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -52,6 +63,55 @@ import Layout from '../layouts/Layout.astro';
     .hero-intro-caret.is-visible {
         opacity: 1;
         animation: hero-intro-caret-blink 700ms steps(1) infinite;
+    }
+
+    .about-reveal {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        color: var(--color-text);
+        transition: color 300ms ease-out var(--about-reveal-delay, 0ms);
+    }
+
+    .about-reveal::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: var(--color-text);
+        transition: transform 520ms ease-out var(--about-reveal-delay, 0ms);
+    }
+
+    .about-reveal > span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-reveal-heading {
+        width: fit-content;
+        padding: 0.08em 0.14em;
+        margin-inline: -0.14em;
+    }
+
+    .about-reveal-cell {
+        min-height: 100%;
+    }
+
+    .about-reveal.is-visible {
+        color: var(--color-background);
+    }
+
+    .about-reveal.is-visible::before {
+        transform: scaleX(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .about-reveal,
+        .about-reveal::before {
+            transition-duration: 0ms;
+            transition-delay: 0ms;
+        }
     }
 
     @keyframes hero-intro-caret-blink {
@@ -68,6 +128,36 @@ import Layout from '../layouts/Layout.astro';
     const intro = document.querySelector('[data-hero-intro]');
     const introCaret = document.querySelector('[data-hero-intro-caret]');
     const label = document.querySelector('[data-random-clone-label]');
+    const aboutSection = document.querySelector('[data-about-section]');
+    const aboutRevealItems = document.querySelectorAll('[data-about-reveal]');
+
+    if (aboutSection instanceof HTMLElement && aboutRevealItems.length) {
+        const showAboutReveal = () => {
+            aboutRevealItems.forEach((item) => {
+                item.classList.add('is-visible');
+            });
+        };
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            showAboutReveal();
+        } else if ('IntersectionObserver' in window) {
+            const aboutObserver = new IntersectionObserver(
+                (entries) => {
+                    if (entries.some((entry) => entry.isIntersecting)) {
+                        showAboutReveal();
+                        aboutObserver.disconnect();
+                    }
+                },
+                {
+                    threshold: 0.35,
+                },
+            );
+
+            aboutObserver.observe(aboutSection);
+        } else {
+            showAboutReveal();
+        }
+    }
 
     if (intro instanceof HTMLElement) {
         const introRoles = hero.introRoles;
