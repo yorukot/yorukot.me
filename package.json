@@ -12,10 +12,15 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
+    "@fontsource/space-grotesk": "^5.2.10",
     "@tailwindcss/vite": "^4.2.2",
     "animejs": "^4.3.6",
     "astro": "^6.0.8",
     "p5": "^2.2.3",
+    "satori": "^0.26.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
