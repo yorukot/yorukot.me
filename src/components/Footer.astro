@@ -1,0 +1,91 @@
+---
+import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
+import { navigationItems, socialLinks } from "../data/navigation";
+import { site } from "../data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
+    <div class="footer-content space-y-10">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <div class="space-y-4">
+                <h2 class="text-5xl font-bold uppercase tracking-[0.18em] text-text">
+                    {site.name}
+                </h2>
+                <p class="max-w-2xl text-lg leading-8 text-text/70">
+                    Welcome to my corner of internet.
+                </p>
+            </div>
+
+            <a
+                class="footer-top-link group inline-flex items-center gap-2 justify-self-start text-sm uppercase tracking-[0.16em] text-primary no-underline lg:justify-self-end"
+                href="#top"
+            >
+                <MdiKeyboardArrowRight class="transition-transform group-hover:-translate-y-1 group-focus-visible:-translate-y-1" />
+                Back to top
+            </a>
+        </div>
+
+        <div class="grid gap-8 border-b border-border pb-10 lg:grid-cols-2">
+            <nav class="flex flex-wrap gap-x-8 gap-y-4" aria-label="Footer navigation">
+                {navigationItems.map((item) => (
+                    <a
+                        class="footer-link"
+                        href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                    >
+                        {item.label}
+                    </a>
+                ))}
+            </nav>
+
+            <nav class="flex flex-wrap gap-x-8 gap-y-4 lg:justify-end" aria-label="Footer links">
+                {socialLinks.map((item) => (
+                    <a
+                        class="footer-link"
+                        href={item.href}
+                        target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                        rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                    >
+                        {item.label}
+                    </a>
+                ))}
+            </nav>
+        </div>
+
+        <div class="flex flex-col gap-3 font-mono text-sm uppercase tracking-[0.14em] text-text/60 sm:flex-row sm:items-center sm:justify-between">
+            <span>Built in Taiwan</span>
+            <span>Open source when possible</span>
+            <span>{year}</span>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer-content {
+        width: 100%;
+    }
+
+    .footer-link {
+        color: var(--color-text);
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: var(--color-border);
+        text-underline-offset: 0.25rem;
+        transition:
+            color 180ms ease-out,
+            text-decoration-color 180ms ease-out;
+    }
+
+    .footer-link:hover,
+    .footer-link:focus-visible,
+    .footer-top-link:hover,
+    .footer-top-link:focus-visible {
+        color: var(--color-primary);
+        text-decoration-color: var(--color-primary);
+        outline: none;
+    }
+</style>
