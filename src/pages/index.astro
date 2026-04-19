@@ -155,7 +155,7 @@ type ContactChannel = (typeof contact.channels)[number];
                 </p>
 
                 <div class="grid gap-px border-y border-border bg-border lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
-                    <div class="flex min-h-72 flex-col justify-between bg-background p-6 text-text sm:p-8">
+                    <div class="flex min-h-72 flex-col justify-center bg-background p-6 text-text sm:p-8">
                         <div class="space-y-5">
                             <div class="font-mono text-sm uppercase tracking-[0.14em] text-primary">
                                 /{contact.donate.label}
@@ -174,16 +174,6 @@ type ContactChannel = (typeof contact.channels)[number];
                                 {contact.donate.description}
                             </p>
                         </div>
-
-                        <a
-                            class="group mt-10 flex items-center justify-between gap-6 border-t border-border pt-5 font-mono text-sm text-primary no-underline focus-visible:outline-none"
-                            href={contact.donate.href}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <span>{contact.donate.href.replace('https://', '')}</span>
-                            <span class="transition-transform group-hover:translate-x-1 group-focus-visible:translate-x-1" aria-hidden="true">-&gt;</span>
-                        </a>
                     </div>
 
                     <div class="grid gap-px bg-border">
