@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 
 <footer class="footer border-t border-text bg-text px-6 py-16 text-background sm:px-10 sm:py-20">
     <div class="footer-content space-y-10">
-        <div class="grid gap-8 lg:items-start">
+        <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div class="space-y-4">
                 <h2 class="text-5xl font-bold uppercase tracking-[0.18em] text-background">
                     {site.name}
@@ -16,6 +16,15 @@ const year = new Date().getFullYear();
                     Welcome to my corner of internet.
                 </p>
             </div>
+
+            <a
+                class="footer-key-link scramble-link lg:justify-self-end"
+                href="/.well-known/openpgpkey/hu/aeii9rmagouy1owpp7e5ftpxjof7h41n?l=hi"
+                target="_blank"
+                rel="noreferrer"
+            >
+                <span class="scramble-link-label" data-scramble-text>OpenPGP: F018 8B9B F901 C94E</span>
+            </a>
         </div>
 
         <div class="grid gap-8 border-b border-background/30 pb-10 lg:grid-cols-2">
@@ -75,6 +84,33 @@ const year = new Date().getFullYear();
         color: var(--color-background);
         text-decoration-color: var(--color-primary);
         outline: none;
+    }
+
+    .footer-key-link {
+        display: inline-flex;
+        color: var(--color-background);
+        font-family: var(--font-mono);
+        font-size: 0.875rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: underline;
+        text-decoration-color: var(--color-background);
+        text-underline-offset: 0.35em;
+        transition:
+            color 180ms ease-out,
+            text-decoration-color 180ms ease-out;
+    }
+
+    .footer-key-link:hover,
+    .footer-key-link:focus-visible {
+        color: var(--color-background);
+        text-decoration-color: var(--color-primary);
+        outline: none;
+    }
+
+    .footer-key-link .scramble-link-label::after {
+        display: none;
     }
 
 </style>

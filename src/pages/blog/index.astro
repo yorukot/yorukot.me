@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
+import { absoluteUrl } from '../../lib/seo';
 
 type BlogPost = CollectionEntry<'blog'>;
 
@@ -16,9 +17,32 @@ const formatDate = (date: Date) =>
         month: 'short',
         day: '2-digit',
     }).format(date);
+
+const title = `Blog | ${site.name}`;
+const description = 'Notes, experiments, and the occasional write-up from Yorukot.';
+const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    url: absoluteUrl('/blog'),
+    inLanguage: site.language,
+    isPartOf: {
+        '@type': 'WebSite',
+        name: site.name,
+        url: absoluteUrl('/'),
+    },
+};
 ---
 
-<Layout title={`Blog | ${site.name}`} description="Writing from Yorukot.">
+<Layout
+    title={title}
+    description={description}
+    canonicalPath="/blog"
+    image="/blog/og.png"
+    imageAlt="Yorukot blog social image"
+    jsonLd={blogJsonLd}
+>
     <section class="blog-page border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
         <div class="blog-shell space-y-12">
             <div class="space-y-4">

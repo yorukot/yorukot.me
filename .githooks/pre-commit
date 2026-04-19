@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -eu
+
+root_dir="$(git rev-parse --show-toplevel)"
+cd "$root_dir"
+
+if ! command -v pnpm >/dev/null 2>&1; then
+    echo "pre-commit: pnpm is required but was not found in PATH." >&2
+    exit 1
+fi
+
+echo "pre-commit: running lint"
+pnpm lint
+
+echo "pre-commit: running tests"
+pnpm test
+
+echo "pre-commit: running build"
+pnpm build
+
+echo "pre-commit: passed"

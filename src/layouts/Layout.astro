@@ -3,19 +3,43 @@ import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import LinkEffects from "../components/LinkEffects.astro";
 import { site } from "../data/site";
+import {
+    absoluteAssetUrl,
+    absoluteUrl,
+    pageDescription,
+    pageTitle,
+    safeJsonLd,
+    trimTrailingSlash,
+} from "../lib/seo";
 import "../global.css";
 
 type Props = {
     title?: string;
     description?: string;
     lang?: string;
+    canonicalPath?: string;
+    image?: string;
+    imageAlt?: string;
+    type?: 'website' | 'article';
+    jsonLd?: unknown | unknown[];
 };
 
 const {
     title = site.title,
     description,
     lang = site.language,
+    canonicalPath = Astro.url.pathname,
+    image = site.defaultOgImage,
+    imageAlt = `${site.name} social image`,
+    type = 'website',
+    jsonLd,
 } = Astro.props;
+const resolvedTitle = pageTitle(title);
+const resolvedDescription = pageDescription(description);
+const canonicalUrl = absoluteUrl(trimTrailingSlash(canonicalPath));
+const imageUrl = absoluteAssetUrl(image);
+const rssUrl = absoluteAssetUrl(site.rssPath);
+const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
 ---
 
@@ -32,9 +56,38 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
         />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        {description && <meta name="description" content={description} />}
+        <link rel="canonical" href={canonicalUrl} />
+        <link rel="sitemap" href={site.sitemapPath} />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title={`${site.name} RSS`}
+            href={rssUrl}
+        />
+        <meta name="description" content={resolvedDescription} />
+        <meta name="robots" content="index, follow" />
+        <meta name="theme-color" content={site.themeColor} />
+        <meta property="og:site_name" content={site.name} />
+        <meta property="og:title" content={resolvedTitle} />
+        <meta property="og:description" content={resolvedDescription} />
+        <meta property="og:type" content={type} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:secure_url" content={imageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={imageAlt} />
+        <meta property="og:locale" content={lang === 'zh-tw' ? 'zh_TW' : site.locale} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={resolvedTitle} />
+        <meta name="twitter:description" content={resolvedDescription} />
+        <meta name="twitter:image" content={imageUrl} />
+        <meta name="twitter:image:alt" content={imageAlt} />
         <meta name="generator" content={Astro.generator} />
-        <title>{title}</title>
+        {jsonLdItems.map((item) => (
+            <script type="application/ld+json" set:html={safeJsonLd(item)} />
+        ))}
+        <title>{resolvedTitle}</title>
     </head>
     <body id="top">
         <Header hideOnScroll={hideHeaderOnScroll} />

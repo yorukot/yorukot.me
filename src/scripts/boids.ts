@@ -202,7 +202,7 @@ export const mountBoids = (root: HTMLElement) => {
     resetBoids();
 
     const sketch = (instance: p5) => {
-        let animatedMouseRadius = boidsConfig.mouseRadius;
+        let animatedMouseRadius: number = boidsConfig.mouseRadius;
 
         const getMouseRadiusTarget = () =>
             instance.mouseIsPressed
@@ -246,7 +246,6 @@ export const mountBoids = (root: HTMLElement) => {
             const [nr, ng, nb] = palette.node;
             const [lr, lg, lb] = palette.line;
             const [rr, rg, rb] = palette.ring;
-            const [pr, pg, pb] = palette.leader;
 
             if (pointer) {
                 for (let ring = 1; ring <= 3; ring += 1) {
@@ -299,7 +298,6 @@ export const mountBoids = (root: HTMLElement) => {
                 const pointerBoost = pointer
                     ? Math.max(0, 1 - distance(boid.position, pointer) / animatedMouseRadius)
                     : 0;
-                const glyphAlpha = 182 + pulse * 26 + pointerBoost * 72;
                 const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
                 const cursorHeight = nodeSize * 1.08;
                 const cursorWidth = nodeSize * 0.38;

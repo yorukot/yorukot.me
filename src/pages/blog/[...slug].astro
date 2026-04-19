@@ -3,6 +3,12 @@ import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
+import {
+    absoluteAssetUrl,
+    absoluteUrl,
+    blogPostOgImagePath,
+    blogPostPath,
+} from '../../lib/seo';
 
 type BlogPost = CollectionEntry<'blog'>;
 type Props = {
@@ -21,6 +27,34 @@ export async function getStaticPaths() {
 const { post } = Astro.props as Props;
 const { Content } = await render(post);
 const sshPostCommand = `ssh -t ssh.yorukot.me ${post.data.post_slug}`;
+const canonicalPath = blogPostPath(post.data.post_slug);
+const ogImage = blogPostOgImagePath(post.data.post_slug);
+const postJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.description,
+    url: absoluteUrl(canonicalPath),
+    image: absoluteAssetUrl(ogImage),
+    datePublished: post.data.publish_date.toISOString(),
+    dateModified: (post.data.updated_date ?? post.data.publish_date).toISOString(),
+    author: post.data.author.map((name) => ({
+        '@type': 'Person',
+        name,
+        url: absoluteUrl('/'),
+    })),
+    publisher: {
+        '@type': 'Person',
+        name: site.author,
+        url: absoluteUrl('/'),
+    },
+    keywords: post.data.tags,
+    inLanguage: post.data.lang,
+    mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': absoluteUrl(canonicalPath),
+    },
+};
 
 const formatDate = (date: Date) =>
     new Intl.DateTimeFormat(post.data.lang || 'en', {
@@ -34,6 +68,11 @@ const formatDate = (date: Date) =>
     title={`${post.data.title} | ${site.name}`}
     description={post.data.description}
     lang={post.data.lang}
+    canonicalPath={canonicalPath}
+    image={ogImage}
+    imageAlt={`${post.data.title} social image`}
+    type="article"
+    jsonLd={postJsonLd}
 >
     <article class="blog-post border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
         <div class="blog-post-shell space-y-12">

@@ -11,8 +11,10 @@ import BoidsBackground from '../components/BoidsBackground.astro';
 import { about } from '../data/about';
 import { contact } from '../data/contact';
 import { hero } from '../data/hero';
+import { site } from '../data/site';
 import { works } from '../data/works';
 import Layout from '../layouts/Layout.astro';
+import { absoluteAssetUrl, absoluteUrl } from '../lib/seo';
 
 const interestIconMap = {
     openSource: MdiSourceBranch,
@@ -29,9 +31,46 @@ const contactIconMap = {
 
 type WorkItem = (typeof works.works)[number];
 type ContactChannel = (typeof contact.channels)[number];
+
+const homeJsonLd = [
+    {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: site.name,
+        url: absoluteUrl('/'),
+        description: site.description,
+        inLanguage: site.language,
+        publisher: {
+            '@type': 'Person',
+            name: site.author,
+            url: absoluteUrl('/'),
+        },
+    },
+    {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: site.author,
+        url: absoluteUrl('/'),
+        email: site.email,
+        image: absoluteAssetUrl(site.defaultOgImage),
+        sameAs: [
+            site.social.github,
+            site.social.telegram,
+            site.social.youtube,
+            site.social.kofi,
+        ],
+        knowsAbout: ['Open source', 'CLI', 'TUI', 'Backend development', 'Full-stack web'],
+    },
+];
 ---
 
-<Layout>
+<Layout
+    description={site.description}
+    canonicalPath="/"
+    image={site.defaultOgImage}
+    imageAlt="Yorukot open-source developer social image"
+    jsonLd={homeJsonLd}
+>
     <section class="hero-section relative isolate overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <BoidsBackground />
 
@@ -68,6 +107,13 @@ type ContactChannel = (typeof contact.channels)[number];
                 <div class="space-y-5 text-lg leading-8 text-text/80">
                     {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
                 </div>
+
+                <a
+                    class="about-blog-link inline-flex border border-border px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-primary no-underline transition-colors hover:border-primary hover:bg-primary hover:text-background focus-visible:border-primary focus-visible:bg-primary focus-visible:text-background focus-visible:outline-none"
+                    href="/blog"
+                >
+                    Go to blog
+                </a>
 
                 <div class="grid grid-cols-[auto_1fr] gap-px border-y border-border bg-border text-sm uppercase tracking-[0.16em] text-text sm:grid-cols-[auto_1fr_auto_1fr_auto_1fr]">
                     {about.interests.map((interest) => (
