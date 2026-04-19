@@ -1,0 +1,174 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+    const posts = await getCollection('blog');
+
+    return posts.map((post) => ({
+        params: { slug: post.data.post_slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat(post.data.lang || 'en', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+    }).format(date);
+---
+
+<Layout
+    title={`${post.data.title} | ${site.name}`}
+    description={post.data.description}
+    lang={post.data.lang}
+>
+    <article class="blog-post border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
+        <div class="blog-post-shell space-y-12">
+            <header class="space-y-6">
+                <a
+                    class="inline-flex font-mono text-sm uppercase tracking-[0.16em] text-primary underline decoration-border underline-offset-4 transition-colors hover:decoration-primary focus-visible:decoration-primary focus-visible:outline-none"
+                    href="/blog"
+                >
+                    /blog
+                </a>
+
+                <div class="space-y-5">
+                    <h1 class="text-4xl font-bold uppercase tracking-[0.08em] text-text sm:text-6xl">
+                        {post.data.title}
+                    </h1>
+                    <p class="max-w-3xl text-lg leading-8 text-text/70">
+                        {post.data.description}
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap gap-x-5 gap-y-3 font-mono text-sm uppercase tracking-[0.12em] text-text/60">
+                    <span>{post.data.author.join(', ')}</span>
+                    <time datetime={post.data.publish_date.toISOString()}>
+                        {formatDate(post.data.publish_date)}
+                    </time>
+                    {post.data.updated_date && <span>Updated {formatDate(post.data.updated_date)}</span>}
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    {post.data.tags.map((tag) => (
+                        <span class="border border-border px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
+            </header>
+
+            <div class="markdown-content">
+                <Content />
+            </div>
+        </div>
+    </article>
+</Layout>
+
+<style>
+    .blog-post-shell {
+        width: min(100%, 48rem);
+        margin: 0 auto;
+    }
+
+    .markdown-content {
+        color: color-mix(in srgb, var(--color-text) 82%, transparent);
+        font-size: 1.0625rem;
+        line-height: 1.8;
+    }
+
+    .markdown-content :global(*) {
+        overflow-wrap: break-word;
+    }
+
+    .markdown-content :global(h2),
+    .markdown-content :global(h3),
+    .markdown-content :global(h4) {
+        color: var(--color-text);
+        font-weight: 700;
+        line-height: 1.2;
+        margin: 2.5rem 0 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .markdown-content :global(h2) {
+        font-size: 2rem;
+    }
+
+    .markdown-content :global(h3) {
+        font-size: 1.5rem;
+    }
+
+    .markdown-content :global(p),
+    .markdown-content :global(ul),
+    .markdown-content :global(ol),
+    .markdown-content :global(blockquote),
+    .markdown-content :global(pre),
+    .markdown-content :global(img) {
+        margin: 1.25rem 0;
+    }
+
+    .markdown-content :global(a) {
+        color: var(--color-text);
+        text-decoration: underline;
+        text-decoration-color: var(--color-border);
+        text-underline-offset: 0.25em;
+        transition:
+            color 180ms ease-out,
+            text-decoration-color 180ms ease-out;
+    }
+
+    .markdown-content :global(a:hover),
+    .markdown-content :global(a:focus-visible) {
+        color: var(--color-primary);
+        text-decoration-color: var(--color-primary);
+        outline: none;
+    }
+
+    .markdown-content :global(ul),
+    .markdown-content :global(ol) {
+        padding-left: 1.4rem;
+    }
+
+    .markdown-content :global(li + li) {
+        margin-top: 0.45rem;
+    }
+
+    .markdown-content :global(code) {
+        border: 1px solid var(--color-border);
+        padding: 0.12rem 0.35rem;
+        color: var(--color-primary);
+        font-size: 0.92em;
+    }
+
+    .markdown-content :global(pre) {
+        overflow-x: auto;
+        border: 1px solid var(--color-border);
+        padding: 1rem;
+    }
+
+    .markdown-content :global(pre code) {
+        border: 0;
+        padding: 0;
+        color: inherit;
+    }
+
+    .markdown-content :global(blockquote) {
+        border-left: 2px solid var(--color-primary);
+        padding-left: 1rem;
+        color: color-mix(in srgb, var(--color-text) 68%, transparent);
+    }
+
+    .markdown-content :global(img) {
+        display: block;
+        max-width: 100%;
+        border: 1px solid var(--color-border);
+    }
+</style>

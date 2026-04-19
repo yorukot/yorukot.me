@@ -4,10 +4,22 @@ import Header from "../components/Header.astro";
 import LinkEffects from "../components/LinkEffects.astro";
 import { site } from "../data/site";
 import "../global.css";
+
+type Props = {
+    title?: string;
+    description?: string;
+    lang?: string;
+};
+
+const {
+    title = site.title,
+    description,
+    lang = site.language,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang={site.language}>
+<html lang={lang}>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -19,8 +31,9 @@ import "../global.css";
         />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
+        {description && <meta name="description" content={description} />}
         <meta name="generator" content={Astro.generator} />
-        <title>{site.title}</title>
+        <title>{title}</title>
     </head>
     <body id="top">
         <Header />

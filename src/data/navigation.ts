@@ -1,8 +1,8 @@
 export const navigationItems = [
-    { label: 'About', href: '#about' },
-    { label: 'Blog', href: 'https://blog.yorukot.me' },
-    { label: 'My Works', href: '#software' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'About', href: '/#about' },
+    { label: 'Blog', href: '/blog' },
+    { label: 'My Works', href: '/#software' },
+    { label: 'Contact', href: '/#contact' },
 ] as const;
 
 export const socialLinks = [

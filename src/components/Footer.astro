@@ -46,10 +46,10 @@ const year = new Date().getFullYear();
             </nav>
         </div>
 
-        <div class="flex flex-col gap-3 font-mono text-sm uppercase tracking-[0.14em] text-background/60 sm:flex-row sm:items-center sm:justify-between">
-            <span>Built in Taiwan</span>
-            <span>Open source when possible</span>
-            <span>{year}</span>
+        <div class="grid gap-3 font-mono text-sm uppercase tracking-[0.14em] text-background/60 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+            <span class="sm:justify-self-start">Built in Taiwan</span>
+            <span class="sm:justify-self-center">Open source when possible</span>
+            <span class="sm:justify-self-end">{year}</span>
         </div>
     </div>
 </footer>
