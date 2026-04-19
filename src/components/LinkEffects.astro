@@ -1,0 +1,96 @@
+<style is:global>
+    .scramble-link-label {
+        position: relative;
+        display: inline-flex;
+        width: fit-content;
+        text-decoration: none;
+    }
+
+    .scramble-link-label::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -0.18em;
+        left: 0;
+        height: 1px;
+        background: var(--color-primary);
+        opacity: 0;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition:
+            opacity 220ms ease-out,
+            transform 280ms ease-out;
+    }
+
+    .scramble-link:hover .scramble-link-label::after,
+    .scramble-link:focus-visible .scramble-link-label::after,
+    .group:hover .scramble-link-label::after,
+    .group:focus-visible .scramble-link-label::after {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+</style>
+
+<script>
+    const randomChars = '0123456789{}[]<>/\\_$#*+-=';
+    const duration = 500;
+
+    const scrambleText = (target: HTMLElement) => {
+        const original = target.dataset.originalText ?? target.textContent ?? '';
+
+        target.dataset.originalText = original;
+
+        if (!original.trim()) {
+            return;
+        }
+
+        const previousAnimation = Number(target.dataset.scrambleAnimation);
+
+        if (previousAnimation) {
+            window.cancelAnimationFrame(previousAnimation);
+        }
+
+        target.style.width = `${target.getBoundingClientRect().width}px`;
+
+        const start = performance.now();
+
+        const render = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const revealCount = Math.floor(original.length * progress);
+
+            target.textContent = original
+                .split('')
+                .map((char, index) => {
+                    if (char === ' ' || index < revealCount) {
+                        return char;
+                    }
+
+                    return randomChars[Math.floor(Math.random() * randomChars.length)];
+                })
+                .join('');
+
+            if (progress < 1) {
+                target.dataset.scrambleAnimation = String(window.requestAnimationFrame(render));
+            } else {
+                target.textContent = original;
+                target.style.width = '';
+                delete target.dataset.scrambleAnimation;
+            }
+        };
+
+        target.dataset.scrambleAnimation = String(window.requestAnimationFrame(render));
+    };
+
+    document.querySelectorAll('[data-scramble-text]').forEach((target) => {
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+
+        target.dataset.originalText = target.textContent ?? '';
+
+        const link = target.closest('a, button');
+
+        link?.addEventListener('pointerenter', () => scrambleText(target));
+        link?.addEventListener('focus', () => scrambleText(target));
+    });
+</script>
