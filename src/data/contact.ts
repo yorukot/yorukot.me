@@ -1,27 +1,41 @@
 export const contact = {
     heading: 'CONTACT',
-    intro: 'Find my writing, code, and the places where I am easiest to reach.',
-    links: [
+    intro: 'Reach me directly, follow the code, or support the open-source work I keep building.',
+    donate: {
+        label: 'Donate',
+        title: 'Support my work',
+        href: 'https://github.com/sponsors/yorukot',
+        description:
+            'Help keep the tools, experiments, and open-source projects moving.',
+    },
+    channels: [
         {
-            label: 'Blog',
-            href: 'https://blog.yorukot.me',
-            meta: 'Writing',
+            label: 'Email',
+            href: 'mailto:hello@yorukot.me',
+            value: 'hello@yorukot.me',
             description:
-                'Notes, ideas, build logs, and longer thoughts about software.',
+                'For project questions, collaboration, and anything better sent directly.',
         },
         {
             label: 'GitHub',
             href: 'https://github.com/yorukot',
-            meta: 'Code',
+            value: '@yorukot',
             description:
-                'Open-source projects, tools, experiments, and active development work.',
+                'Code, issues, pull requests, releases, and open-source work.',
         },
         {
-            label: 'Email',
-            href: 'mailto:hello@yorukot.me',
-            meta: 'Direct',
+            label: 'Discord',
+            href: 'https://discord.com/users/yorukot',
+            value: 'yorukot',
             description:
-                'Reach out for projects, questions, or anything that is better sent directly.',
+                'Fast messages, community chats, and development conversations.',
+        },
+        {
+            label: 'Telegram',
+            href: 'https://t.me/yorukot',
+            value: '@yorukot',
+            description:
+                'Short updates and direct messages when Telegram is easier.',
         },
     ],
 } as const;

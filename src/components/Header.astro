@@ -28,15 +28,20 @@ const socialIconMap = {
                 >
                     {site.name}
                 </div>
-                <button
-                    type="button"
-                    class="ssh-copy-button flex h-full items-center border-r border-border px-5 text-left text-lg"
-                    data-copy-ssh
-                    data-copy-value={site.sshCommand}
-                    aria-label="Copy SSH command"
-                >
-                    <span>${site.sshCommand}</span>
-                </button>
+                <div class="grid h-full border-r border-border">
+                    <div class="flex items-center border-b border-border px-5 text-lg text-primary">
+                        Try ssh to this site
+                    </div>
+                    <button
+                        type="button"
+                        class="ssh-copy-button flex items-center px-5 text-left text-lg"
+                        data-copy-ssh
+                        data-copy-value={site.sshCommand}
+                        aria-label="Copy SSH command"
+                    >
+                        <span>$ {site.sshCommand}</span>
+                    </button>
+                </div>
             </div>
             <div class="h-full flex items-stretch">
                 <div
