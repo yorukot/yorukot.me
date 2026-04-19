@@ -1,6 +1,10 @@
 ---
+import IcBaselineDiscord from '~icons/ic/baseline-discord';
 import MdiConsoleLine from '~icons/mdi/console-line';
+import MdiEmailOutline from '~icons/mdi/email-outline';
+import MdiGithub from '~icons/mdi/github';
 import MdiSourceBranch from '~icons/mdi/source-branch';
+import MdiTelegram from '~icons/mdi/telegram';
 import MdiWeb from '~icons/mdi/web';
 import BoidsBackground from '../components/BoidsBackground.astro';
 import { about } from '../data/about';
@@ -13,6 +17,13 @@ const interestIconMap = {
     openSource: MdiSourceBranch,
     terminal: MdiConsoleLine,
     web: MdiWeb,
+};
+
+const contactIconMap = {
+    Email: MdiEmailOutline,
+    GitHub: MdiGithub,
+    Discord: IcBaselineDiscord,
+    Telegram: MdiTelegram,
 };
 
 type WorkItem = (typeof works.works)[number];
@@ -177,31 +188,33 @@ type ContactChannel = (typeof contact.channels)[number];
                     </div>
 
                     <div class="grid gap-px bg-border">
-                        {contact.channels.map((item: ContactChannel) => (
-                            <a
-                                class="group bg-background p-5 text-text no-underline transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none sm:p-6"
-                                href={item.href}
-                                target={item.href.startsWith('mailto:') ? undefined : '_blank'}
-                                rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
-                            >
-                                <div class="flex items-start justify-between gap-6">
-                                    <div class="space-y-3">
+                        {contact.channels.map((item: ContactChannel) => {
+                            const Icon = contactIconMap[item.label];
+
+                            return (
+                                <a
+                                    class="contact-channel group relative isolate overflow-hidden bg-background p-5 text-text no-underline transition-colors focus-visible:outline-none sm:p-6"
+                                    href={item.href}
+                                    target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                                    rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                                >
+                                    <span class="contact-channel-logo" aria-hidden="true">
+                                        <Icon />
+                                    </span>
+
+                                    <div class="relative z-10 flex items-center justify-between gap-6">
                                         <div class="flex flex-wrap items-center gap-3">
-                                            <h3 class="text-xl font-bold text-current underline decoration-border underline-offset-4 transition-colors group-hover:decoration-primary group-focus-visible:decoration-primary">
+                                            <h3 class="text-xl font-bold text-current underline decoration-border underline-offset-4 transition-colors group-hover:decoration-background group-focus-visible:decoration-background">
                                                 {item.label}
                                             </h3>
-                                            <span class="font-mono text-sm text-primary">
+                                            <span class="font-mono text-sm text-primary transition-colors group-hover:text-background group-focus-visible:text-background">
                                                 {item.value}
                                             </span>
                                         </div>
-
-                                        <p class="text-base leading-7 text-text/70">
-                                            {item.description}
-                                        </p>
                                     </div>
-                                </div>
-                            </a>
-                        ))}
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
@@ -247,6 +260,36 @@ type ContactChannel = (typeof contact.channels)[number];
     .hero-intro-caret.is-visible {
         opacity: 1;
         animation: hero-intro-caret-blink 700ms steps(1) infinite;
+    }
+
+    .contact-channel-logo {
+        position: absolute;
+        top: 50%;
+        right: 1.5rem;
+        z-index: 0;
+        color: var(--color-background);
+        font-size: 7rem;
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-50%);
+        transition:
+            opacity 260ms ease-out,
+            transform 260ms ease-out;
+        mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+    }
+
+    .contact-channel:hover,
+    .contact-channel:focus-visible {
+        background: var(--color-text);
+        color: var(--color-background);
+    }
+
+    .contact-channel:hover .contact-channel-logo,
+    .contact-channel:focus-visible .contact-channel-logo {
+        opacity: 0.18;
+        transform: translateY(-50%) translateX(-0.25rem);
     }
 
     .about-reveal {
