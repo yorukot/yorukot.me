@@ -1,8 +1,9 @@
 ---
 import IcBaselineDiscord from '~icons/ic/baseline-discord';
+import IcSharpEmail from '~icons/ic/sharp-email';
 import MdiConsoleLine from '~icons/mdi/console-line';
-import MdiEmailOutline from '~icons/mdi/email-outline';
 import MdiGithub from '~icons/mdi/github';
+import MdiHeart from '~icons/mdi/heart';
 import MdiSourceBranch from '~icons/mdi/source-branch';
 import MdiTelegram from '~icons/mdi/telegram';
 import MdiWeb from '~icons/mdi/web';
@@ -20,7 +21,7 @@ const interestIconMap = {
 };
 
 const contactIconMap = {
-    Email: MdiEmailOutline,
+    Email: IcSharpEmail,
     GitHub: MdiGithub,
     Discord: IcBaselineDiscord,
     Telegram: MdiTelegram,
@@ -166,26 +167,32 @@ type ContactChannel = (typeof contact.channels)[number];
                 </p>
 
                 <div class="grid gap-px border-y border-border bg-border lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
-                    <div class="flex min-h-72 flex-col justify-center bg-background p-6 text-text sm:p-8">
-                        <div class="space-y-5">
-                            <div class="font-mono text-sm uppercase tracking-[0.14em] text-primary">
-                                /{contact.donate.label}
-                            </div>
-                            <h3 class="max-w-xl text-4xl font-bold uppercase sm:text-5xl">
-                                <a
-                                    class="text-text underline decoration-border underline-offset-8 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
-                                    href={contact.donate.href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {contact.donate.title}
-                                </a>
+                    <a
+                        class="donate-panel group relative isolate grid min-h-72 overflow-hidden bg-background p-6 text-text no-underline transition-colors focus-visible:outline-none sm:p-8 lg:grid-cols-[7rem_1fr] lg:gap-5"
+                        href={contact.donate.href}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <span class="donate-panel-logo" aria-hidden="true">
+                            <MdiHeart />
+                        </span>
+
+                        <div class="relative z-10 font-mono text-sm uppercase tracking-[0.14em] text-primary transition-colors group-hover:text-background group-focus-visible:text-background">
+                            /{contact.donate.label}
+                        </div>
+
+                        <div class="relative z-10 mt-8 space-y-5 lg:mt-0">
+                            <h3 class="max-w-xl text-4xl font-bold uppercase text-current underline decoration-border underline-offset-8 transition-colors group-hover:decoration-background group-focus-visible:decoration-background sm:text-5xl">
+                                {contact.donate.title}
                             </h3>
-                            <p class="max-w-xl text-lg leading-8 text-text/70">
+                            <p class="max-w-xl text-lg leading-8 text-text/70 transition-colors group-hover:text-background/70 group-focus-visible:text-background/70">
                                 {contact.donate.description}
                             </p>
+                            <div class="inline-flex border border-border px-3 py-2 font-mono text-sm text-primary transition-colors group-hover:border-background group-hover:text-background group-focus-visible:border-background group-focus-visible:text-background">
+                                Ko-fi
+                            </div>
                         </div>
-                    </div>
+                    </a>
 
                     <div class="grid gap-px bg-border">
                         {contact.channels.map((item: ContactChannel) => {
@@ -262,6 +269,36 @@ type ContactChannel = (typeof contact.channels)[number];
         animation: hero-intro-caret-blink 700ms steps(1) infinite;
     }
 
+    .donate-panel:hover,
+    .donate-panel:focus-visible {
+        background: var(--color-text);
+        color: var(--color-background);
+    }
+
+    .donate-panel-logo {
+        position: absolute;
+        right: 1.5rem;
+        bottom: -1rem;
+        z-index: 0;
+        color: var(--color-background);
+        font-size: 12rem;
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(1rem) rotate(-8deg);
+        transition:
+            opacity 420ms ease-out,
+            transform 420ms ease-out;
+        mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+    }
+
+    .donate-panel:hover .donate-panel-logo,
+    .donate-panel:focus-visible .donate-panel-logo {
+        opacity: 0.16;
+        transform: translateX(0) rotate(-8deg);
+    }
+
     .contact-channel-logo {
         position: absolute;
         top: 50%;
@@ -274,8 +311,8 @@ type ContactChannel = (typeof contact.channels)[number];
         pointer-events: none;
         transform: translateY(-50%);
         transition:
-            opacity 260ms ease-out,
-            transform 260ms ease-out;
+            opacity 420ms ease-out,
+            transform 420ms ease-out;
         mask-image: linear-gradient(90deg, transparent 0%, black 100%);
         -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
     }

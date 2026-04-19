@@ -1,7 +1,7 @@
 ---
 import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
 import MdiGithub from "~icons/mdi/github";
-import IcBaselineDiscord from '~icons/ic/baseline-discord';
+import MdiHeart from "~icons/mdi/heart";
 import MdiTelegram from "~icons/mdi/telegram";
 import MdiEmailOutline from "~icons/mdi/email-outline";
 import MdiContentCopy from "~icons/mdi/content-copy";
@@ -12,7 +12,7 @@ import { site } from "../data/site";
 
 const socialIconMap = {
     github: MdiGithub,
-    discord: IcBaselineDiscord,
+    sponsor: MdiHeart,
     telegram: MdiTelegram,
     email: MdiEmailOutline,
 };
@@ -70,11 +70,17 @@ const socialIconMap = {
                         const Icon = socialIconMap[item.icon];
 
                         return (
-                            <div class="header-link header-link-icon" aria-label={item.label}>
+                            <a
+                                class="header-link header-link-icon"
+                                href={item.href}
+                                target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                                rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                                aria-label={item.label}
+                            >
                                 <span class="header-link-content header-link-content-icon">
-                                    <Icon />
+                                    <Icon class={item.icon === 'sponsor' ? 'sponsor-heart' : undefined} />
                                 </span>
-                            </div>
+                            </a>
                         );
                     })}
                 </div>
@@ -225,6 +231,38 @@ const socialIconMap = {
 
     .header-link-content-icon {
         font-size: 1.25rem;
+    }
+
+    .sponsor-heart {
+        animation: sponsor-heartbeat 1.6s ease-in-out infinite;
+        color: currentColor;
+        transform-origin: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .sponsor-heart {
+            animation: none;
+        }
+    }
+
+    @keyframes sponsor-heartbeat {
+        0%,
+        42%,
+        70%,
+        100% {
+            color: currentColor;
+            transform: scale(1);
+        }
+
+        52% {
+            color: hsl(0 84% 60%);
+            transform: scale(1.22);
+        }
+
+        60% {
+            color: hsl(0 84% 60%);
+            transform: scale(0.96);
+        }
     }
 </style>
 

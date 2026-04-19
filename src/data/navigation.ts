@@ -6,8 +6,8 @@ export const navigationItems = [
 ] as const;
 
 export const socialLinks = [
-    { label: 'GitHub', icon: 'github' },
-    { label: 'Discord', icon: 'discord' },
-    { label: 'Telegram', icon: 'telegram' },
-    { label: 'Email', icon: 'email' },
+    { label: 'GitHub', icon: 'github', href: 'https://github.com/yorukot' },
+    { label: 'Sponsor', icon: 'sponsor', href: 'https://ko-fi.com/yorukot' },
+    { label: 'Telegram', icon: 'telegram', href: 'https://t.me/yorukot' },
+    { label: 'Email', icon: 'email', href: 'mailto:hello@yorukot.me' },
 ] as const;

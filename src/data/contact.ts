@@ -4,7 +4,7 @@ export const contact = {
     donate: {
         label: 'Donate',
         title: 'Support my work',
-        href: 'https://github.com/sponsors/yorukot',
+        href: 'https://ko-fi.com/yorukot',
         description:
             'Help keep the tools, experiments, and open-source projects moving.',
     },
