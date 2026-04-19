@@ -5,6 +5,7 @@ import MdiWeb from '~icons/mdi/web';
 import BoidsBackground from '../components/BoidsBackground.astro';
 import { about } from '../data/about';
 import { hero } from '../data/hero';
+import { works } from '../data/works';
 import Layout from '../layouts/Layout.astro';
 
 const interestIconMap = {
@@ -12,13 +13,15 @@ const interestIconMap = {
     terminal: MdiConsoleLine,
     web: MdiWeb,
 };
+
+type WorkItem = (typeof works.works)[number];
 ---
 
 <Layout>
     <section class="relative isolate min-h-[calc(100vh-6.5rem)] overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <BoidsBackground />
 
-        <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
+        <div class="home-content relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
             <div class="select-none space-y-4">
                 <p class="text-xl font-medium tracking-[0.12em] text-text sm:text-2xl lg:text-3xl">
                     <span data-hero-intro></span><span
@@ -37,12 +40,12 @@ const interestIconMap = {
         </div>
     </section>
 
-    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about" data-about-section>
-        <div class="mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about" data-reveal-section>
+        <div class="home-content flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             <div class="max-w-sm space-y-5">
                 <h1
                     class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
-                    data-about-reveal
+                    data-section-reveal
                 >
                     <span>{about.heading}</span>
                 </h1>
@@ -73,9 +76,74 @@ const interestIconMap = {
             </div>
         </div>
     </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="software" data-reveal-section>
+        <div class="home-content space-y-12">
+            <div class="max-w-sm">
+                <h2
+                    class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
+                    data-section-reveal
+                >
+                    <span>{works.heading}</span>
+                </h2>
+            </div>
+
+            <div class="space-y-8 text-text">
+                <p class="text-lg leading-8 text-text/80">
+                    {works.intro}
+                </p>
+
+                <div class="grid gap-px border-y border-border bg-border">
+                    {works.works.map((item: WorkItem) => (
+                        <article class="bg-background text-text">
+                            <div class="space-y-4 px-0 py-5 sm:px-5">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="font-mono text-sm text-primary">
+                                        {item.id}
+                                    </div>
+
+                                    <span class="inline-flex shrink-0 border border-primary px-2 py-1 text-xs uppercase tracking-[0.14em] text-primary">
+                                        {item.status}
+                                    </span>
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <h3 class="text-xl font-bold text-text">
+                                        <a
+                                            class="underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
+                                            href={item.href}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {item.title}
+                                        </a>
+                                    </h3>
+                                    <span class="border border-border px-2 py-1 text-xs uppercase tracking-[0.14em] text-text/70">
+                                        {item.type}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="px-0 pb-5 sm:px-5">
+                                <p class="text-base leading-7 text-text/70">
+                                    {item.description}
+                                </p>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </section>
 </Layout>
 
 <style>
+    .home-content {
+        width: 100%;
+        max-width: 72rem;
+        margin-inline: auto;
+    }
+
     .hero-intro-caret.is-visible {
         opacity: 1;
         animation: hero-intro-caret-blink 700ms steps(1) infinite;
@@ -140,24 +208,29 @@ const interestIconMap = {
     const intro = document.querySelector('[data-hero-intro]');
     const introCaret = document.querySelector('[data-hero-intro-caret]');
     const label = document.querySelector('[data-random-clone-label]');
-    const aboutSection = document.querySelector('[data-about-section]');
-    const aboutRevealItems = document.querySelectorAll('[data-about-reveal]');
+    const revealSections = document.querySelectorAll('[data-reveal-section]');
 
-    if (aboutSection instanceof HTMLElement && aboutRevealItems.length) {
-        const showAboutReveal = () => {
-            aboutRevealItems.forEach((item) => {
+    revealSections.forEach((section) => {
+        const revealItems = section.querySelectorAll('[data-section-reveal]');
+
+        if (!(section instanceof HTMLElement) || !revealItems.length) {
+            return;
+        }
+
+        const showRevealItems = () => {
+            revealItems.forEach((item) => {
                 item.classList.add('is-visible');
             });
         };
 
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            showAboutReveal();
+            showRevealItems();
         } else if ('IntersectionObserver' in window) {
-            const aboutObserver = new IntersectionObserver(
+            const revealObserver = new IntersectionObserver(
                 (entries) => {
                     if (entries.some((entry) => entry.isIntersecting)) {
-                        showAboutReveal();
-                        aboutObserver.disconnect();
+                        showRevealItems();
+                        revealObserver.disconnect();
                     }
                 },
                 {
@@ -165,11 +238,11 @@ const interestIconMap = {
                 },
             );
 
-            aboutObserver.observe(aboutSection);
+            revealObserver.observe(section);
         } else {
-            showAboutReveal();
+            showRevealItems();
         }
-    }
+    });
 
     if (intro instanceof HTMLElement) {
         const introRoles = hero.introRoles;
