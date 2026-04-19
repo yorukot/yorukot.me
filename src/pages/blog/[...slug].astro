@@ -1,19 +1,26 @@
 ---
 import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
+
+type BlogPost = CollectionEntry<'blog'>;
+type Props = {
+    post: BlogPost;
+};
 
 export async function getStaticPaths() {
     const posts = await getCollection('blog');
 
-    return posts.map((post) => ({
+    return posts.map((post: BlogPost) => ({
         params: { slug: post.data.post_slug },
         props: { post },
     }));
 }
 
-const { post } = Astro.props;
+const { post } = Astro.props as Props;
 const { Content } = await render(post);
+const sshPostCommand = `ssh -t ssh.yorukot.me ${post.data.post_slug}`;
 
 const formatDate = (date: Date) =>
     new Intl.DateTimeFormat(post.data.lang || 'en', {
@@ -38,8 +45,18 @@ const formatDate = (date: Date) =>
                     /blog
                 </a>
 
+                <button
+                    type="button"
+                    class="blog-ssh-copy w-full cursor-none border-y border-border bg-transparent py-4 text-left font-mono text-sm text-text sm:text-base"
+                    data-copy-ssh
+                    data-copy-value={sshPostCommand}
+                    aria-label="Copy blog SSH command"
+                >
+                    <span class="text-primary">$</span> {sshPostCommand}
+                </button>
+
                 <div class="space-y-5">
-                    <h1 class="text-4xl font-bold uppercase tracking-[0.08em] text-text sm:text-6xl">
+                    <h1 class="text-3xl font-bold leading-tight text-text sm:text-5xl">
                         {post.data.title}
                     </h1>
                     <p class="max-w-3xl text-lg leading-8 text-text/70">
@@ -56,7 +73,7 @@ const formatDate = (date: Date) =>
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                    {post.data.tags.map((tag) => (
+                    {post.data.tags.map((tag: string) => (
                         <span class="border border-border px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-text/60">
                             #{tag}
                         </span>
@@ -77,8 +94,13 @@ const formatDate = (date: Date) =>
         margin: 0 auto;
     }
 
+    .blog-ssh-copy:focus-visible {
+        outline: 1px solid var(--color-primary);
+        outline-offset: -1px;
+    }
+
     .markdown-content {
-        color: color-mix(in srgb, var(--color-text) 82%, transparent);
+        color: var(--color-text);
         font-size: 1.0625rem;
         line-height: 1.8;
     }
@@ -87,23 +109,40 @@ const formatDate = (date: Date) =>
         overflow-wrap: break-word;
     }
 
+    .markdown-content :global(h1),
     .markdown-content :global(h2),
     .markdown-content :global(h3),
-    .markdown-content :global(h4) {
+    .markdown-content :global(h4),
+    .markdown-content :global(h5),
+    .markdown-content :global(h6) {
         color: var(--color-text);
         font-weight: 700;
         line-height: 1.2;
         margin: 2.5rem 0 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+    }
+
+    .markdown-content :global(h1) {
+        font-size: 2.25rem;
     }
 
     .markdown-content :global(h2) {
-        font-size: 2rem;
+        font-size: 1.875rem;
     }
 
     .markdown-content :global(h3) {
         font-size: 1.5rem;
+    }
+
+    .markdown-content :global(h4) {
+        font-size: 1.25rem;
+    }
+
+    .markdown-content :global(h5) {
+        font-size: 1.125rem;
+    }
+
+    .markdown-content :global(h6) {
+        font-size: 1rem;
     }
 
     .markdown-content :global(p),
@@ -111,14 +150,15 @@ const formatDate = (date: Date) =>
     .markdown-content :global(ol),
     .markdown-content :global(blockquote),
     .markdown-content :global(pre),
-    .markdown-content :global(img) {
+    .markdown-content :global(img),
+    .markdown-content :global(table) {
         margin: 1.25rem 0;
     }
 
     .markdown-content :global(a) {
         color: var(--color-text);
         text-decoration: underline;
-        text-decoration-color: var(--color-border);
+        text-decoration-color: color-mix(in srgb, var(--color-text) 48%, transparent);
         text-underline-offset: 0.25em;
         transition:
             color 180ms ease-out,
@@ -137,6 +177,18 @@ const formatDate = (date: Date) =>
         padding-left: 1.4rem;
     }
 
+    .markdown-content :global(ul) {
+        list-style: disc;
+    }
+
+    .markdown-content :global(ol) {
+        list-style: decimal;
+    }
+
+    .markdown-content :global(li::marker) {
+        color: var(--color-primary);
+    }
+
     .markdown-content :global(li + li) {
         margin-top: 0.45rem;
     }
@@ -151,7 +203,7 @@ const formatDate = (date: Date) =>
     .markdown-content :global(pre) {
         overflow-x: auto;
         border: 1px solid var(--color-border);
-        padding: 1rem;
+        padding: 0.65rem 0.75rem;
     }
 
     .markdown-content :global(pre code) {
@@ -163,7 +215,36 @@ const formatDate = (date: Date) =>
     .markdown-content :global(blockquote) {
         border-left: 2px solid var(--color-primary);
         padding-left: 1rem;
-        color: color-mix(in srgb, var(--color-text) 68%, transparent);
+        color: color-mix(in srgb, var(--color-text) 90%, transparent);
+    }
+
+    .markdown-content :global(table) {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+        line-height: 1.55;
+        white-space: nowrap;
+    }
+
+    .markdown-content :global(th),
+    .markdown-content :global(td) {
+        border: 1px solid var(--color-border);
+        padding: 0.65rem 0.8rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .markdown-content :global(th) {
+        background: color-mix(in srgb, var(--color-text) 8%, transparent);
+        color: var(--color-text);
+        font-weight: 700;
+    }
+
+    .markdown-content :global(tr:nth-child(even) td) {
+        background: color-mix(in srgb, var(--color-text) 4%, transparent);
     }
 
     .markdown-content :global(img) {

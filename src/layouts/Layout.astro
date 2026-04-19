@@ -16,6 +16,7 @@ const {
     description,
     lang = site.language,
 } = Astro.props;
+const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
 ---
 
 <!doctype html>
@@ -36,7 +37,7 @@ const {
         <title>{title}</title>
     </head>
     <body id="top">
-        <Header />
+        <Header hideOnScroll={hideHeaderOnScroll} />
         <main>
             <slot />
         </main>

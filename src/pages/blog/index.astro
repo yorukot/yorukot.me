@@ -1,10 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 
-const posts = (await getCollection('blog')).sort(
-    (a, b) => b.data.publish_date.getTime() - a.data.publish_date.getTime(),
+type BlogPost = CollectionEntry<'blog'>;
+
+const posts: BlogPost[] = (await getCollection('blog')).sort(
+    (a: BlogPost, b: BlogPost) => b.data.publish_date.getTime() - a.data.publish_date.getTime(),
 );
 
 const formatDate = (date: Date) =>
@@ -29,17 +32,21 @@ const formatDate = (date: Date) =>
             {
                 posts.length ? (
                     <div class="border-y border-border">
-                        {posts.map((post) => (
+                        {posts.map((post: BlogPost) => (
                             <article class="blog-list-item border-t border-border py-8 first:border-t-0">
                                 <div class="space-y-4">
                                     <div class="flex flex-wrap items-center gap-3 font-mono text-sm uppercase tracking-[0.12em] text-text/60">
+                                        <time class="text-primary" datetime={post.data.publish_date.toISOString()}>
+                                            {formatDate(post.data.publish_date)}
+                                        </time>
+
                                         {post.data.featured && (
                                             <span class="inline-flex border border-primary px-2 py-1 text-xs text-primary">
                                                 Featured
                                             </span>
                                         )}
 
-                                        {post.data.tags.map((tag) => (
+                                        {post.data.tags.map((tag: string) => (
                                             <span class="border border-border px-2 py-1 text-xs text-text/60">
                                                 #{tag}
                                             </span>
@@ -55,18 +62,8 @@ const formatDate = (date: Date) =>
                                         </a>
                                     </h2>
 
-                                    <p class="max-w-3xl text-base leading-7 text-text/70">
-                                        <time class="font-mono text-sm uppercase tracking-[0.12em] text-primary" datetime={post.data.publish_date.toISOString()}>
-                                            {formatDate(post.data.publish_date)}
-                                        </time>
-                                        <span aria-hidden="true"> / </span>
+                                    <p class="text-base leading-7 text-text/70">
                                         {post.data.description}
-                                        {post.data.updated_date && (
-                                            <span class="font-mono text-sm uppercase tracking-[0.12em] text-text/50">
-                                                {' '}
-                                                Updated {formatDate(post.data.updated_date)}
-                                            </span>
-                                        )}
                                     </p>
                                 </div>
                             </article>

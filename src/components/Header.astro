@@ -16,19 +16,28 @@ const socialIconMap = {
     telegram: MdiTelegram,
     email: IcSharpEmail,
 };
+
+type Props = {
+    hideOnScroll?: boolean;
+};
+
+const { hideOnScroll = false } = Astro.props;
 ---
 
 <header
-    class="fixed left-0 right-0 top-0 z-[110] border-b border-border bg-background tracking-[0.08em] backdrop-blur text-text"
+    class="site-header fixed left-0 right-0 top-0 z-[110] border-b border-border bg-background tracking-[0.08em] backdrop-blur text-text"
+    data-hide-on-scroll={hideOnScroll ? 'true' : undefined}
 >
     <div class="header-frame">
         <div class="flex justify-between h-full">
             <div class="flex">
-                <div
-                    class="flex h-full items-center border-r border-border px-5 text-lg"
+                <a
+                    class="flex h-full items-center border-r border-border px-5 text-lg text-text no-underline transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
+                    href="/"
+                    aria-label={`${site.name} home`}
                 >
                     {site.name}
-                </div>
+                </a>
                 <div class="desktop-header-grid h-full border-r border-border">
                     <div class="flex items-center border-b border-border px-5 text-lg text-primary">
                         Try ssh to this site
@@ -40,7 +49,7 @@ const socialIconMap = {
                         data-copy-value={site.sshCommand}
                         aria-label="Copy SSH command"
                     >
-                        <span>$ {site.sshCommand}</span>
+                        <span><span class="text-primary">$</span> {site.sshCommand}</span>
                     </button>
                 </div>
             </div>
@@ -106,6 +115,14 @@ const socialIconMap = {
         height: 4rem;
     }
 
+    .site-header {
+        transition: transform 260ms ease-out;
+    }
+
+    .site-header.is-hidden {
+        transform: translateY(-100%);
+    }
+
     .desktop-header-grid,
     .desktop-header-nav {
         display: none;
@@ -129,12 +146,6 @@ const socialIconMap = {
         color: inherit;
         cursor: none;
         background: transparent;
-        transition: color 180ms ease-out;
-    }
-
-    .ssh-copy-button:hover,
-    .ssh-copy-button:focus-visible {
-        color: var(--color-primary);
     }
 
     .ssh-copy-button:focus-visible {
@@ -269,11 +280,44 @@ const socialIconMap = {
 <script>
     import { createAnimatable } from 'animejs';
 
-    const copyButton = document.querySelector('[data-copy-ssh]');
+    const header = document.querySelector('[data-hide-on-scroll="true"]');
+    const copyButtons = document.querySelectorAll('[data-copy-ssh]');
     const cursorHint = document.querySelector('[data-copy-cursor]');
     const cursorLabel = document.querySelector('[data-copy-cursor-label]');
     const cursorOffset = 14;
     let successTimeout: number | undefined;
+
+    if (header instanceof HTMLElement) {
+        let lastScrollY = window.scrollY;
+        const scrollThreshold = 12;
+
+        const updateHeaderVisibility = () => {
+            const currentScrollY = Math.max(window.scrollY, 0);
+            const delta = currentScrollY - lastScrollY;
+
+            if (currentScrollY <= 8) {
+                header.classList.remove('is-hidden');
+                lastScrollY = currentScrollY;
+                return;
+            }
+
+            if (Math.abs(delta) < scrollThreshold) {
+                return;
+            }
+
+            header.classList.toggle('is-hidden', delta > 0);
+            lastScrollY = currentScrollY;
+        };
+
+        window.addEventListener('scroll', updateHeaderVisibility, { passive: true });
+        window.addEventListener(
+            'pagehide',
+            () => {
+                window.removeEventListener('scroll', updateHeaderVisibility);
+            },
+            { once: true },
+        );
+    }
 
     const cursorAnimatable =
         cursorHint instanceof HTMLElement
@@ -336,7 +380,11 @@ const socialIconMap = {
         await writeClipboardFallback(value);
     };
 
-    if (copyButton instanceof HTMLElement) {
+    copyButtons.forEach((copyButton) => {
+        if (!(copyButton instanceof HTMLElement)) {
+            return;
+        }
+
         copyButton.addEventListener('pointerenter', showCopyCursor);
         copyButton.addEventListener('pointermove', moveCopyCursor);
         copyButton.addEventListener('pointerleave', hideCopyCursor);
@@ -361,7 +409,9 @@ const socialIconMap = {
                 resetCopyCursor();
             }
         });
+    });
 
+    if (copyButtons.length) {
         window.addEventListener(
             'pagehide',
             () => {
