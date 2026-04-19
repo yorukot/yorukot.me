@@ -107,9 +107,9 @@ type ContactChannel = (typeof contact.channels)[number];
                     {works.intro}
                 </p>
 
-                <div class="grid gap-px border-y border-border bg-border">
+                <div class="grid border-y border-border bg-background">
                     {works.works.map((item: WorkItem) => (
-                        <article class="bg-background text-text">
+                        <article class="work-reveal-row bg-background text-text" data-work-reveal>
                             <div class="space-y-4 px-0 py-5 sm:px-5">
                                 <div class="flex items-start justify-between gap-4">
                                     <div class="font-mono text-sm text-primary">
@@ -366,11 +366,26 @@ type ContactChannel = (typeof contact.channels)[number];
         transform: scaleX(1);
     }
 
+    .work-reveal-row {
+        border-top: 1px solid var(--color-border);
+        opacity: 0;
+        transform: translateX(2rem);
+    }
+
+    .work-reveal-row:first-child {
+        border-top: 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         .about-reveal,
         .about-reveal::before {
             transition-duration: 0ms;
             transition-delay: 0ms;
+        }
+
+        .work-reveal-row {
+            opacity: 1;
+            transform: none;
         }
     }
 
@@ -382,13 +397,14 @@ type ContactChannel = (typeof contact.channels)[number];
 </style>
 
 <script>
-    import { animate, splitText, utils } from 'animejs';
+    import { animate, onScroll, splitText, utils } from 'animejs';
     import { hero } from '../data/hero';
 
     const intro = document.querySelector('[data-hero-intro]');
     const introCaret = document.querySelector('[data-hero-intro-caret]');
     const label = document.querySelector('[data-random-clone-label]');
     const revealSections = document.querySelectorAll('[data-reveal-section]');
+    const workRevealItems = document.querySelectorAll('[data-work-reveal]');
 
     revealSections.forEach((section) => {
         const revealItems = section.querySelectorAll('[data-section-reveal]');
@@ -423,6 +439,50 @@ type ContactChannel = (typeof contact.channels)[number];
             showRevealItems();
         }
     });
+
+    if (workRevealItems.length) {
+        const showWorkRevealItem = (item: Element) => {
+            if (!(item instanceof HTMLElement)) {
+                return;
+            }
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0rem)';
+                return;
+            }
+
+            animate(item, {
+                x: ['3rem', '0rem'],
+                opacity: 1,
+                duration: 360,
+                ease: 'out(3)',
+            });
+        };
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            workRevealItems.forEach(showWorkRevealItem);
+        } else {
+            workRevealItems.forEach((item) => {
+                if (!(item instanceof HTMLElement)) {
+                    return;
+                }
+
+                animate(item, {
+                    x: ['3rem', '0rem'],
+                    opacity: 1,
+                    duration: 360,
+                    ease: 'out(3)',
+                    autoplay: onScroll({
+                        target: item,
+                        enter: { target: 'top', container: '60%' },
+                        leave: { target: 'bottom', container: 'top' },
+                        repeat: false,
+                    }),
+                });
+            });
+        }
+    }
 
     if (intro instanceof HTMLElement) {
         const introRoles = hero.introRoles;
