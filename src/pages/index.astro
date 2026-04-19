@@ -162,7 +162,7 @@ type ContactChannel = (typeof contact.channels)[number];
                             </div>
                             <h3 class="max-w-xl text-4xl font-bold uppercase sm:text-5xl">
                                 <a
-                                    class="text-text no-underline transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
+                                    class="text-text underline decoration-border underline-offset-8 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
                                     href={contact.donate.href}
                                     target="_blank"
                                     rel="noreferrer"
@@ -197,7 +197,7 @@ type ContactChannel = (typeof contact.channels)[number];
                                 <div class="flex items-start justify-between gap-6">
                                     <div class="space-y-3">
                                         <div class="flex flex-wrap items-center gap-3">
-                                            <h3 class="text-xl font-bold text-current">
+                                            <h3 class="text-xl font-bold text-current underline decoration-border underline-offset-4 transition-colors group-hover:decoration-primary group-focus-visible:decoration-primary">
                                                 {item.label}
                                             </h3>
                                             <span class="font-mono text-sm text-primary">
