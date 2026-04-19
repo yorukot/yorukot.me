@@ -25,7 +25,7 @@ type ContactChannel = (typeof contact.channels)[number];
 
         <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
             <div class="select-none space-y-4">
-                <p class="text-xl font-medium tracking-[0.12em] text-text sm:text-2xl lg:text-3xl">
+                <p class="hero-intro font-medium tracking-[0.12em] text-text">
                     <span data-hero-intro></span><span
                         class="hero-intro-caret ml-1 inline-block h-[1em] w-px translate-y-[0.12em] bg-primary opacity-0"
                         data-hero-intro-caret
@@ -33,7 +33,7 @@ type ContactChannel = (typeof contact.channels)[number];
                 </p>
 
                 <p
-                    class="text-6xl uppercase tracking-[0.26em] text-text sm:text-7xl lg:text-8xl font-extrabold"
+                    class="hero-headline uppercase tracking-[0.26em] text-text font-extrabold"
                     data-random-clone-text
                 >
                     <span data-random-clone-label>{hero.headline}</span>
@@ -228,6 +228,16 @@ type ContactChannel = (typeof contact.channels)[number];
         width: 100%;
         max-width: 72rem;
         margin-inline: auto;
+    }
+
+    .hero-headline {
+        font-size: clamp(1rem, 9vw, 6rem);
+        line-height: 1;
+    }
+
+    .hero-intro {
+        font-size: clamp(1rem, 3vw, 1.875rem);
+        line-height: 1.2;
     }
 
     .hero-intro-caret.is-visible {
