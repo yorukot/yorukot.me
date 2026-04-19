@@ -1,0 +1,527 @@
+---
+import FluentDismiss20Filled from "~icons/fluent/dismiss-20-filled";
+import FluentGridDots20Filled from "~icons/fluent/grid-dots-20-filled";
+import MdiKeyboardArrowRight from "~icons/mdi/keyboard-arrow-right";
+import { contact } from "../data/contact";
+import { navigationItems } from "../data/navigation";
+import { site } from "../data/site";
+---
+
+<div class="mobile-menu-root">
+    <button
+        type="button"
+        class="mobile-menu-button"
+        data-mobile-menu-toggle
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+    >
+        <span class="mobile-menu-icon" aria-hidden="true">
+            <span class="mobile-menu-grid-icon" data-mobile-menu-grid-icon>
+                <FluentGridDots20Filled />
+            </span>
+            <span class="mobile-menu-close-icon" data-mobile-menu-close-icon>
+                <FluentDismiss20Filled />
+            </span>
+        </span>
+    </button>
+
+    <div
+        class="mobile-menu-overlay"
+        id="mobile-menu"
+        data-mobile-menu
+        aria-hidden="true"
+    >
+        <div class="mobile-menu-content" data-mobile-menu-content>
+            <nav class="mobile-menu-nav" aria-label="Mobile navigation">
+                {navigationItems.map((item) => (
+                    <a
+                        class="mobile-menu-link"
+                        href={item.href}
+                        target={item.href.startsWith('http') ? '_blank' : undefined}
+                        rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                        data-mobile-menu-item
+                        data-mobile-menu-link
+                    >
+                        <span>
+                            <MdiKeyboardArrowRight /> {item.label}
+                        </span>
+                    </a>
+                ))}
+            </nav>
+
+            <div class="mobile-menu-contact" aria-label="Contact links">
+                {contact.channels.map((item) => (
+                    <a
+                        class="mobile-menu-contact-link"
+                        href={item.href}
+                        target={item.href.startsWith('mailto:') ? undefined : '_blank'}
+                        rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                        data-mobile-menu-item
+                        data-mobile-menu-link
+                    >
+                        <span>{item.label}</span>
+                        <span>{item.value}</span>
+                    </a>
+                ))}
+            </div>
+
+            <button
+                type="button"
+                class="mobile-menu-ssh"
+                data-mobile-menu-item
+                data-mobile-ssh-copy
+                data-copy-value={site.sshCommand}
+            >
+                <span>Try ssh to this site</span>
+                <span data-mobile-ssh-label>$ {site.sshCommand}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .mobile-menu-root {
+        display: none;
+        height: 100%;
+    }
+
+    .mobile-menu-button {
+        display: grid;
+        height: 100%;
+        aspect-ratio: 1;
+        place-items: center;
+        border: 0;
+        border-left: 1px solid var(--color-border);
+        background: transparent;
+        color: inherit;
+    }
+
+    .mobile-menu-button:hover,
+    .mobile-menu-button:focus-visible,
+    .mobile-menu-button[aria-expanded="true"] {
+        color: var(--color-primary);
+    }
+
+    .mobile-menu-button:focus-visible {
+        outline: 1px solid var(--color-primary);
+        outline-offset: -1px;
+    }
+
+    .mobile-menu-icon {
+        position: relative;
+        display: grid;
+        width: 1.5rem;
+        height: 1.5rem;
+        place-items: center;
+    }
+
+    .mobile-menu-grid-icon,
+    .mobile-menu-close-icon {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+    }
+
+    .mobile-menu-grid-icon,
+    .mobile-menu-close-icon {
+        font-size: 1.5rem;
+    }
+
+    .mobile-menu-close-icon {
+        opacity: 0;
+        transform: rotate(-45deg) scale(0.8);
+    }
+
+    .mobile-menu-overlay {
+        position: fixed;
+        top: 4rem;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        display: none;
+        overflow: hidden;
+        background: var(--color-background);
+        color: var(--color-text);
+        opacity: 0;
+    }
+
+    .mobile-menu-overlay.is-open,
+    .mobile-menu-overlay.is-animating {
+        display: block;
+    }
+
+    .mobile-menu-content {
+        position: relative;
+        display: flex;
+        min-height: calc(100svh - 4rem);
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .mobile-menu-nav {
+        display: grid;
+    }
+
+    .mobile-menu-link,
+    .mobile-menu-contact-link,
+    .mobile-menu-ssh {
+        background: var(--color-background);
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .mobile-menu-link {
+        display: flex;
+        min-height: 4.5rem;
+        align-items: center;
+        border-bottom: 1px solid var(--color-border);
+        padding: 0 1rem;
+        font-size: clamp(1.75rem, 9vw, 4rem);
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .mobile-menu-link span {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .mobile-menu-contact {
+        display: grid;
+        margin-top: auto;
+    }
+
+    .mobile-menu-contact-link {
+        display: flex;
+        min-height: 3.5rem;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid var(--color-border);
+        padding: 0 1rem;
+    }
+
+    .mobile-menu-contact-link span:first-child {
+        font-size: 1.125rem;
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: var(--color-border);
+        text-underline-offset: 0.25rem;
+    }
+
+    .mobile-menu-contact-link span:last-child {
+        color: var(--color-primary);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.875rem;
+        text-align: right;
+    }
+
+    .mobile-menu-ssh {
+        display: flex;
+        min-height: 4.5rem;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 0;
+        border-bottom: 1px solid var(--color-border);
+        padding: 0 1rem;
+        text-align: left;
+    }
+
+    .mobile-menu-ssh span:first-child {
+        font-size: 1.125rem;
+        color: var(--color-primary);
+    }
+
+    .mobile-menu-ssh span:last-child {
+        font-size: 1rem;
+    }
+
+    .mobile-menu-link:hover,
+    .mobile-menu-link:focus-visible,
+    .mobile-menu-contact-link:hover,
+    .mobile-menu-contact-link:focus-visible,
+    .mobile-menu-ssh:hover,
+    .mobile-menu-ssh:focus-visible {
+        color: var(--color-primary);
+        outline: none;
+    }
+
+    [data-mobile-menu-content] {
+        opacity: 0;
+    }
+
+    [data-mobile-menu-item] {
+        opacity: 0;
+        transform: translateX(2rem);
+    }
+
+    @media (max-width: 799px) {
+        .mobile-menu-root {
+            display: block;
+        }
+    }
+</style>
+
+<script>
+    import { animate, stagger } from 'animejs';
+
+    const menu = document.querySelector('[data-mobile-menu]');
+    const menuContent = document.querySelector('[data-mobile-menu-content]');
+    const toggle = document.querySelector('[data-mobile-menu-toggle]');
+    const gridIcon = document.querySelector('[data-mobile-menu-grid-icon]');
+    const closeIcon = document.querySelector('[data-mobile-menu-close-icon]');
+    const menuItems = Array.from(document.querySelectorAll('[data-mobile-menu-item]'));
+    const menuLinks = document.querySelectorAll('[data-mobile-menu-link]');
+    const sshCopyButton = document.querySelector('[data-mobile-ssh-copy]');
+    const sshCopyLabel = document.querySelector('[data-mobile-ssh-label]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let isOpen = false;
+    let isAnimating = false;
+    let copiedTimeout: number | undefined;
+
+    if (menu instanceof HTMLElement && menu.parentElement !== document.body) {
+        document.body.append(menu);
+    }
+
+    const writeClipboardFallback = async (value: string) => {
+        const textArea = document.createElement('textarea');
+        textArea.value = value;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.top = '-999px';
+        textArea.style.left = '-999px';
+        document.body.append(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } finally {
+            textArea.remove();
+        }
+    };
+
+    const writeClipboard = async (value: string) => {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(value);
+            return;
+        }
+
+        await writeClipboardFallback(value);
+    };
+
+    const setMenuOpenState = (nextOpen: boolean) => {
+        if (!(menu instanceof HTMLElement) || !(toggle instanceof HTMLElement)) {
+            return;
+        }
+
+        isOpen = nextOpen;
+        menu.classList.toggle('is-open', nextOpen);
+        menu.setAttribute('aria-hidden', String(!nextOpen));
+        toggle.setAttribute('aria-expanded', String(nextOpen));
+        document.documentElement.style.overflow = nextOpen ? 'hidden' : '';
+    };
+
+    const resetMenuStyles = () => {
+        if (menu instanceof HTMLElement) {
+            menu.style.opacity = '0';
+        }
+
+        if (menuContent instanceof HTMLElement) {
+            menuContent.style.opacity = '0';
+        }
+
+        menuItems.forEach((item) => {
+            if (item instanceof HTMLElement) {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(2rem)';
+            }
+        });
+    };
+
+    const setToggleIcon = (nextOpen: boolean, instant = false) => {
+        if (!(gridIcon instanceof HTMLElement) || !(closeIcon instanceof HTMLElement)) {
+            return;
+        }
+
+        if (instant || reduceMotion.matches) {
+            gridIcon.style.opacity = nextOpen ? '0' : '1';
+            gridIcon.style.transform = nextOpen ? 'rotate(45deg) scale(0.8)' : 'rotate(0deg) scale(1)';
+            closeIcon.style.opacity = nextOpen ? '1' : '0';
+            closeIcon.style.transform = nextOpen ? 'rotate(0deg) scale(1)' : 'rotate(-45deg) scale(0.8)';
+            return;
+        }
+
+        animate(gridIcon, {
+            opacity: nextOpen ? 0 : 1,
+            rotate: nextOpen ? '45deg' : '0deg',
+            scale: nextOpen ? 0.8 : 1,
+            duration: 180,
+            ease: 'out(2)',
+        });
+
+        animate(closeIcon, {
+            opacity: nextOpen ? 1 : 0,
+            rotate: nextOpen ? '0deg' : '-45deg',
+            scale: nextOpen ? 1 : 0.8,
+            duration: 180,
+            ease: 'out(2)',
+        });
+    };
+
+    const openMenu = () => {
+        if (isOpen || isAnimating || !(menu instanceof HTMLElement)) {
+            return;
+        }
+
+        isAnimating = true;
+        menu.classList.add('is-animating');
+        setMenuOpenState(true);
+        setToggleIcon(true);
+        resetMenuStyles();
+
+        if (reduceMotion.matches) {
+            menu.style.opacity = '1';
+
+            if (menuContent instanceof HTMLElement) {
+                menuContent.style.opacity = '1';
+            }
+
+            menuItems.forEach((item) => {
+                if (item instanceof HTMLElement) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0rem)';
+                }
+            });
+
+            menu.classList.remove('is-animating');
+            isAnimating = false;
+            return;
+        }
+
+        animate(menu, {
+            opacity: 1,
+            duration: 220,
+            ease: 'out(2)',
+            onComplete: () => {
+                if (menuContent instanceof HTMLElement) {
+                    menuContent.style.opacity = '1';
+                }
+
+                animate(menuItems, {
+                    x: '0rem',
+                    opacity: 1,
+                    delay: stagger(45),
+                    duration: 320,
+                    ease: 'out(3)',
+                    onComplete: () => {
+                        menu.classList.remove('is-animating');
+                        isAnimating = false;
+                    },
+                });
+            },
+        });
+    };
+
+    const closeMenu = () => {
+        if (!isOpen || isAnimating || !(menu instanceof HTMLElement)) {
+            return;
+        }
+
+        isAnimating = true;
+        menu.classList.add('is-animating');
+
+        const finishClose = () => {
+            setMenuOpenState(false);
+            setToggleIcon(false);
+            resetMenuStyles();
+            menu.classList.remove('is-animating');
+            isAnimating = false;
+        };
+
+        if (reduceMotion.matches) {
+            finishClose();
+            return;
+        }
+
+        animate(menuItems.slice().reverse(), {
+            x: '2rem',
+            opacity: 0,
+            delay: stagger(20),
+            duration: 180,
+            ease: 'in(2)',
+            onComplete: () => {
+                if (menuContent instanceof HTMLElement) {
+                    menuContent.style.opacity = '0';
+                }
+
+                animate(menu, {
+                    opacity: 0,
+                    duration: 180,
+                    ease: 'in(2)',
+                    onComplete: finishClose,
+                });
+            },
+        });
+    };
+
+    toggle?.addEventListener('click', () => {
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    });
+
+    menuLinks.forEach((link) => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeMenu();
+        }
+    });
+
+    if (sshCopyButton instanceof HTMLElement) {
+        sshCopyButton.addEventListener('click', async () => {
+            const value = sshCopyButton.dataset.copyValue;
+
+            if (!value) {
+                return;
+            }
+
+            try {
+                await writeClipboard(value);
+
+                if (sshCopyLabel) {
+                    sshCopyLabel.textContent = 'Copied';
+                }
+
+                window.clearTimeout(copiedTimeout);
+                copiedTimeout = window.setTimeout(() => {
+                    if (sshCopyLabel) {
+                        sshCopyLabel.textContent = `$ ${value}`;
+                    }
+                }, 1200);
+            } catch {
+                if (sshCopyLabel) {
+                    sshCopyLabel.textContent = `$ ${value}`;
+                }
+            }
+        });
+    }
+
+    window.addEventListener(
+        'pagehide',
+        () => {
+            window.clearTimeout(copiedTimeout);
+            document.documentElement.style.overflow = '';
+        },
+        { once: true },
+    );
+</script>

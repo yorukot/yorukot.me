@@ -6,6 +6,7 @@ import MdiTelegram from "~icons/mdi/telegram";
 import MdiEmailOutline from "~icons/mdi/email-outline";
 import MdiContentCopy from "~icons/mdi/content-copy";
 import MdiCheck from "~icons/mdi/check";
+import MobileMenu from "./MobileMenu.astro";
 import { navigationItems, socialLinks } from "../data/navigation";
 import { site } from "../data/site";
 
@@ -18,9 +19,9 @@ const socialIconMap = {
 ---
 
 <header
-    class="border-b border-border bg-background tracking-[0.08em] backdrop-blur text-text"
+    class="relative z-[110] border-b border-border bg-background tracking-[0.08em] backdrop-blur text-text"
 >
-    <div class="h-24">
+    <div class="header-frame">
         <div class="flex justify-between h-full">
             <div class="flex">
                 <div
@@ -28,7 +29,7 @@ const socialIconMap = {
                 >
                     {site.name}
                 </div>
-                <div class="grid h-full border-r border-border">
+                <div class="desktop-header-grid h-full border-r border-border">
                     <div class="flex items-center border-b border-border px-5 text-lg text-primary">
                         Try ssh to this site
                     </div>
@@ -43,12 +44,18 @@ const socialIconMap = {
                     </button>
                 </div>
             </div>
-            <div class="h-full flex items-stretch">
+
+            <div class="desktop-header-nav h-full items-stretch">
                 <div
                     class="grid grid-cols-2 h-full gap-px bg-border border-x border-border"
                 >
                     {navigationItems.map((item) => (
-                        <a class="header-link px-4" href={item.href}>
+                        <a
+                            class="header-link px-4"
+                            href={item.href}
+                            target={item.href.startsWith('http') ? '_blank' : undefined}
+                            rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                        >
                             <span class="header-link-content">
                                 <MdiKeyboardArrowRight /> {item.label}
                             </span>
@@ -72,6 +79,8 @@ const socialIconMap = {
                     })}
                 </div>
             </div>
+
+            <MobileMenu />
         </div>
     </div>
 
@@ -87,6 +96,29 @@ const socialIconMap = {
 </header>
 
 <style>
+    .header-frame {
+        height: 4rem;
+    }
+
+    .desktop-header-grid,
+    .desktop-header-nav {
+        display: none;
+    }
+
+    @media (min-width: 800px) {
+        .header-frame {
+            height: 6rem;
+        }
+
+        .desktop-header-grid {
+            display: grid;
+        }
+
+        .desktop-header-nav {
+            display: flex;
+        }
+    }
+
     .ssh-copy-button {
         color: inherit;
         cursor: none;

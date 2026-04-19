@@ -20,10 +20,10 @@ type ContactChannel = (typeof contact.channels)[number];
 ---
 
 <Layout>
-    <section class="relative isolate min-h-[calc(100vh-6.5rem)] overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
+    <section class="hero-section relative isolate overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <BoidsBackground />
 
-        <div class="relative z-10 flex min-h-[calc(100vh-12rem)] items-end">
+        <div class="hero-content relative z-10 flex items-end">
             <div class="select-none space-y-4">
                 <p class="hero-intro font-medium tracking-[0.12em] text-text">
                     <span data-hero-intro></span><span
@@ -228,6 +228,24 @@ type ContactChannel = (typeof contact.channels)[number];
         width: 100%;
         max-width: 72rem;
         margin-inline: auto;
+    }
+
+    .hero-section {
+        min-height: calc(100vh - 4rem);
+    }
+
+    .hero-content {
+        min-height: calc(100vh - 9.5rem);
+    }
+
+    @media (min-width: 800px) {
+        .hero-section {
+            min-height: calc(100vh - 6.5rem);
+        }
+
+        .hero-content {
+            min-height: calc(100vh - 12rem);
+        }
     }
 
     .hero-headline {
