@@ -11,6 +11,11 @@ import {
     safeJsonLd,
     trimTrailingSlash,
 } from "../lib/seo";
+import "@fontsource/space-grotesk/latin-300.css";
+import "@fontsource/space-grotesk/latin-400.css";
+import "@fontsource/space-grotesk/latin-500.css";
+import "@fontsource/space-grotesk/latin-600.css";
+import "@fontsource/space-grotesk/latin-700.css";
 import "../global.css";
 
 type Props = {
@@ -22,6 +27,10 @@ type Props = {
     imageAlt?: string;
     robots?: string;
     type?: 'website' | 'article';
+    publishedTime?: string;
+    modifiedTime?: string;
+    authors?: string[];
+    tags?: string[];
     jsonLd?: unknown | unknown[];
 };
 
@@ -34,6 +43,10 @@ const {
     imageAlt = `${site.name} social image`,
     robots = 'index, follow',
     type = 'website',
+    publishedTime,
+    modifiedTime,
+    authors = [],
+    tags = [],
     jsonLd,
 } = Astro.props;
 const resolvedTitle = pageTitle(title);
@@ -50,12 +63,6 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
-            rel="stylesheet"
-        />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" sizes="any" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -84,6 +91,18 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content={imageAlt} />
         <meta property="og:locale" content={lang === 'zh-tw' ? 'zh_TW' : site.locale} />
+        {type === 'article' && publishedTime && (
+            <meta property="article:published_time" content={publishedTime} />
+        )}
+        {type === 'article' && modifiedTime && (
+            <meta property="article:modified_time" content={modifiedTime} />
+        )}
+        {type === 'article' && authors.map((author) => (
+            <meta property="article:author" content={author} />
+        ))}
+        {type === 'article' && tags.map((tag) => (
+            <meta property="article:tag" content={tag} />
+        ))}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={resolvedTitle} />
         <meta name="twitter:description" content={resolvedDescription} />
@@ -107,7 +126,7 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
             data-website-id="f4ac5969-a156-4a5b-a8b2-bde72cb20c73"
         ></script>
         {jsonLdItems.map((item) => (
-            <script type="application/ld+json" set:html={safeJsonLd(item)} />
+            <script is:inline type="application/ld+json" set:html={safeJsonLd(item)} />
         ))}
         <title>{resolvedTitle}</title>
     </head>

@@ -33,6 +33,17 @@ const blogJsonLd = {
         url: absoluteUrl('/'),
     },
 };
+const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${site.name} Blog Posts`,
+    itemListElement: posts.map((post: BlogPost, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        url: absoluteUrl(`/blog/${post.data.post_slug}`),
+        name: post.data.title,
+    })),
+};
 ---
 
 <Layout
@@ -41,7 +52,7 @@ const blogJsonLd = {
     canonicalPath="/blog"
     image="/blog/og.png"
     imageAlt="Yorukot blog social image"
-    jsonLd={blogJsonLd}
+    jsonLd={[blogJsonLd, itemListJsonLd]}
 >
     <section class="blog-page border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
         <div class="blog-shell space-y-12">

@@ -14,7 +14,7 @@ lang: en
 > Because this article is very old, and I can't find the original image, so some images are missing.
 
 If you wish to have a very stylish terminal like this:
-![intro image](./intro.webp)
+![Customized GNOME terminal preview](./intro.webp)
 Then this article will be perfect for you!
 
 # Introduction
@@ -38,7 +38,7 @@ sudo apt install
 
 You should see something similar to this upon completion:
 
-![](https://i.imgur.com/xyN5XY2.webp)
+![Terminal output after running the package update command](https://i.imgur.com/xyN5XY2.webp)
 
 ## Step 2: Install Zsh
 
@@ -58,7 +58,7 @@ To check if Zsh is installed correctly, enter:
 zsh --version
 ```
 
-![](https://i.imgur.com/xyN5XY2.webp)
+![Terminal output confirming the Zsh version](https://i.imgur.com/xyN5XY2.webp)
 
 ## Step 3: Install Curl and Git
 
@@ -80,7 +80,7 @@ When prompted, press y.
 
 If the installation is successful, you should see the following:
 
-![](https://i.imgur.com/zP8EMvC.webp)
+![Oh My Zsh installation success screen in the terminal](https://i.imgur.com/zP8EMvC.webp)
 
 ## Step 5: Start Customizing Your Zsh
 
@@ -92,7 +92,7 @@ Now that you have successfully installed Zsh, you can start customizing!
 
 Once you have found a theme you like, note down its name. For example, if I like this one, I'll remember "cloud".
 
-![](https://i.imgur.com/mORlwfs.webp)
+![Oh My Zsh themes list showing the cloud theme](https://i.imgur.com/mORlwfs.webp)
 
 Next, enter the following command:
 
@@ -102,7 +102,7 @@ nano ~/.zshrc
 
 You will see a somewhat intimidating screen, but it's not difficult!
 
-![](https://i.imgur.com/EI2mg4F.webp)
+![Nano editor opened to edit the Zsh configuration file](https://i.imgur.com/EI2mg4F.webp)
 
 First, find `ZSH_THEME="robbyrussell"` and replace it with the name of your desired theme.
 
@@ -146,41 +146,41 @@ It will display a list of themes, each with a symbol and an English name. You ca
 
 Assuming I want to use "Tokyo Night" as my theme:
 
-![](https://i.imgur.com/HPqe3j2.webp)
+![Gogh terminal theme selector showing the Tokyo Night option](https://i.imgur.com/HPqe3j2.webp)
 
 Then I'll enter `230` (as shown in the image):
 
-![](https://i.imgur.com/xBbMqnr.webp)
+![Terminal prompt where the Tokyo Night theme number is entered](https://i.imgur.com/xBbMqnr.webp)
 
 Then press `Enter`.
 
-> If you encounter this error, please see troubleshooting below. ![](https://i.imgur.com/AVFdyQ6.webp)
+> If you encounter this error, please see troubleshooting below. ![Gogh theme installation error message](https://i.imgur.com/AVFdyQ6.webp)
 
 ## Step 8: Apply Theme
 
 First, right-click on the terminal and click `Preferences`.
 
-![](https://i.imgur.com/Ninvspx.webp)
+![GNOME Terminal preferences menu](https://i.imgur.com/Ninvspx.webp)
 
 Then click `Set as default` next to the name of the theme you just selected.
 
-![](https://i.imgur.com/r63e1TY.webp)
+![GNOME Terminal profile list with the selected color theme](https://i.imgur.com/r63e1TY.webp)
 
 Close the terminal and open it again to see the theme in effect.
 
 But you may notice that the Zsh theme is missing. This is because Zsh is not your default shell. You can see how to set it as the default shell in the next section.
 
-![](https://i.imgur.com/r63e1TY.webp)
+![GNOME Terminal after applying the selected color theme](https://i.imgur.com/r63e1TY.webp)
 
 ## Step 9: Set Zsh as Default
 
 First, go to Preferences, and click on the theme you just set.
 
-![](https://i.imgur.com/SEiDkEm.webp)
+![GNOME Terminal preferences showing the selected profile](https://i.imgur.com/SEiDkEm.webp)
 
 Then click on `command` at the top, check `Run a custom command instead of my shell`, and enter zsh in the input field below (as seen in the image below).
 
-![](https://i.imgur.com/xLvSk4n.webp)
+![GNOME Terminal command settings configured to run Zsh](https://i.imgur.com/xLvSk4n.webp)
 
 # Complete!
 
@@ -194,10 +194,10 @@ To achieve the look of the image at the beginning, you'll need to set up a GNOME
 
 Right-click on the terminal and click on Preferences.
 
-![](https://i.imgur.com/Ninvspx.webp)
+![GNOME Terminal preferences menu for troubleshooting](https://i.imgur.com/Ninvspx.webp)
 
 Open the window and click on the `+` next to `Profiles` and enter `Default` (without changing anything).
 
-![](https://i.imgur.com/R5hCUNc.webp)
+![GNOME Terminal profiles panel with a new Default profile](https://i.imgur.com/R5hCUNc.webp)
 
 After completion, repeat Step 7.
