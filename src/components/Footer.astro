@@ -3,6 +3,12 @@ import { footerLinks, navigationItems } from "../data/navigation";
 import { site } from "../data/site";
 
 const year = new Date().getFullYear();
+const isExternalHref = (href: string) => href.startsWith('http');
+const footerNavigationItems = [
+    ...navigationItems,
+    { label: 'RSS', href: site.rssPath },
+    { label: 'Sitemap', href: site.sitemapPath },
+] as const;
 ---
 
 <footer class="footer border-t border-text bg-text px-6 py-16 text-background sm:px-10 sm:py-20">
@@ -29,12 +35,12 @@ const year = new Date().getFullYear();
 
         <div class="grid gap-8 border-b border-background/30 pb-10 lg:grid-cols-2">
             <nav class="flex flex-wrap gap-x-8 gap-y-4" aria-label="Footer navigation">
-                {navigationItems.map((item) => (
+                {footerNavigationItems.map((item) => (
                     <a
                         class="footer-link scramble-link"
                         href={item.href}
-                        target={item.href.startsWith('http') ? '_blank' : undefined}
-                        rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                        target={isExternalHref(item.href) ? '_blank' : undefined}
+                        rel={isExternalHref(item.href) ? 'noreferrer' : undefined}
                     >
                         <span class="scramble-link-label" data-scramble-text>{item.label}</span>
                     </a>
@@ -46,8 +52,8 @@ const year = new Date().getFullYear();
                     <a
                         class="footer-link scramble-link"
                         href={item.href}
-                        target={item.href.startsWith('mailto:') ? undefined : '_blank'}
-                        rel={item.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                        target={isExternalHref(item.href) ? '_blank' : undefined}
+                        rel={isExternalHref(item.href) ? 'noreferrer' : undefined}
                     >
                         <span class="scramble-link-label" data-scramble-text>{item.label}</span>
                     </a>
