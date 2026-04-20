@@ -1,0 +1,22 @@
+name: Trigger blog image update
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-blog-image-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger workflow in other repo
+        run: |
+          gh workflow run update-blog-images.yml \
+            --repo yorukot/ssh.yorukot.me
+        env:
+          GH_TOKEN: ${{ secrets.GHA_WORKFLOW_TRIGGER }}
