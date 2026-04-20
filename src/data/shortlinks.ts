@@ -14,11 +14,11 @@ export const shortlinks = [
   },
   {
     slug: ["discord", "dc"],
-    href: "https://discord.com/users/yorukot",
+    href: "https://discord.com/users/579544867626024960",
   },
   {
     slug: ["email", "mail"],
-    href: "mailto:hello@yorukot.me",
+    href: "mailto:hi@yorukot.me",
   },
   {
     slug: ["stackoverflow", "stack-overflow", "so"],

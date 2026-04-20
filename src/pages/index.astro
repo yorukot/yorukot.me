@@ -169,14 +169,18 @@ const homeJsonLd = [
 
                                 <div class="flex flex-wrap items-center gap-3">
                                     <h3 class="text-xl font-bold text-text">
-                                        <a
-                                            class="underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
-                                            href={item.href}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            {item.title}
-                                        </a>
+                                        {'href' in item ? (
+                                            <a
+                                                class="underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
+                                                href={item.href}
+                                                target={item.href.startsWith('http') ? '_blank' : undefined}
+                                                rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                                            >
+                                                {item.title}
+                                            </a>
+                                        ) : (
+                                            item.title
+                                        )}
                                     </h3>
                                     <span class="border border-border px-2 py-1 text-xs uppercase tracking-[0.14em] text-text/70">
                                         {item.type}
@@ -188,6 +192,14 @@ const homeJsonLd = [
                                 <p class="text-base leading-7 text-text/70">
                                     {item.description}
                                 </p>
+
+                                <div class="mt-5 flex flex-wrap gap-2">
+                                    {item.tags.map((tag) => (
+                                        <span class="border border-border px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-text/60">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                         </article>
                     ))}

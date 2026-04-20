@@ -7,7 +7,7 @@ export const site = {
     language: 'en',
     locale: 'en_US',
     author: 'Yorukot',
-    email: 'hello@yorukot.me',
+    email: 'hi@yorukot.me',
     themeColor: '#ff8b2b',
     rssPath: '/rss.xml',
     sitemapPath: '/sitemap-index.xml',

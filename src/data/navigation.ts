@@ -6,17 +6,17 @@ export const navigationItems = [
 ] as const;
 
 export const socialLinks = [
-    { label: 'GitHub', icon: 'github', href: 'https://github.com/yorukot' },
-    { label: 'Sponsor', icon: 'sponsor', href: 'https://ko-fi.com/yorukot' },
-    { label: 'Telegram', icon: 'telegram', href: 'https://t.me/yorukot' },
-    { label: 'Email', icon: 'email', href: 'mailto:hello@yorukot.me' },
+    { label: 'GitHub', icon: 'github', href: 'https://yorukot.me/github' },
+    { label: 'Sponsor', icon: 'sponsor', href: 'https://yorukot.me/sponsor' },
+    { label: 'Telegram', icon: 'telegram', href: 'https://yorukot.me/telegram' },
+    { label: 'Email', icon: 'email', href: 'mailto:hi@yorukot.me' },
 ] as const;
 
 export const footerLinks = [
-    { label: 'GitHub', href: 'https://github.com/yorukot' },
-    { label: 'Sponsor', href: 'https://ko-fi.com/yorukot' },
-    { label: 'Telegram', href: 'https://t.me/yorukot' },
-    { label: 'Email', href: 'mailto:hello@yorukot.me' },
-    { label: 'Discord', href: 'https://discord.com/users/yorukot' },
-    { label: 'YouTube', href: 'https://www.youtube.com/@yorukot' },
+    { label: 'GitHub', href: 'https://yorukot.me/github' },
+    { label: 'Sponsor', href: 'https://yorukot.me/sponsor' },
+    { label: 'Telegram', href: 'https://yorukot.me/telegram' },
+    { label: 'Email', href: 'mailto:hi@yorukot.me' },
+    { label: 'Discord', href: 'https://yorukot.me/discord' },
+    { label: 'YouTube', href: 'https://yorukot.me/youtube' },
 ] as const;

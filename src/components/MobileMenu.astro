@@ -66,6 +66,16 @@ import { site } from "../data/site";
                 ))}
             </div>
 
+            <a
+                class="mobile-menu-hire"
+                href="/#contact"
+                data-mobile-menu-item
+                data-mobile-menu-link
+            >
+                <span>Available for hire</span>
+                <span>Contact</span>
+            </a>
+
             <button
                 type="button"
                 class="mobile-menu-ssh"
@@ -143,10 +153,13 @@ import { site } from "../data/site";
         left: 0;
         z-index: 100;
         display: none;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
         background: var(--color-background);
         color: var(--color-text);
         opacity: 0;
+        -webkit-overflow-scrolling: touch;
     }
 
     .mobile-menu-overlay.is-open,
@@ -168,6 +181,7 @@ import { site } from "../data/site";
 
     .mobile-menu-link,
     .mobile-menu-contact-link,
+    .mobile-menu-hire,
     .mobile-menu-ssh {
         background: var(--color-background);
         color: inherit;
@@ -218,31 +232,47 @@ import { site } from "../data/site";
         text-align: right;
     }
 
+    .mobile-menu-hire,
     .mobile-menu-ssh {
         display: flex;
         min-height: 4.5rem;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        border: 0;
         border-bottom: 1px solid var(--color-border);
         padding: 0 1rem;
         text-align: left;
+        text-transform: uppercase;
+    }
+
+    .mobile-menu-ssh {
+        border: 0;
+        border-bottom: 1px solid var(--color-border);
+        text-transform: none;
+    }
+
+    .mobile-menu-hire span:first-child,
+    .mobile-menu-ssh span:first-child {
+        font-size: 1.125rem;
+        font-weight: 700;
+    }
+
+    .mobile-menu-hire span:last-child,
+    .mobile-menu-ssh span:last-child {
+        font-size: 1rem;
     }
 
     .mobile-menu-ssh span:first-child {
-        font-size: 1.125rem;
         color: var(--color-primary);
-    }
-
-    .mobile-menu-ssh span:last-child {
-        font-size: 1rem;
+        font-weight: 400;
     }
 
     .mobile-menu-link:hover,
     .mobile-menu-link:focus-visible,
     .mobile-menu-contact-link:hover,
     .mobile-menu-contact-link:focus-visible,
+    .mobile-menu-hire:hover,
+    .mobile-menu-hire:focus-visible,
     .mobile-menu-ssh:hover,
     .mobile-menu-ssh:focus-visible {
         color: var(--color-primary);

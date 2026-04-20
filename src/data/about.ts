@@ -1,9 +1,10 @@
 export const about = {
     heading: 'Who am I',
     paragraphs: [
-        "I'm Yorukot, a Taiwan-based developer building open-source tools, full-stack web apps, and terminal experiences that feel sharp, fast, and useful.",
-        'Most of my work starts from curiosity: a better CLI workflow, a cleaner backend design, a small website idea, or a system that I want to understand deeply enough to rebuild.',
-        'I spend a lot of time around Go, TypeScript, Astro, Node.js, and the terminal. My projects include superfile, a modern terminal file manager, along with bots, web apps, experiments, and other tools that are almost always open source.',
+        "I'm Yorukot, a Taiwan-based developer who likes building things that feel fast, useful, and a little bit personal.",
+        'A lot of my work starts with curiosity. Sometimes that means improving a terminal workflow, sometimes it means designing a cleaner backend, and sometimes it is just a small idea I want to understand well enough to build myself.',
+        'I spend most of my time around Go, system design, open source, and the terminal. My projects include superfile, a modern terminal file manager, along with bots, web apps, experiments, and other tools I make because I enjoy the process.',
+        "Feel free to reach out if you'd like to chat. I'm also a big movie fan, and I'm currently available for work, so don't hesitate to get in touch if you'd like to hire me.",
     ],
     interests: [
         { label: 'Open source', icon: 'openSource' },
