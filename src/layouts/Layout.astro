@@ -90,6 +90,22 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
         <meta name="twitter:image" content={imageUrl} />
         <meta name="twitter:image:alt" content={imageAlt} />
         <meta name="generator" content={Astro.generator} />
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SSQL8Y8XE4"></script>
+        <script is:inline>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-SSQL8Y8XE4');
+        </script>
+        <script
+            is:inline
+            defer
+            src="https://umami.yorukot.me/script.js"
+            data-website-id="f4ac5969-a156-4a5b-a8b2-bde72cb20c73"
+        ></script>
         {jsonLdItems.map((item) => (
             <script type="application/ld+json" set:html={safeJsonLd(item)} />
         ))}

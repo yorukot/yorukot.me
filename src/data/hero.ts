@@ -17,7 +17,7 @@ export const hero = {
       { article: 'a', label: 'CLI developer' },
       { article: 'a', label: 'backend developer' },
       { article: 'a', label: 'frontend developer' },
-      { article: 'a', label: 'Self-hosting nerd' },
+      { article: 'a', label: 'self-hosting nerd' },
       { article: 'a', label: 'DevOps engineer' },
       { article: 'an', label: 'open-source maintainer' },
     ] satisfies IntroRole[],

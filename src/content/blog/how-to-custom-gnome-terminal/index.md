@@ -1,17 +1,17 @@
 ---
-title: Simple Configuration for a Stylish Gnome Terminal with Zsh
+title: Simple Configuration for a Stylish GNOME Terminal with Zsh
 author: [Yorukot]
 publish_date: 2023-12-25
 updated_date: 2025-06-27
 post_slug: how-to-custom-gnome-terminal
 featured: false
 tags: ['terminal', 'theme']
-description: Customize your Ubuntu GNOME terminal to have a unique look using Zsh and Oh My Zsh hello world this is me.
+description: Customize your Ubuntu GNOME terminal to have a unique look using Zsh and Oh My Zsh.
 lang: en
 ---
 
 > **Note**
-> Because this article is very old, and i can't find the original image, so some image are missing.
+> Because this article is very old, and I can't find the original image, so some images are missing.
 
 If you wish to have a very stylish terminal like this:
 ![intro image](./intro.webp)
@@ -48,7 +48,7 @@ Install Zsh on your Ubuntu system.
 sudo apt install zsh
 ```
 
-If prompted with (y/n), simply type y and press enter.
+If prompted with (y/n), simply type `y` and press Enter.
 
 ### Verify Zsh Installation
 
@@ -104,7 +104,7 @@ You will see a somewhat intimidating screen, but it's not difficult!
 
 ![](https://i.imgur.com/EI2mg4F.webp)
 
-First, find ZSH_THEME="rubbyrussell" and replace it with the name of your desired theme.
+First, find `ZSH_THEME="robbyrussell"` and replace it with the name of your desired theme.
 
 Using the cloud theme as an example, it would be:
 
@@ -118,13 +118,13 @@ To reload Zsh, you can enter:
 source ~/.zshrc
 ```
 
-After completion, you should see it adapted to your chosen theme!
+After completion, you should see Zsh using your chosen theme!
 
 # Terminal Color Themes
 
 ## Step 6: Install Required Packages
 
-You can now start customizing your colors. Here, we suggest using pre-adjusted themes by others.
+You can now start customizing your colors. Here, we suggest using prebuilt themes from others.
 
 > [We will use this theme package here](https://github.com/Gogh-Co/Gogh)
 
@@ -142,7 +142,7 @@ To install the theme package, enter:
 bash -c "$(wget -qO- https://git.io/vQgMr)"
 ```
 
-It will display various symbols and English, where one symbol and English represent one theme. You can search online for the name of the theme you want or explore on your own.
+It will display a list of themes, each with a symbol and an English name. You can search online for the name of the theme you want or explore on your own.
 
 Assuming I want to use "Tokyo Night" as my theme:
 
@@ -152,7 +152,7 @@ Then I'll enter `230` (as shown in the image):
 
 ![](https://i.imgur.com/xBbMqnr.webp)
 
-Then press `enter`.
+Then press `Enter`.
 
 > If you encounter this error, please see troubleshooting below. ![](https://i.imgur.com/AVFdyQ6.webp)
 

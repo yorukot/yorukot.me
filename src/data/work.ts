@@ -1,7 +1,7 @@
-export const works = {
-    heading: 'MY WORKS',
+export const work = {
+    heading: 'MY WORK',
     intro: 'Projects, tools, games, and experiments I have built or keep improving.',
-    works: [
+    work: [
         {
             id: '#001',
             status: 'GitHub Trending',
