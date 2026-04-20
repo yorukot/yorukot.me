@@ -9,7 +9,6 @@ import {
     pageDescription,
     pageTitle,
     safeJsonLd,
-    trimTrailingSlash,
 } from "../lib/seo";
 import "@fontsource/space-grotesk/latin-300.css";
 import "@fontsource/space-grotesk/latin-400.css";
@@ -51,7 +50,7 @@ const {
 } = Astro.props;
 const resolvedTitle = pageTitle(title);
 const resolvedDescription = pageDescription(description);
-const canonicalUrl = absoluteUrl(trimTrailingSlash(canonicalPath));
+const canonicalUrl = absoluteUrl(canonicalPath);
 const imageUrl = absoluteAssetUrl(image);
 const rssUrl = absoluteAssetUrl(site.rssPath);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];

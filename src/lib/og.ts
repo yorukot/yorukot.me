@@ -63,6 +63,7 @@ export async function renderOgImage({
         notoSansTcRegular,
     ] = await fonts;
     const visibleTags = tags.slice(0, 4);
+    const showTags = visibleTags.length > 0;
     const normalizedTitle = normalizeOgText(title);
     const normalizedDescription = normalizeOgText(description);
 
@@ -195,18 +196,18 @@ export async function renderOgImage({
                         position: 'relative',
                     },
                 },
-                element(
-                    'div',
-                    {
-                        style: {
-                            display: 'flex',
-                            gap: '12px',
-                            flexWrap: 'wrap',
-                            maxWidth: '760px',
-                        },
-                    },
-                    ...(visibleTags.length
-                        ? visibleTags.map((tag) =>
+                showTags
+                    ? element(
+                          'div',
+                          {
+                              style: {
+                                  display: 'flex',
+                                  gap: '12px',
+                                  flexWrap: 'wrap',
+                                  maxWidth: '760px',
+                              },
+                          },
+                          ...visibleTags.map((tag) =>
                               element(
                                   'span',
                                   {
@@ -220,23 +221,9 @@ export async function renderOgImage({
                                   },
                                   `#${tag}`,
                               ),
-                          )
-                        : [
-                              element(
-                                  'span',
-                                  {
-                                      style: {
-                                          border: '1px solid #ff8b2b',
-                                          color: '#ff8b2b',
-                                          padding: '8px 13px',
-                                          fontSize: 22,
-                                          fontWeight: 700,
-                                      },
-                                  },
-                                  'open source',
-                              ),
-                          ]),
-                ),
+                          ),
+                      )
+                    : element('div', { style: { display: 'flex' } }),
                 element(
                     'div',
                     {

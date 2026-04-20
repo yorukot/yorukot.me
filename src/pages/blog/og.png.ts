@@ -6,5 +6,4 @@ export const GET: APIRoute = () =>
         title: 'Blog',
         description: 'Notes, experiments, and the occasional write-up from Yorukot.',
         eyebrow: '/blog',
-        tags: ['terminal', 'develop', 'life', 'college'],
     });

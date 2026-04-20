@@ -19,6 +19,17 @@ const trimTrailingSlash = (path) => {
 };
 
 /**
+ * @param {string} path
+ */
+const ensureTrailingSlash = (path) => {
+  if (path === "/") {
+    return path;
+  }
+
+  return path.replace(/\/+$/, "") + "/";
+};
+
+/**
  * @param {string} frontmatter
  * @param {string} key
  */
@@ -137,9 +148,7 @@ export default defineConfig({
       serialize(item) {
         const url = new URL(item.url);
 
-        if (url.pathname !== "/") {
-          url.pathname = url.pathname.replace(/\/+$/, "");
-        }
+        url.pathname = ensureTrailingSlash(url.pathname);
 
         item.url = url.toString();
         item.lastmod = lastmodByPath.get(trimTrailingSlash(url.pathname));

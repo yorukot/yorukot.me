@@ -7,6 +7,5 @@ export const GET: APIRoute = () =>
         title: site.title,
         description: site.description,
         eyebrow: 'Open-source developer',
-        tags: ['cli', 'tui', 'backend', 'web'],
         lang: site.language,
     });

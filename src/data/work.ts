@@ -17,7 +17,7 @@ export const work = {
             status: 'Live',
             type: 'Website',
             title: 'Personal website',
-            href: '/blog',
+            href: '/blog/',
             description:
                 'This portfolio and blog built with Astro, featuring a responsive layout, strong SEO defaults, and fast static-first pages.',
             tags: ['Astro', 'TypeScript', 'Tailwind CSS'],
