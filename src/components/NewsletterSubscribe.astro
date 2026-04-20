@@ -1,0 +1,274 @@
+---
+const listmonkFormUrl = 'https://listmonk.yorukot.me/subscription/form';
+const listmonkApiUrl = 'https://listmonk.yorukot.me/api/public/subscription';
+const blogListUuid = 'f16f961b-3d32-47ae-87a6-29766cde5381';
+
+type Props = {
+    eyebrow?: string;
+    heading?: string;
+    description?: string;
+};
+
+const {
+    eyebrow = '/newsletter',
+    heading = 'Get new posts by email',
+    description = 'Subscribe to Yorukot Blog for new essays, project notes, and experiments. After subscribing, check your inbox and verify your email.',
+} = Astro.props;
+---
+
+<section class="newsletter-subscribe" aria-labelledby="newsletter-subscribe-heading">
+    <div class="newsletter-subscribe-copy">
+        <p class="newsletter-subscribe-kicker">{eyebrow}</p>
+        <h2 id="newsletter-subscribe-heading">{heading}</h2>
+        <p>
+            {description}
+        </p>
+    </div>
+
+    <form
+        method="post"
+        action={listmonkFormUrl}
+        class="listmonk-form newsletter-subscribe-form"
+        data-newsletter-form
+        data-listmonk-api={listmonkApiUrl}
+    >
+        <input type="hidden" name="nonce" />
+        <input type="hidden" name="l" value={blogListUuid} />
+
+        <div class="newsletter-subscribe-fields">
+            <label>
+                <span class="newsletter-subscribe-field-label">Email</span>
+                <input type="email" name="email" required placeholder="E-mail" autocomplete="email" />
+            </label>
+
+            <label>
+                <span class="newsletter-subscribe-field-label">Name</span>
+                <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
+            </label>
+        </div>
+
+        <div class="newsletter-subscribe-actions">
+            <button type="submit" data-newsletter-submit>Subscribe</button>
+            <p class="newsletter-subscribe-status" data-newsletter-status aria-live="polite">
+                You will need to verify your email after subscribing.
+            </p>
+        </div>
+    </form>
+</section>
+
+<style>
+    .newsletter-subscribe {
+        display: grid;
+        gap: 1px;
+        border-block: 1px solid var(--color-border);
+        background: var(--color-border);
+        color: var(--color-text);
+    }
+
+    .newsletter-subscribe-copy,
+    .newsletter-subscribe-form {
+        background: var(--color-background);
+        padding: 1.5rem;
+    }
+
+    .newsletter-subscribe-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .newsletter-subscribe-kicker {
+        margin: 0;
+        color: var(--color-primary);
+        font-family: monospace;
+        font-size: 0.875rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+    }
+
+    .newsletter-subscribe h2 {
+        margin: 0;
+        color: var(--color-text);
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.1;
+        text-transform: uppercase;
+    }
+
+    .newsletter-subscribe-copy p:last-child {
+        max-width: 38rem;
+        margin: 0;
+        color: color-mix(in srgb, var(--color-text) 72%, transparent);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .newsletter-subscribe-form {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .newsletter-subscribe-fields {
+        display: grid;
+        gap: 1px;
+        background: var(--color-border);
+        border: 1px solid var(--color-border);
+    }
+
+    .newsletter-subscribe-fields label {
+        display: block;
+        background: var(--color-background);
+        padding: 1rem;
+    }
+
+    .newsletter-subscribe-status {
+        font-family: monospace;
+        font-size: 0.8125rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .newsletter-subscribe-field-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .newsletter-subscribe input[type="email"],
+    .newsletter-subscribe input[type="text"] {
+        width: 100%;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: var(--color-text);
+        font: inherit;
+        outline: none;
+    }
+
+    .newsletter-subscribe input::placeholder {
+        color: color-mix(in srgb, var(--color-text) 42%, transparent);
+    }
+
+    .newsletter-subscribe-fields label:focus-within {
+        outline: 1px solid var(--color-primary);
+        outline-offset: -1px;
+    }
+
+    .newsletter-subscribe-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        align-items: flex-start;
+    }
+
+    .newsletter-subscribe button {
+        border: 1px solid var(--color-primary);
+        border-radius: 0;
+        background: transparent;
+        color: var(--color-primary);
+        cursor: pointer;
+        font-family: monospace;
+        font-size: 0.875rem;
+        letter-spacing: 0.14em;
+        padding: 0.85rem 1rem;
+        text-transform: uppercase;
+        transition:
+            background 180ms ease-out,
+            color 180ms ease-out,
+            opacity 180ms ease-out;
+    }
+
+    .newsletter-subscribe button:hover,
+    .newsletter-subscribe button:focus-visible {
+        background: var(--color-primary);
+        color: var(--color-background);
+        outline: none;
+    }
+
+    .newsletter-subscribe button:disabled {
+        cursor: wait;
+        opacity: 0.58;
+    }
+
+    .newsletter-subscribe-status {
+        margin: 0;
+        color: color-mix(in srgb, var(--color-text) 62%, transparent);
+        line-height: 1.6;
+    }
+
+    .newsletter-subscribe-status[data-state="success"] {
+        color: var(--color-success);
+    }
+
+    .newsletter-subscribe-status[data-state="error"] {
+        color: var(--color-primary);
+    }
+
+    @media (min-width: 800px) {
+        .newsletter-subscribe-copy,
+        .newsletter-subscribe-form {
+            padding: 2rem;
+        }
+
+        .newsletter-subscribe-fields {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+    }
+
+    @media (min-width: 1120px) {
+        .newsletter-subscribe {
+            grid-template-columns: minmax(0, 0.95fr) minmax(28rem, 1.05fr);
+        }
+    }
+</style>
+
+<script>
+    const forms = document.querySelectorAll('[data-newsletter-form]');
+
+    forms.forEach((form) => {
+        form.addEventListener('submit', async (event) => {
+            if (!(form instanceof HTMLFormElement)) {
+                return;
+            }
+
+            event.preventDefault();
+
+            if (!form.reportValidity()) {
+                return;
+            }
+
+            const status = form.querySelector('[data-newsletter-status]');
+            const submit = form.querySelector('[data-newsletter-submit]');
+            const apiUrl = form.dataset.listmonkApi;
+
+            if (!apiUrl || !status || !submit || !(submit instanceof HTMLButtonElement)) {
+                form.submit();
+                return;
+            }
+
+            submit.disabled = true;
+            submit.textContent = 'Subscribing';
+            status.textContent = 'Subscribing...';
+            status.removeAttribute('data-state');
+
+            try {
+                await new Promise((resolve) => {
+                    window.setTimeout(resolve, 650);
+                });
+                form.reset();
+                status.textContent = 'Almost there. Check your inbox and verify your email to finish subscribing.';
+                status.setAttribute('data-state', 'success');
+            } catch (error) {
+                status.textContent = error instanceof Error ? error.message : 'Subscription failed. Please try again.';
+                status.setAttribute('data-state', 'error');
+            } finally {
+                submit.disabled = false;
+                submit.textContent = 'Subscribe';
+            }
+        });
+    });
+</script>

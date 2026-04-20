@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 import { absoluteUrl, blogPostPath } from '../../lib/seo';
@@ -63,6 +64,8 @@ const itemListJsonLd = {
                     Notes, experiments, and the occasional write-up.
                 </p>
             </div>
+
+            <NewsletterSubscribe />
 
             {
                 posts.length ? (

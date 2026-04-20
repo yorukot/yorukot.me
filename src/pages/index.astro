@@ -8,6 +8,7 @@ import MdiSourceBranch from '~icons/mdi/source-branch';
 import MdiTelegram from '~icons/mdi/telegram';
 import MdiWeb from '~icons/mdi/web';
 import BoidsBackground from '../components/BoidsBackground.astro';
+import NewsletterSubscribe from '../components/NewsletterSubscribe.astro';
 import { about } from '../data/about';
 import { contact } from '../data/contact';
 import { hero } from '../data/hero';
@@ -204,6 +205,35 @@ const homeJsonLd = [
                         </article>
                     ))}
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="blog" data-reveal-section>
+        <div class="home-content space-y-12">
+            <div class="max-w-sm">
+                <h2
+                    class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
+                    data-section-reveal
+                >
+                    <span>BLOG</span>
+                </h2>
+            </div>
+
+            <div class="space-y-8 text-text">
+                <p class="max-w-3xl text-lg leading-8 text-text/80">
+                    I write about open-source projects, terminal tools, backend systems, web experiments, and the
+                    small decisions behind shipping software.
+                </p>
+
+                <a
+                    class="about-blog-link inline-flex border border-border px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-primary no-underline transition-colors hover:border-primary hover:bg-primary hover:text-background focus-visible:border-primary focus-visible:bg-primary focus-visible:text-background focus-visible:outline-none"
+                    href="/blog/"
+                >
+                    Go to blog
+                </a>
+
+                <NewsletterSubscribe />
             </div>
         </div>
     </section>
