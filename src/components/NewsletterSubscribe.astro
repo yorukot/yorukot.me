@@ -1,6 +1,6 @@
 ---
 const listmonkFormUrl = 'https://listmonk.yorukot.me/subscription/form';
-const listmonkApiUrl = 'https://listmonk.yorukot.me/api/public/subscription';
+const subscribeApiUrl = '/api/subscribe';
 const blogListUuid = 'f16f961b-3d32-47ae-87a6-29766cde5381';
 
 type Props = {
@@ -30,51 +30,73 @@ const {
         action={listmonkFormUrl}
         class="listmonk-form newsletter-subscribe-form"
         data-newsletter-form
-        data-listmonk-api={listmonkApiUrl}
+        data-subscribe-api={subscribeApiUrl}
     >
         <input type="hidden" name="nonce" />
         <input type="hidden" name="l" value={blogListUuid} />
 
-        <div class="newsletter-subscribe-fields">
-            <label>
-                <span class="newsletter-subscribe-field-label">Email</span>
-                <input type="email" name="email" required placeholder="E-mail" autocomplete="email" />
-            </label>
+        <div class="newsletter-subscribe-progress" data-newsletter-progress aria-hidden="true"></div>
 
-            <label>
-                <span class="newsletter-subscribe-field-label">Name</span>
-                <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
-            </label>
+        <div class="newsletter-subscribe-body" data-newsletter-body>
+            <div class="newsletter-subscribe-fields">
+                <label>
+                    <span class="newsletter-subscribe-field-label">Email</span>
+                    <input type="email" name="email" required placeholder="E-mail" autocomplete="email" />
+                </label>
+
+                <label>
+                    <span class="newsletter-subscribe-field-label">Name</span>
+                    <input type="text" name="name" placeholder="Name (optional)" autocomplete="name" />
+                </label>
+            </div>
+
+            <div class="newsletter-subscribe-actions">
+                <button type="submit" data-newsletter-submit>Subscribe</button>
+                <p class="newsletter-subscribe-status" data-newsletter-status aria-live="polite">
+                    You will need to verify your email after subscribing.
+                </p>
+            </div>
         </div>
 
-        <div class="newsletter-subscribe-actions">
-            <button type="submit" data-newsletter-submit>Subscribe</button>
-            <p class="newsletter-subscribe-status" data-newsletter-status aria-live="polite">
-                You will need to verify your email after subscribing.
-            </p>
+        <div class="newsletter-subscribe-success" data-newsletter-success hidden aria-live="polite">
+            <div class="newsletter-subscribe-success-icon" data-newsletter-success-icon aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <path data-newsletter-success-check d="M5 12.5l4.2 4.2L19 7" />
+                </svg>
+            </div>
+            <div class="newsletter-subscribe-success-copy">
+                <p data-newsletter-success-line>Almost there.</p>
+                <p data-newsletter-success-line>Check your inbox and verify your email to finish subscribing.</p>
+            </div>
         </div>
+
+        <noscript>
+            <div class="newsletter-subscribe-noscript">
+                JavaScript is off. Submitting will open listmonk so you can finish subscribing.
+            </div>
+        </noscript>
     </form>
 </section>
 
 <style>
     .newsletter-subscribe {
         display: grid;
-        gap: 1px;
+        gap: 0;
         border-block: 1px solid var(--color-border);
-        background: var(--color-border);
+        background: var(--color-background);
         color: var(--color-text);
     }
 
     .newsletter-subscribe-copy,
     .newsletter-subscribe-form {
         background: var(--color-background);
-        padding: 1.5rem;
+        padding: 1.25rem 1.5rem;
     }
 
     .newsletter-subscribe-copy {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.75rem;
     }
 
     .newsletter-subscribe-kicker {
@@ -104,8 +126,29 @@ const {
     }
 
     .newsletter-subscribe-form {
+        position: relative;
         display: grid;
         gap: 1rem;
+        overflow: hidden;
+        padding-top: 0.125rem;
+    }
+
+    .newsletter-subscribe-body {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .newsletter-subscribe-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-success));
+        opacity: 0;
+        transform: scaleX(0);
+        transform-origin: left;
     }
 
     .newsletter-subscribe-fields {
@@ -121,7 +164,8 @@ const {
         padding: 1rem;
     }
 
-    .newsletter-subscribe-status {
+    .newsletter-subscribe-status,
+    .newsletter-subscribe-noscript {
         font-family: monospace;
         font-size: 0.8125rem;
         letter-spacing: 0.12em;
@@ -208,10 +252,75 @@ const {
         color: var(--color-primary);
     }
 
+    .newsletter-subscribe-success {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid color-mix(in srgb, var(--color-success) 72%, var(--color-border));
+        background: color-mix(in srgb, var(--color-success) 10%, var(--color-background));
+        padding: 1rem;
+        opacity: 0;
+        transform: translateY(0.75rem);
+    }
+
+    .newsletter-subscribe-success[hidden] {
+        display: none;
+    }
+
+    .newsletter-subscribe-success-icon {
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        place-items: center;
+        border: 1px solid var(--color-success);
+        color: var(--color-success);
+        transform: scale(0.72);
+    }
+
+    .newsletter-subscribe-success-icon svg {
+        width: 1.45rem;
+        height: 1.45rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+        stroke-width: 2.4;
+    }
+
+    .newsletter-subscribe-success-copy {
+        display: grid;
+        gap: 0.35rem;
+    }
+
+    .newsletter-subscribe-success-copy p {
+        margin: 0;
+        color: color-mix(in srgb, var(--color-text) 78%, transparent);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .newsletter-subscribe-success-copy p:first-child {
+        color: var(--color-success);
+        font-family: monospace;
+        font-size: 0.875rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .newsletter-subscribe-noscript {
+        color: var(--color-primary);
+        line-height: 1.6;
+    }
+
     @media (min-width: 800px) {
         .newsletter-subscribe-copy,
         .newsletter-subscribe-form {
-            padding: 2rem;
+            padding: 1.5rem 2rem;
+        }
+
+        .newsletter-subscribe-form {
+            padding-top: 0.25rem;
         }
 
         .newsletter-subscribe-fields {
@@ -221,13 +330,23 @@ const {
 
     @media (min-width: 1120px) {
         .newsletter-subscribe {
+            gap: 1px;
             grid-template-columns: minmax(0, 0.95fr) minmax(28rem, 1.05fr);
+            background: var(--color-border);
+        }
+
+        .newsletter-subscribe-copy,
+        .newsletter-subscribe-form {
+            padding: 2rem;
         }
     }
 </style>
 
 <script>
+    import { animate, createTimeline, stagger, utils } from 'animejs';
+
     const forms = document.querySelectorAll('[data-newsletter-form]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     forms.forEach((form) => {
         form.addEventListener('submit', async (event) => {
@@ -241,11 +360,28 @@ const {
                 return;
             }
 
+            const body = form.querySelector('[data-newsletter-body]');
+            const progress = form.querySelector('[data-newsletter-progress]');
+            const success = form.querySelector('[data-newsletter-success]');
+            const icon = form.querySelector('[data-newsletter-success-icon]');
+            const check = form.querySelector('[data-newsletter-success-check]');
+            const successLines = form.querySelectorAll('[data-newsletter-success-line]');
             const status = form.querySelector('[data-newsletter-status]');
             const submit = form.querySelector('[data-newsletter-submit]');
-            const apiUrl = form.dataset.listmonkApi;
+            const apiUrl = form.dataset.subscribeApi;
+            const data = new FormData(form);
 
-            if (!apiUrl || !status || !submit || !(submit instanceof HTMLButtonElement)) {
+            if (
+                !apiUrl ||
+                !(body instanceof HTMLElement) ||
+                !(progress instanceof HTMLElement) ||
+                !(success instanceof HTMLElement) ||
+                !(icon instanceof HTMLElement) ||
+                !(check instanceof SVGPathElement) ||
+                !status ||
+                !submit ||
+                !(submit instanceof HTMLButtonElement)
+            ) {
                 form.submit();
                 return;
             }
@@ -254,12 +390,122 @@ const {
             submit.textContent = 'Subscribing';
             status.textContent = 'Subscribing...';
             status.removeAttribute('data-state');
+            success.hidden = true;
+            body.hidden = false;
+            utils.set(body, { opacity: 1, y: 0 });
+            utils.set(progress, { opacity: 0, scaleX: 0 });
 
             try {
-                await new Promise((resolve) => {
-                    window.setTimeout(resolve, 650);
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: data.get('email'),
+                        name: data.get('name') || '',
+                    }),
                 });
+
+                if (!response.ok) {
+                    let message = 'Subscription failed. Please try again.';
+
+                    try {
+                        const result = await response.json();
+
+                        if (typeof result.message === 'string' && result.message.trim()) {
+                            message = result.message;
+                        }
+                    } catch {
+                        // Keep the generic retry message when listmonk does not return JSON.
+                    }
+
+                    throw new Error(message);
+                }
+
+                if (reduceMotion.matches) {
+                    form.reset();
+                    body.hidden = true;
+                    success.hidden = false;
+                    status.textContent = 'Almost there. Check your inbox and verify your email to finish subscribing.';
+                    status.setAttribute('data-state', 'success');
+                    return;
+                }
+
+                await new Promise((resolve) => {
+                    animate(progress, {
+                        opacity: [0, 1],
+                        scaleX: [0, 1],
+                        duration: 650,
+                        ease: 'inOut(3)',
+                        onComplete: resolve,
+                    });
+                });
+
                 form.reset();
+                success.hidden = false;
+
+                const checkLength = check.getTotalLength();
+                utils.set(check, {
+                    strokeDasharray: checkLength,
+                    strokeDashoffset: checkLength,
+                });
+                utils.set(success, { opacity: 0, y: '0.75rem' });
+                utils.set(icon, { scale: 0.72, rotate: '-8deg' });
+                utils.set(successLines, { opacity: 0, y: '0.65rem' });
+
+                await new Promise((resolve) => {
+                    createTimeline({
+                        defaults: {
+                            ease: 'out(3)',
+                        },
+                        onComplete: resolve,
+                    })
+                        .add(body, {
+                            opacity: [1, 0],
+                            y: [0, '0.75rem'],
+                            duration: 220,
+                        })
+                        .add(body, {
+                            height: [body.offsetHeight, 0],
+                            marginTop: [0, 0],
+                            overflow: 'hidden',
+                            duration: 260,
+                            onComplete: () => {
+                                body.hidden = true;
+                                body.style.height = '';
+                                body.style.marginTop = '';
+                                body.style.overflow = '';
+                                body.style.opacity = '';
+                                body.style.transform = '';
+                            },
+                        }, '-=60')
+                        .add(progress, {
+                            opacity: [1, 0],
+                            duration: 220,
+                        }, '-=120')
+                        .add(success, {
+                            opacity: [0, 1],
+                            y: ['0.75rem', 0],
+                            duration: 360,
+                        }, '-=80')
+                        .add(icon, {
+                            scale: [0.72, 1.08, 1],
+                            rotate: ['-8deg', '3deg', '0deg'],
+                            duration: 520,
+                        }, '-=260')
+                        .add(check, {
+                            strokeDashoffset: [checkLength, 0],
+                            duration: 420,
+                        }, '-=360')
+                        .add(successLines, {
+                            opacity: [0, 1],
+                            y: ['0.65rem', 0],
+                            delay: stagger(70),
+                            duration: 320,
+                        }, '-=180');
+                });
+
                 status.textContent = 'Almost there. Check your inbox and verify your email to finish subscribing.';
                 status.setAttribute('data-state', 'success');
             } catch (error) {
