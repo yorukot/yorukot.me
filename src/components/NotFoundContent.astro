@@ -1,0 +1,131 @@
+---
+import MdiArrowLeft from '~icons/mdi/arrow-left';
+import MdiHome from '~icons/mdi/home';
+import MdiKeyboardArrowRight from '~icons/mdi/keyboard-arrow-right';
+import MdiMagnifyClose from '~icons/mdi/magnify-close';
+import { navigationItems } from '../data/navigation';
+import BoidsBackground from './BoidsBackground.astro';
+
+const recoveryLinks = [
+    { label: 'Home', href: '/', icon: MdiHome },
+    ...navigationItems,
+];
+---
+
+<section class="not-found-page relative isolate overflow-hidden border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
+    <BoidsBackground />
+
+    <div class="not-found-shell relative z-10 grid gap-px border-y border-border bg-border lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)]">
+        <div class="not-found-copy bg-background p-6 sm:p-8 lg:p-10">
+            <p class="font-mono text-sm uppercase tracking-[0.16em] text-primary">/404</p>
+
+            <div class="mt-8 space-y-6">
+                <h1 class="not-found-title font-bold uppercase tracking-[0.16em] text-text">
+                    Page lost
+                </h1>
+                <p class="max-w-2xl text-lg leading-8 text-text/70">
+                    This route does not resolve. Head back home, read the blog, or jump to another known signal.
+                </p>
+            </div>
+
+            <div class="mt-10 flex flex-wrap gap-3">
+                <a
+                    class="primary-link inline-flex items-center gap-2 border border-primary bg-primary px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-background no-underline transition-colors hover:bg-background hover:text-primary focus-visible:bg-background focus-visible:text-primary focus-visible:outline-none"
+                    href="/"
+                >
+                    <MdiArrowLeft aria-hidden="true" />
+                    Back home
+                </a>
+                <a
+                    class="secondary-link inline-flex items-center gap-2 border border-border px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-primary no-underline transition-colors hover:border-primary hover:bg-primary hover:text-background focus-visible:border-primary focus-visible:bg-primary focus-visible:text-background focus-visible:outline-none"
+                    href="/blog"
+                >
+                    Read blog
+                    <MdiKeyboardArrowRight aria-hidden="true" />
+                </a>
+            </div>
+        </div>
+
+        <div class="not-found-mark relative isolate flex min-h-80 items-end overflow-hidden bg-background p-6 sm:p-8 lg:min-h-[34rem] lg:p-10">
+            <MdiMagnifyClose class="not-found-mark-icon" aria-hidden="true" />
+            <div class="relative z-10">
+                <p class="font-mono text-sm uppercase tracking-[0.16em] text-primary">status</p>
+                <p class="not-found-code font-bold leading-none tracking-[0.04em] text-text">404</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="not-found-shell relative z-10 mt-12 space-y-6">
+        <p class="font-mono text-sm uppercase tracking-[0.16em] text-text/60">
+            Known routes
+        </p>
+
+        <nav class="grid gap-px border-y border-border bg-border sm:grid-cols-2 lg:grid-cols-5" aria-label="404 recovery navigation">
+            {recoveryLinks.map((item) => {
+                const Icon = 'icon' in item ? item.icon : MdiKeyboardArrowRight;
+
+                return (
+                    <a
+                        class="route-link group flex min-h-24 items-center justify-between gap-4 bg-background px-5 py-4 text-text no-underline transition-colors hover:bg-text hover:text-background focus-visible:bg-text focus-visible:text-background focus-visible:outline-none"
+                        href={item.href}
+                    >
+                        <span class="font-bold uppercase tracking-[0.12em]">{item.label}</span>
+                        <Icon class="route-link-icon text-primary transition-colors group-hover:text-background group-focus-visible:text-background" aria-hidden="true" />
+                    </a>
+                );
+            })}
+        </nav>
+    </div>
+</section>
+
+<style>
+    .not-found-page {
+        min-height: calc(100vh - 4rem);
+    }
+
+    .not-found-shell {
+        width: min(100%, 72rem);
+        margin-inline: auto;
+    }
+
+    .not-found-title {
+        font-size: clamp(3rem, 10vw, 7rem);
+        line-height: 0.92;
+    }
+
+    .not-found-code {
+        font-size: clamp(6rem, 22vw, 16rem);
+    }
+
+    .not-found-mark-icon {
+        position: absolute;
+        right: -1.5rem;
+        top: 1.5rem;
+        z-index: 0;
+        color: var(--color-text);
+        font-size: clamp(10rem, 26vw, 22rem);
+        line-height: 1;
+        opacity: 0.08;
+        pointer-events: none;
+        transform: rotate(-12deg);
+        mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+    }
+
+    .primary-link,
+    .secondary-link,
+    .route-link {
+        border-radius: 0;
+    }
+
+    .route-link-icon {
+        flex: 0 0 auto;
+        font-size: 1.5rem;
+    }
+
+    @media (min-width: 800px) {
+        .not-found-page {
+            min-height: calc(100vh - 6rem);
+        }
+    }
+</style>

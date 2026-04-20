@@ -1,0 +1,31 @@
+---
+import NotFoundContent from '../components/NotFoundContent.astro';
+import { site } from '../data/site';
+import { shortlinkMap } from '../data/shortlinks';
+import Layout from '../layouts/Layout.astro';
+
+export const prerender = false;
+
+const slug = Astro.params.shortlink;
+const href = slug ? shortlinkMap.get(slug) : undefined;
+
+if (href) {
+    return Astro.redirect(href, 302);
+}
+
+Astro.response.status = 404;
+
+const title = `404 | ${site.name}`;
+const description = 'The page you were looking for is not here.';
+---
+
+<Layout
+    title={title}
+    description={description}
+    canonicalPath="/404"
+    image={site.defaultOgImage}
+    imageAlt="Yorukot social image"
+    robots="noindex, follow"
+>
+    <NotFoundContent />
+</Layout>

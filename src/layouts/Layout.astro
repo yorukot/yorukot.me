@@ -20,6 +20,7 @@ type Props = {
     canonicalPath?: string;
     image?: string;
     imageAlt?: string;
+    robots?: string;
     type?: 'website' | 'article';
     jsonLd?: unknown | unknown[];
 };
@@ -31,6 +32,7 @@ const {
     canonicalPath = Astro.url.pathname,
     image = site.defaultOgImage,
     imageAlt = `${site.name} social image`,
+    robots = 'index, follow',
     type = 'website',
     jsonLd,
 } = Astro.props;
@@ -65,7 +67,7 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
             href={rssUrl}
         />
         <meta name="description" content={resolvedDescription} />
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content={robots} />
         <meta name="theme-color" content={site.themeColor} />
         <meta property="og:site_name" content={site.name} />
         <meta property="og:title" content={resolvedTitle} />

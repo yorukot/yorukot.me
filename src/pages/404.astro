@@ -1,0 +1,19 @@
+---
+import NotFoundContent from '../components/NotFoundContent.astro';
+import { site } from '../data/site';
+import Layout from '../layouts/Layout.astro';
+
+const title = `404 | ${site.name}`;
+const description = 'The page you were looking for is not here.';
+---
+
+<Layout
+    title={title}
+    description={description}
+    canonicalPath="/404"
+    image={site.defaultOgImage}
+    imageAlt="Yorukot social image"
+    robots="noindex, follow"
+>
+    <NotFoundContent />
+</Layout>
