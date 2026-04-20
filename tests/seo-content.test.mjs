@@ -88,3 +88,34 @@ test('blog post slugs are unique', async () => {
 
     assert.equal(uniqueSlugs.size, slugs.length, 'post_slug values must be unique');
 });
+
+test('shortlinks expose the expected aliases', async () => {
+    const { shortlinkMap } = await import(new URL('src/data/shortlinks.ts', root));
+
+    const expectedShortlinks = new Map([
+        ['gh', 'https://github.com/yorukot'],
+        ['github', 'https://github.com/yorukot'],
+        ['stackoverflow', 'https://stackoverflow.com/users/15810000/yorukot'],
+        ['stack-overflow', 'https://stackoverflow.com/users/15810000/yorukot'],
+        ['so', 'https://stackoverflow.com/users/15810000/yorukot'],
+        ['telegram', 'https://t.me/yorukot'],
+        ['tg', 'https://t.me/yorukot'],
+        ['discord', 'https://discord.com/users/yorukot'],
+        ['dc', 'https://discord.com/users/yorukot'],
+        ['email', 'mailto:hello@yorukot.me'],
+        ['mail', 'mailto:hello@yorukot.me'],
+        ['gpg', 'https://yorukot.me/.well-known/openpgpkey/hu/aeii9rmagouy1owpp7e5ftpxjof7h41n?l=hi'],
+        ['youtube', 'https://www.youtube.com/@yorukot'],
+        ['yt', 'https://www.youtube.com/@yorukot'],
+        ['donate', 'https://ko-fi.com/yorukot'],
+        ['sponsor', 'https://ko-fi.com/yorukot'],
+        ['ko-fi', 'https://ko-fi.com/yorukot'],
+        ['kofi', 'https://ko-fi.com/yorukot'],
+    ]);
+
+    assert.equal(shortlinkMap.size, expectedShortlinks.size);
+
+    for (const [slug, href] of expectedShortlinks) {
+        assert.equal(shortlinkMap.get(slug), href, `${slug} should redirect to ${href}`);
+    }
+});

@@ -18,4 +18,14 @@ pnpm test
 echo "pre-commit: running build"
 pnpm build
 
+if pnpm run | grep -q '^  prettier:write'; then
+    echo "pre-commit: running prettier"
+    pnpm prettier:write
+
+    if ! git diff --quiet; then
+        echo "Prettier formatted files. Please review and stage the changes, then commit again."
+        exit 1
+    fi
+fi
+
 echo "pre-commit: passed"

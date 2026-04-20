@@ -1,4 +1,3 @@
-import p5 from 'p5';
 import { boidsConfig, boidsPaletteFallbacks } from '../data/boids';
 
 type Vector = {
@@ -50,6 +49,11 @@ const limit = (vector: Vector, max: number): Vector => {
 
 const distance = (a: Vector, b: Vector): number => Math.hypot(a.x - b.x, a.y - b.y);
 
+const lerp = (start: number, end: number, amount: number) => start + (end - start) * amount;
+
+const color = ([r, g, b]: [number, number, number], alpha: number) =>
+    `rgba(${r}, ${g}, ${b}, ${Math.max(0, Math.min(alpha, 255)) / 255})`;
+
 const cssColorToRgb = (value: string, fallback: string): [number, number, number] => {
     const sample = document.createElement('span');
     sample.style.color = value.trim() || fallback;
@@ -91,6 +95,20 @@ export const mountBoids = (root: HTMLElement) => {
     let width = root.clientWidth;
     let height = root.clientHeight;
     let palette = getPalette();
+    let pointer: Vector | null = null;
+    let isPointerPressed = false;
+    let animatedMouseRadius: number = boidsConfig.mouseRadius;
+    let frameCount = 0;
+    let animationFrame = 0;
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    if (!context) {
+        return () => {};
+    }
+
+    root.append(canvas);
 
     const getBoidCount = () => {
         const area = Math.max(width * height, 1);
@@ -201,136 +219,155 @@ export const mountBoids = (root: HTMLElement) => {
 
     resetBoids();
 
-    const sketch = (instance: p5) => {
-        let animatedMouseRadius: number = boidsConfig.mouseRadius;
-
-        const getMouseRadiusTarget = () =>
-            instance.mouseIsPressed
-                ? boidsConfig.mouseRadius * boidsConfig.mousePressRadiusMultiplier
-                : boidsConfig.mouseRadius;
-
-        const getPointer = (): Vector | null => {
-            if (instance.mouseX < 0 || instance.mouseY < 0 || instance.mouseX > width || instance.mouseY > height) {
-                return null;
-            }
-
-            return createVector(instance.mouseX, instance.mouseY);
-        };
-
-        instance.setup = () => {
-            const canvas = instance.createCanvas(width, height);
-            canvas.parent(root);
-            instance.pixelDensity(Math.min(window.devicePixelRatio, 1.5));
-            instance.noFill();
-            instance.strokeCap(instance.ROUND);
-        };
-
-        instance.windowResized = () => {
-            width = root.clientWidth;
-            height = root.clientHeight;
-            palette = getPalette();
-            instance.resizeCanvas(width, height);
-            resetBoids();
-        };
-
-        instance.draw = () => {
-            instance.clear();
-
-            const pointer = getPointer();
-            const mouseRadiusTarget = getMouseRadiusTarget();
-            animatedMouseRadius = instance.lerp(
-                animatedMouseRadius,
-                mouseRadiusTarget,
-                instance.mouseIsPressed ? 0.18 : 0.14,
-            );
-            const [nr, ng, nb] = palette.node;
-            const [lr, lg, lb] = palette.line;
-            const [rr, rg, rb] = palette.ring;
-
-            if (pointer) {
-                for (let ring = 1; ring <= 3; ring += 1) {
-                    const alpha = (instance.mouseIsPressed ? 58 : 44) - ring * 8;
-                    instance.stroke(rr, rg, rb, alpha);
-                    instance.strokeWeight(instance.mouseIsPressed ? 1.8 : 1.4);
-                    instance.circle(pointer.x, pointer.y, animatedMouseRadius * 0.48 * ring);
-                }
-            }
-
-            for (const boid of boids) {
-                flock(boid, pointer, animatedMouseRadius);
-                boid.velocity = add(boid.velocity, boid.acceleration);
-                boid.velocity = limit(boid.velocity, boid.maxSpeed);
-                boid.position = add(boid.position, boid.velocity);
-                wrapEdges(boid);
-            }
-
-            for (let index = 0; index < boids.length; index += 1) {
-                const boid = boids[index];
-
-                for (let inner = index + 1; inner < boids.length; inner += 1) {
-                    const other = boids[inner];
-                    const d = distance(boid.position, other.position);
-
-                    if (d < boidsConfig.connectionRadius) {
-                        const pointerBoost = pointer
-                            ? Math.max(
-                                  0,
-                                  1 - Math.min(distance(boid.position, pointer), distance(other.position, pointer)) / animatedMouseRadius,
-                              )
-                            : 0;
-                        const alpha = ((1 - d / boidsConfig.connectionRadius) * 98) + 48 + pointerBoost * 52;
-                        instance.stroke(lr, lg, lb, alpha);
-                        instance.strokeWeight(1.7 + pointerBoost * 1.2);
-                        instance.line(
-                            boid.position.x,
-                            boid.position.y,
-                            other.position.x,
-                            other.position.y,
-                        );
-                    }
-                }
-            }
-
-            for (const boid of boids) {
-                const heading = normalize(boid.velocity);
-                const angle = Math.atan2(heading.y, heading.x);
-                const pulse = (Math.sin(instance.frameCount * 0.018 + boid.pulseOffset) + 1) * 0.5;
-                const pointerBoost = pointer
-                    ? Math.max(0, 1 - distance(boid.position, pointer) / animatedMouseRadius)
-                    : 0;
-                const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
-                const cursorHeight = nodeSize * 1.08;
-                const cursorWidth = nodeSize * 0.38;
-                const fillColor = [nr, ng, nb];
-
-                instance.push();
-                instance.translate(boid.position.x, boid.position.y);
-                instance.rotate(angle);
-                instance.noStroke();
-                instance.fill(fillColor[0], fillColor[1], fillColor[2], 188 + pointerBoost * 56);
-                instance.beginShape();
-                instance.vertex(cursorWidth * 0.72, 0);
-                instance.vertex(-cursorWidth * 0.52, -cursorHeight * 0.48);
-                instance.vertex(-cursorWidth * 0.16, 0);
-                instance.vertex(-cursorWidth * 0.54, cursorHeight * 0.48);
-                instance.endShape(instance.CLOSE);
-                instance.pop();
-            }
-        };
-    };
-
-    const app = new p5(sketch);
-    const resizeObserver = new ResizeObserver(() => {
+    const resizeCanvas = (shouldResetBoids = false) => {
         width = root.clientWidth;
         height = root.clientHeight;
         palette = getPalette();
-        app.resizeCanvas(width, height);
+
+        const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+        canvas.width = Math.max(Math.floor(width * pixelRatio), 1);
+        canvas.height = Math.max(Math.floor(height * pixelRatio), 1);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        context.lineCap = 'round';
+
+        if (shouldResetBoids) {
+            resetBoids();
+        }
+    };
+
+    const syncPointer = (event: PointerEvent) => {
+        const rect = root.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        pointer = x < 0 || y < 0 || x > rect.width || y > rect.height
+            ? null
+            : createVector(x, y);
+    };
+
+    const clearPointer = () => {
+        pointer = null;
+        isPointerPressed = false;
+    };
+
+    const pressPointer = (event: PointerEvent) => {
+        isPointerPressed = true;
+        syncPointer(event);
+    };
+
+    const releasePointer = () => {
+        isPointerPressed = false;
+    };
+
+    const draw = () => {
+        frameCount += 1;
+        context.clearRect(0, 0, width, height);
+
+        const mouseRadiusTarget = isPointerPressed
+            ? boidsConfig.mouseRadius * boidsConfig.mousePressRadiusMultiplier
+            : boidsConfig.mouseRadius;
+
+        animatedMouseRadius = lerp(
+            animatedMouseRadius,
+            mouseRadiusTarget,
+            isPointerPressed ? 0.18 : 0.14,
+        );
+
+        if (pointer) {
+            for (let ring = 1; ring <= 3; ring += 1) {
+                const alpha = (isPointerPressed ? 58 : 44) - ring * 8;
+                context.strokeStyle = color(palette.ring, alpha);
+                context.lineWidth = isPointerPressed ? 1.8 : 1.4;
+                context.beginPath();
+                context.arc(pointer.x, pointer.y, animatedMouseRadius * 0.24 * ring, 0, Math.PI * 2);
+                context.stroke();
+            }
+        }
+
+        for (const boid of boids) {
+            flock(boid, pointer, animatedMouseRadius);
+            boid.velocity = add(boid.velocity, boid.acceleration);
+            boid.velocity = limit(boid.velocity, boid.maxSpeed);
+            boid.position = add(boid.position, boid.velocity);
+            wrapEdges(boid);
+        }
+
+        for (let index = 0; index < boids.length; index += 1) {
+            const boid = boids[index];
+
+            for (let inner = index + 1; inner < boids.length; inner += 1) {
+                const other = boids[inner];
+                const d = distance(boid.position, other.position);
+
+                if (d < boidsConfig.connectionRadius) {
+                    const pointerBoost = pointer
+                        ? Math.max(
+                              0,
+                              1 - Math.min(distance(boid.position, pointer), distance(other.position, pointer)) / animatedMouseRadius,
+                          )
+                        : 0;
+                    const alpha = ((1 - d / boidsConfig.connectionRadius) * 98) + 48 + pointerBoost * 52;
+                    context.strokeStyle = color(palette.line, alpha);
+                    context.lineWidth = 1.7 + pointerBoost * 1.2;
+                    context.beginPath();
+                    context.moveTo(boid.position.x, boid.position.y);
+                    context.lineTo(other.position.x, other.position.y);
+                    context.stroke();
+                }
+            }
+        }
+
+        for (const boid of boids) {
+            const heading = normalize(boid.velocity);
+            const angle = Math.atan2(heading.y, heading.x);
+            const pulse = (Math.sin(frameCount * 0.018 + boid.pulseOffset) + 1) * 0.5;
+            const pointerBoost = pointer
+                ? Math.max(0, 1 - distance(boid.position, pointer) / animatedMouseRadius)
+                : 0;
+            const nodeSize = boid.size + pulse * 3.6 + pointerBoost * 5.2;
+            const cursorHeight = nodeSize * 1.08;
+            const cursorWidth = nodeSize * 0.38;
+
+            context.save();
+            context.translate(boid.position.x, boid.position.y);
+            context.rotate(angle);
+            context.fillStyle = color(palette.node, 188 + pointerBoost * 56);
+            context.beginPath();
+            context.moveTo(cursorWidth * 0.72, 0);
+            context.lineTo(-cursorWidth * 0.52, -cursorHeight * 0.48);
+            context.lineTo(-cursorWidth * 0.16, 0);
+            context.lineTo(-cursorWidth * 0.54, cursorHeight * 0.48);
+            context.closePath();
+            context.fill();
+            context.restore();
+        }
+
+        animationFrame = window.requestAnimationFrame(draw);
+    };
+
+    const resizeObserver = new ResizeObserver(() => {
+        resizeCanvas(true);
     });
 
+    resizeCanvas(true);
     resizeObserver.observe(root);
+    window.addEventListener('pointermove', syncPointer);
+    window.addEventListener('pointerdown', pressPointer);
+    window.addEventListener('pointerup', releasePointer);
+    window.addEventListener('pointercancel', clearPointer);
+    window.addEventListener('blur', clearPointer);
+    animationFrame = window.requestAnimationFrame(draw);
 
     return () => {
+        window.cancelAnimationFrame(animationFrame);
         resizeObserver.disconnect();
-        app.remove();
+        window.removeEventListener('pointermove', syncPointer);
+        window.removeEventListener('pointerdown', pressPointer);
+        window.removeEventListener('pointerup', releasePointer);
+        window.removeEventListener('pointercancel', clearPointer);
+        window.removeEventListener('blur', clearPointer);
+        canvas.remove();
     };
 };
