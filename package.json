@@ -13,12 +13,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "wrangler deploy"
+    "deploy": "pnpm build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.10",
     "@astrojs/rss": "^4.0.18",
-    "@astrojs/sitemap": "^3.7.2",
     "@fontsource/noto-sans-tc": "^5.2.9",
     "@fontsource/space-grotesk": "^5.2.10",
     "@tailwindcss/vite": "^4.2.2",
