@@ -10,7 +10,7 @@ export const site = {
     email: 'hi@yorukot.me',
     themeColor: '#ff8b2b',
     rssPath: '/rss.xml',
-    sitemapPath: '/sitemap-index.xml',
+    sitemapPath: '/sitemap.xml',
     defaultOgImage: '/og.png',
     social: {
         github: 'https://github.com/yorukot',
