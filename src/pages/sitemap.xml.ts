@@ -19,6 +19,8 @@ type SitemapEntry = {
     lastmod?: string;
 };
 
+const formatSitemapDate = (date: Date) => date.toISOString().slice(0, 10);
+
 export const GET: APIRoute = async () => {
     const posts = await getCollection('blog');
     const entries: SitemapEntry[] = [
@@ -28,7 +30,7 @@ export const GET: APIRoute = async () => {
             .sort((a, b) => a.data.publish_date.getTime() - b.data.publish_date.getTime())
             .map((post) => ({
                 url: absoluteUrl(`/blog/${post.data.post_slug}/`),
-                lastmod: (post.data.updated_date ?? post.data.publish_date).toISOString(),
+                lastmod: formatSitemapDate(post.data.updated_date ?? post.data.publish_date),
             })),
     ];
 
