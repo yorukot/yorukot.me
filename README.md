@@ -1,46 +1,70 @@
-# Astro Starter Kit: Basics
+# yorukot.me
+
+![yorukot.me homepage](./assets/homepage.png)
+
+## Description
+
+This is the source for `yorukot.me`, a personal website and blog. 
+
+It includes a landing page, blog, shortlinks, newsletter subscription endpoint, RSS feed, sitemap, and generated Open Graph images.
+
+You can also access the website experience over SSH with:
 
 ```sh
-pnpm create astro@latest -- --template basics
+ssh ssh.yorukot.me
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Detail: [github.com/yorukot/ssh.yorukot.me](https://github.com/yorukot/ssh.yorukot.me)
 
-## 🚀 Project Structure
+## How to build it
 
-Inside of your Astro project, you'll see the following folders and files:
+Requirements:
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+- Node.js `>= 22.12.0`
+- `pnpm`
+
+Install dependencies:
+
+```sh
+pnpm install
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Start local development:
 
-## 🧞 Commands
+```sh
+pnpm dev
+```
 
-All commands are run from the root of the project, from a terminal:
+Create a production build:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+```sh
+pnpm build
+```
 
-## 👀 Want to learn more?
+Preview the production build locally:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```sh
+pnpm preview
+```
+
+Run the project checks:
+
+```sh
+pnpm lint
+```
+
+Deploy to Cloudflare:
+
+```sh
+pnpm deploy
+```
+
+## What tech this website uses
+
+- [Astro](https://astro.build/) for the site framework
+- [TypeScript](https://www.typescriptlang.org/) for typed scripts and routes
+- [Tailwind CSS v4](https://tailwindcss.com/) for styling
+- [Cloudflare](https://www.cloudflare.com/) via `@astrojs/cloudflare` for deployment
+- [anime.js](https://animejs.com/) for motion
+- [Satori](https://github.com/vercel/satori) and `sharp` for Open Graph image generation
+- [unplugin-icons](https://github.com/unplugin/unplugin-icons) and Iconify for icons

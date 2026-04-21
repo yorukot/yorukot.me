@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ .Campaign.Subject }}</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f4f1ec;
+        color: #1f1f1f;
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.7;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+
+      td {
+        vertical-align: top;
+      }
+
+      img {
+        border: 0;
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: #ff8a2a;
+        text-decoration: underline;
+      }
+
+      .eyebrow {
+        color: #ff8a2a;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .title {
+        color: #171717;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.15;
+        text-transform: uppercase;
+      }
+
+      .content h1,
+      .content h2,
+      .content h3 {
+        margin: 0 0 16px;
+        color: #171717;
+        line-height: 1.2;
+      }
+
+      .content h1 {
+        font-size: 30px;
+      }
+
+      .content h2 {
+        font-size: 24px;
+      }
+
+      .content h3 {
+        font-size: 18px;
+      }
+
+      .content p,
+      .content ul,
+      .content ol,
+      .content blockquote {
+        margin: 0 0 16px;
+        color: #333333;
+      }
+
+      .content ul,
+      .content ol {
+        padding-left: 20px;
+      }
+
+      .content li {
+        margin: 0 0 8px;
+      }
+
+      .content blockquote {
+        padding-left: 14px;
+        border-left: 2px solid #ff8a2a;
+        color: #5b5b5b;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 12px 16px;
+        border: 1px solid #ff8a2a;
+        background: #fff8f1;
+        color: #c76616 !important;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        line-height: 1;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+
+      .meta {
+        color: #6a6a6a;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .footer-link {
+        color: #6a6a6a !important;
+      }
+
+      @media screen and (max-width: 640px) {
+        .mobile-page-pad {
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+          padding-top: 16px !important;
+          padding-bottom: 16px !important;
+        }
+
+        .mobile-section-pad {
+          padding-left: 18px !important;
+          padding-right: 18px !important;
+          padding-top: 22px !important;
+          padding-bottom: 22px !important;
+        }
+
+        .mobile-header-pad {
+          padding-bottom: 12px !important;
+        }
+
+        .mobile-content-pad {
+          padding-top: 12px !important;
+        }
+
+        .title {
+          font-size: 24px !important;
+        }
+
+        .content h1 {
+          font-size: 24px !important;
+        }
+
+        .content h2 {
+          font-size: 20px !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; background: #f4f1ec;">
+    <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; border-spacing: 0; background: #f4f1ec;">
+      <tr>
+        <td align="center" class="mobile-page-pad" style="padding: 32px 12px;">
+          <table role="presentation" width="680" border="0" cellpadding="0" cellspacing="0" style="width: 680px; max-width: 680px; border-collapse: collapse; border-spacing: 0;">
+            <tr>
+              <td style="border: 1px solid #ddd5c9; background: #ffffff;">
+                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                  <tr>
+                    <td
+                      class="mobile-section-pad mobile-header-pad"
+                      style="padding: 28px 24px 16px; border-bottom: 1px solid #ddd5c9;"
+                    >
+                      <div class="eyebrow" style="margin: 0 0 12px;">/YORUKOT BLOG</div>
+                      <div class="title" style="margin: 0;">{{ .Campaign.Subject }}</div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      class="content mobile-section-pad mobile-content-pad"
+                      style="padding: 16px 24px 28px;"
+                    >
+                      {{ template "content" . }}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      class="mobile-section-pad"
+                      style="padding: 24px; border-top: 1px solid #ddd5c9;"
+                    >
+                      <div class="meta" style="margin: 0;">
+                        You are receiving this because you subscribed to Yorukot Blog.
+                      </div>
+                      <div class="meta" style="margin-top: 12px;">
+                        <a class="footer-link" href="{{ UnsubscribeURL }}">Unsubscribe / Manage preferences</a>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          {{ TrackView }}
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
