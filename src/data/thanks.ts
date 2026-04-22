@@ -30,7 +30,7 @@ export const thanks = {
             sponsors: [
                 {
                     name: 'Warp',
-                    href: 'hhttps://www.warp.dev/?utm_source=github&utm_medium=referral&utm_campaign=superfile',
+                    href: 'https://www.warp.dev/?utm_source=github&utm_medium=referral&utm_campaign=superfile',
                     note: 'Sponsors superfile and helps keep its development moving.',
                     banner: {
                         src: warpBanner,
