@@ -13,7 +13,7 @@ export const thanks = {
             label: 'SPONSORS',
             title: 'Send a direct thank you',
             href: 'https://yorukot.me/sponsor',
-            action: 'One-time donation',
+            action: 'Donation',
             description: '',
         },
         {
