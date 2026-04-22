@@ -78,9 +78,11 @@ const homeJsonLd = [
         knowsAbout: ['Open source', 'CLI', 'TUI', 'Backend development', 'Full-stack web'],
     },
 ];
+const homeTitle = 'Yorukot | Open-Source Developer';
 ---
 
 <Layout
+    title={homeTitle}
     description={site.description}
     canonicalPath="/"
     image={site.defaultOgImage}
@@ -99,12 +101,12 @@ const homeJsonLd = [
                         aria-hidden="true"></span>
                 </p>
 
-                <p
+                <h1
                     class="hero-headline uppercase tracking-[0.26em] text-text font-extrabold"
                     data-random-clone-text
                 >
                     <span data-random-clone-label>{hero.headline}</span>
-                </p>
+                </h1>
             </div>
         </div>
     </section>
@@ -112,12 +114,12 @@ const homeJsonLd = [
     <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about" data-reveal-section>
         <div class="home-content flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
             <div class="space-y-5 lg:max-w-sm">
-                <h1
+                <h2
                     class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
                     data-section-reveal
                 >
                     <span>{about.heading}</span>
-                </h1>
+                </h2>
             </div>
             <div class="space-y-8 text-text lg:max-w-2xl">
                 <div class="space-y-5 text-lg leading-8 text-text/80">

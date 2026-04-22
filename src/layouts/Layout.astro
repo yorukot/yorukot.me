@@ -55,6 +55,7 @@ const imageUrl = absoluteAssetUrl(image);
 const rssUrl = absoluteAssetUrl(site.rssPath);
 const jsonLdItems = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
 const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
+const analyticsEnabled = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -108,22 +109,58 @@ const hideHeaderOnScroll = Astro.url.pathname.startsWith('/blog');
         <meta name="twitter:image" content={imageUrl} />
         <meta name="twitter:image:alt" content={imageAlt} />
         <meta name="generator" content={Astro.generator} />
-        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-SSQL8Y8XE4"></script>
-        <script is:inline>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
+        {analyticsEnabled && (
+            <script is:inline>
+                const loadExternalScript = (src, attributes = {}) => {
+                    if (document.querySelector(`script[src="${src}"]`)) {
+                        return;
+                    }
 
-            gtag('config', 'G-SSQL8Y8XE4');
-        </script>
-        <script
-            is:inline
-            defer
-            src="https://umami.yorukot.me/script.js"
-            data-website-id="f4ac5969-a156-4a5b-a8b2-bde72cb20c73"
-        ></script>
+                    const script = document.createElement('script');
+                    script.src = src;
+
+                    for (const [key, value] of Object.entries(attributes)) {
+                        script.setAttribute(key, value);
+                    }
+
+                    document.head.append(script);
+                };
+
+                const loadAnalytics = () => {
+                    loadExternalScript('https://www.googletagmanager.com/gtag/js?id=G-SSQL8Y8XE4', {
+                        async: '',
+                    });
+
+                    window.dataLayer = window.dataLayer || [];
+                    window.gtag = window.gtag || function gtag() {
+                        window.dataLayer.push(arguments);
+                    };
+
+                    window.gtag('js', new Date());
+                    window.gtag('config', 'G-SSQL8Y8XE4');
+
+                    loadExternalScript('https://umami.yorukot.me/script.js', {
+                        defer: '',
+                        'data-website-id': 'f4ac5969-a156-4a5b-a8b2-bde72cb20c73',
+                    });
+                };
+
+                const scheduleAnalytics = () => {
+                    if ('requestIdleCallback' in window) {
+                        window.requestIdleCallback(loadAnalytics, { timeout: 2000 });
+                        return;
+                    }
+
+                    window.setTimeout(loadAnalytics, 1200);
+                };
+
+                if (document.readyState === 'complete') {
+                    scheduleAnalytics();
+                } else {
+                    window.addEventListener('load', scheduleAnalytics, { once: true });
+                }
+            </script>
+        )}
         {jsonLdItems.map((item) => (
             <script is:inline type="application/ld+json" set:html={safeJsonLd(item)} />
         ))}
