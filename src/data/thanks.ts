@@ -43,7 +43,7 @@ export const thanks = {
     specialThanks: [
         {
             title: 'NCSE',
-            href: 'https://www.ncse.tw/',
+            href: 'https://www.ncse.tw/en/',
             description: 'Special thanks for providing a free VPS that helps power the project infrastructure.',
             banner: {
                 src: ncseBanner,
