@@ -7,18 +7,25 @@ type Props = {
     eyebrow?: string;
     heading?: string;
     description?: string;
+    variant?: 'default' | 'minimal';
 };
 
 const {
     eyebrow = '/newsletter',
     heading = 'Get new posts by email',
     description = 'Subscribe to Yorukot Blog for new essays, project notes, and experiments. After subscribing, check your inbox and verify your email.',
+    variant = 'default',
 } = Astro.props;
+
+const isMinimal = variant === 'minimal';
 ---
 
-<section class="newsletter-subscribe" aria-labelledby="newsletter-subscribe-heading">
+<section
+    class:list={['newsletter-subscribe', { 'newsletter-subscribe--minimal': isMinimal }]}
+    aria-labelledby="newsletter-subscribe-heading"
+>
     <div class="newsletter-subscribe-copy">
-        <p class="newsletter-subscribe-kicker">{eyebrow}</p>
+        {!isMinimal && <p class="newsletter-subscribe-kicker">{eyebrow}</p>}
         <h2 id="newsletter-subscribe-heading">{heading}</h2>
         <p>
             {description}
@@ -85,6 +92,11 @@ const {
         border-block: 1px solid var(--color-border);
         background: var(--color-background);
         color: var(--color-text);
+    }
+
+    .newsletter-subscribe--minimal {
+        border-block: 0;
+        background: transparent;
     }
 
     .newsletter-subscribe-copy,
@@ -333,6 +345,11 @@ const {
             gap: 1px;
             grid-template-columns: minmax(0, 0.95fr) minmax(28rem, 1.05fr);
             background: var(--color-border);
+        }
+
+        .newsletter-subscribe--minimal {
+            gap: 2rem;
+            background: transparent;
         }
 
         .newsletter-subscribe-copy,
