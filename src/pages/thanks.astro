@@ -1,0 +1,495 @@
+---
+import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
+import MdiHeart from '~icons/mdi/heart';
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+import { thanks } from '../data/thanks';
+import { absoluteUrl } from '../lib/seo';
+
+const title = `Thanks | ${site.name}`;
+const description =
+    'Supporters, sponsors, and special thanks for the people helping Yorukot keep building open-source software.';
+const thanksJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description,
+    url: absoluteUrl('/thanks'),
+    inLanguage: site.language,
+    isPartOf: {
+        '@type': 'WebSite',
+        name: site.name,
+        url: absoluteUrl('/'),
+    },
+};
+const floatingHearts = [
+    { left: '6%', size: '1.25rem', delay: '0s', duration: '11s' },
+    { left: '15%', size: '1.75rem', delay: '1.5s', duration: '13s' },
+    { left: '26%', size: '1rem', delay: '0.8s', duration: '10s' },
+    { left: '38%', size: '1.5rem', delay: '2.8s', duration: '12s' },
+    { left: '51%', size: '1.125rem', delay: '0.3s', duration: '9.5s' },
+    { left: '64%', size: '1.9rem', delay: '3.2s', duration: '14s' },
+    { left: '77%', size: '1.1rem', delay: '1.2s', duration: '10.5s' },
+    { left: '89%', size: '1.55rem', delay: '2.1s', duration: '12.5s' },
+] as const;
+---
+
+<Layout
+    title={title}
+    description={description}
+    canonicalPath="/thanks"
+    image={site.defaultOgImage}
+    imageAlt="Yorukot thanks page social image"
+    jsonLd={thanksJsonLd}
+>
+    <section class="thanks-hero border-t border-border px-6 py-16 text-text sm:px-10 sm:py-20">
+        <div class="thanks-hero-glow" aria-hidden="true"></div>
+        <div class="thanks-hero-hearts" aria-hidden="true">
+            {floatingHearts.map((heart) => (
+                <span
+                    class="floating-heart"
+                    style={`left:${heart.left};--heart-size:${heart.size};--heart-delay:${heart.delay};--heart-duration:${heart.duration};`}
+                >
+                    <MdiHeart />
+                </span>
+            ))}
+        </div>
+
+        <div class="thanks-shell relative z-10 flex justify-center">
+            <div class="thanks-hero-copy max-w-4xl space-y-6 text-center">
+                <p class="font-mono text-sm uppercase tracking-[0.16em] text-primary">
+                    {thanks.hero.eyebrow}
+                </p>
+                <h1 class="text-5xl font-bold uppercase tracking-[0.12em] text-text sm:text-6xl">
+                    {thanks.hero.title}
+                </h1>
+                <p class="mx-auto max-w-3xl text-lg leading-8 text-text/75">
+                    {thanks.hero.description}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" data-reveal-section>
+        <div class="thanks-shell space-y-10">
+            <div>
+                <h2
+                    class="about-reveal about-reveal-heading text-4xl font-bold uppercase tracking-[0.12em] text-text sm:text-5xl"
+                    data-section-reveal
+                >
+                    <span>SPONSORS</span>
+                </h2>
+            </div>
+
+            <div class="grid gap-px border-y border-border bg-border">
+                {thanks.sponsorTiers.map((group) => (
+                    <section class="bg-background">
+                        {group.sponsors.map((sponsor) => (
+                            <article class="recognition-row group relative overflow-hidden bg-background p-6 sm:p-8">
+                                <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
+                                    <div class="recognition-copy relative z-10 space-y-4">
+                                        <h3 class="text-2xl font-bold uppercase leading-tight text-text">
+                                            <a
+                                                class="brand-link group inline-flex items-center gap-2"
+                                                href={sponsor.href}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                <span>{sponsor.name}</span>
+                                                <MdiArrowTopRight
+                                                    class="shrink-0 text-base text-primary transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:translate-x-0.5"
+                                                    aria-hidden="true"
+                                                />
+                                            </a>
+                                        </h3>
+                                        <p class="max-w-2xl text-base leading-7 text-text/70">
+                                            {sponsor.note}
+                                        </p>
+                                    </div>
+
+                                    <a
+                                        class="special-thanks-banner brand-banner-link lg:justify-self-end"
+                                        href={sponsor.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label={`${sponsor.name} website`}
+                                    >
+                                        <img
+                                            class="special-thanks-banner-image"
+                                            src={sponsor.banner.src.src}
+                                            width={sponsor.banner.src.width}
+                                            height={sponsor.banner.src.height}
+                                            alt={sponsor.banner.alt}
+                                            loading="lazy"
+                                        />
+                                    </a>
+                                </div>
+                            </article>
+                        ))}
+                    </section>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" data-reveal-section>
+        <div class="thanks-shell space-y-10">
+            <div>
+                <h2
+                    class="about-reveal about-reveal-heading text-4xl font-bold uppercase tracking-[0.12em] text-text sm:text-5xl"
+                    data-section-reveal
+                >
+                    <span>SPECIAL THANKS</span>
+                </h2>
+            </div>
+
+            <div class="grid gap-px border-y border-border bg-border">
+                {thanks.specialThanks.map((group) => (
+                    <section class="recognition-row group relative overflow-hidden bg-background p-6 sm:p-8">
+                        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
+                            <div class="recognition-copy relative z-10 space-y-4">
+                                <h3 class="text-2xl font-bold uppercase leading-tight text-text">
+                                    <a
+                                        class="brand-link group inline-flex items-center gap-2"
+                                        href={group.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <span>{group.title}</span>
+                                        <MdiArrowTopRight
+                                            class="shrink-0 text-base text-primary transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:translate-x-0.5"
+                                            aria-hidden="true"
+                                        />
+                                    </a>
+                                </h3>
+                                <p class="max-w-2xl text-base leading-7 text-text/70">
+                                    {group.description}
+                                </p>
+                            </div>
+
+                            <a
+                                class="special-thanks-banner brand-banner-link lg:justify-self-end"
+                                href={group.href}
+                                target="_blank"
+                                rel="noreferrer"
+                                aria-label={`${group.title} website`}
+                            >
+                                <img
+                                    class="special-thanks-banner-image"
+                                    src={group.banner.src.src}
+                                    width={group.banner.src.width}
+                                    height={group.banner.src.height}
+                                    alt={group.banner.alt}
+                                    loading="lazy"
+                                />
+                            </a>
+                        </div>
+                    </section>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" data-reveal-section>
+        <div class="thanks-shell">
+            <div class="space-y-10">
+                <div class="space-y-4">
+                    <h2
+                        class="about-reveal about-reveal-heading text-4xl font-bold uppercase tracking-[0.12em] text-text sm:text-5xl"
+                        data-section-reveal
+                    >
+                        <span>Back the next build.</span>
+                    </h2>
+                    <p class="text-lg leading-8 text-text/72">
+                        If a tool saved you time, an article changed how you think, or you want to help push the next idea
+                        into reality, this is where support turns into more shipping.
+                    </p>
+                </div>
+
+                <div class="grid gap-px border-y border-border bg-border lg:grid-cols-2">
+                    {thanks.donationOptions.map((option) => (
+                        <a
+                            class="support-option group relative isolate overflow-hidden bg-background p-6 text-text no-underline transition-colors focus-visible:outline-none sm:p-8"
+                            href={option.href}
+                            target={option.href.startsWith('mailto:') ? undefined : '_blank'}
+                            rel={option.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+                        >
+                            <span class="support-option-mark" aria-hidden="true">
+                                <MdiHeart />
+                            </span>
+
+                            <div class="relative z-10 flex min-h-full flex-col justify-between gap-8">
+                                <div class="space-y-5">
+                                    <div class="font-mono text-sm uppercase tracking-[0.16em] text-primary transition-colors group-hover:text-background group-focus-visible:text-background">
+                                        {option.label}
+                                    </div>
+                                    <h3 class="text-3xl font-bold uppercase leading-tight text-current sm:text-4xl">
+                                        {option.title}
+                                    </h3>
+                                    {option.description && (
+                                        <p class="text-base leading-7 text-text/70 transition-colors group-hover:text-background/72 group-focus-visible:text-background/72">
+                                            {option.description}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div class="inline-flex w-fit items-center gap-2 border border-border px-3 py-2 font-mono text-sm uppercase tracking-[0.14em] text-primary transition-colors group-hover:border-background group-hover:text-background group-focus-visible:border-background group-focus-visible:text-background">
+                                    <span>{option.action}</span>
+                                    <MdiArrowTopRight class="text-base" aria-hidden="true" />
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .thanks-shell {
+        width: min(100%, 72rem);
+        margin: 0 auto;
+    }
+
+    .thanks-hero {
+        min-height: calc(100vh - 4rem);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    @media (min-width: 800px) {
+        .thanks-hero {
+            min-height: calc(100vh - 6rem);
+        }
+    }
+
+    .thanks-hero-copy {
+        position: relative;
+    }
+
+    .thanks-hero-glow {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(circle at 50% 52%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 24rem),
+            radial-gradient(circle at 50% 85%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 30rem);
+        pointer-events: none;
+    }
+
+    .thanks-hero-hearts {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .floating-heart {
+        position: absolute;
+        bottom: -3rem;
+        color: color-mix(in srgb, var(--color-primary) 78%, white);
+        font-size: var(--heart-size);
+        line-height: 1;
+        opacity: 0;
+        filter: drop-shadow(0 0 1rem color-mix(in srgb, var(--color-primary) 28%, transparent));
+        animation: float-heart-up var(--heart-duration) linear infinite;
+        animation-delay: var(--heart-delay);
+    }
+
+    .sponsor-banner-image,
+    .special-thanks-banner-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .special-thanks-banner {
+        width: min(100%, 20rem);
+        overflow: hidden;
+        background: var(--color-background);
+    }
+
+    .recognition-row {
+        transition:
+            background 180ms ease-out,
+            border-color 180ms ease-out;
+    }
+
+    .recognition-row:hover,
+    .recognition-row:focus-within {
+        background:
+            radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 24rem),
+            var(--color-background);
+    }
+
+    .brand-link {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: var(--color-border);
+        text-underline-offset: 0.3em;
+        transition:
+            color 180ms ease-out,
+            text-decoration-color 180ms ease-out;
+    }
+
+    .brand-link:hover,
+    .brand-link:focus-visible {
+        color: var(--color-primary);
+        text-decoration-color: var(--color-primary);
+        outline: none;
+    }
+
+    .brand-banner-link {
+        display: block;
+        transition:
+            opacity 180ms ease-out;
+    }
+
+    .brand-banner-link:hover,
+    .brand-banner-link:focus-visible {
+        opacity: 0.92;
+        outline: none;
+    }
+
+    .about-reveal {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        color: var(--color-text);
+        transition: color 300ms ease-out var(--about-reveal-delay, 0ms);
+    }
+
+    .about-reveal::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: scaleX(0);
+        transform-origin: left;
+        background: var(--color-text);
+        transition: transform 520ms ease-out var(--about-reveal-delay, 0ms);
+    }
+
+    .about-reveal > span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-reveal-heading {
+        width: fit-content;
+        padding: 0.08em 0.14em;
+        margin-inline: -0.14em;
+    }
+
+    .about-reveal.is-visible {
+        color: var(--color-background);
+    }
+
+    .about-reveal.is-visible::before {
+        transform: scaleX(1);
+    }
+
+    .support-option:hover,
+    .support-option:focus-visible {
+        background: var(--color-text);
+        color: var(--color-background);
+    }
+
+    .support-option-mark {
+        position: absolute;
+        right: 1.5rem;
+        bottom: -1rem;
+        z-index: 0;
+        color: var(--color-background);
+        font-size: 10rem;
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(1rem) rotate(-8deg);
+        transition:
+            opacity 320ms ease-out,
+            transform 320ms ease-out;
+        mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+        -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
+    }
+
+    .support-option:hover .support-option-mark,
+    .support-option:focus-visible .support-option-mark {
+        opacity: 0.16;
+        transform: translateX(0) rotate(-8deg);
+    }
+
+    @keyframes float-heart-up {
+        0% {
+            opacity: 0;
+            transform: translate3d(0, 0, 0) scale(0.8) rotate(-10deg);
+        }
+
+        10% {
+            opacity: 0.35;
+        }
+
+        50% {
+            opacity: 0.6;
+            transform: translate3d(1rem, -45vh, 0) scale(1) rotate(4deg);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate3d(-0.75rem, -90vh, 0) scale(1.08) rotate(10deg);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .floating-heart {
+            animation: none;
+            opacity: 0.16;
+        }
+
+        .about-reveal,
+        .about-reveal::before {
+            transition-duration: 0ms;
+            transition-delay: 0ms;
+        }
+    }
+</style>
+
+<script>
+    const revealSections = document.querySelectorAll('[data-reveal-section]');
+
+    revealSections.forEach((section) => {
+        const revealItems = section.querySelectorAll('[data-section-reveal]');
+
+        if (!(section instanceof HTMLElement) || !revealItems.length) {
+            return;
+        }
+
+        const showRevealItems = () => {
+            revealItems.forEach((item) => {
+                item.classList.add('is-visible');
+            });
+        };
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            showRevealItems();
+        } else if ('IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver(
+                (entries) => {
+                    if (entries.some((entry) => entry.isIntersecting)) {
+                        showRevealItems();
+                        revealObserver.disconnect();
+                    }
+                },
+                {
+                    threshold: 0.35,
+                },
+            );
+
+            revealObserver.observe(section);
+        } else {
+            showRevealItems();
+        }
+    });
+</script>

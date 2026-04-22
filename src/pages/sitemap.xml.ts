@@ -26,6 +26,7 @@ export const GET: APIRoute = async () => {
     const entries: SitemapEntry[] = [
         { url: absoluteUrl('/') },
         { url: absoluteUrl('/blog/') },
+        { url: absoluteUrl('/thanks') },
         ...posts
             .sort((a, b) => a.data.publish_date.getTime() - b.data.publish_date.getTime())
             .map((post) => ({

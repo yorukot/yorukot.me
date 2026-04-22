@@ -7,6 +7,7 @@ export const work = {
             status: 'GitHub Trending',
             type: 'TUI',
             title: 'superfile',
+            image: 'superfile.webp',
             href: 'https://github.com/yorukot/superfile',
             description:
                 'Pretty fancy and modern terminal file manager written in Go, with intuitive navigation, file operations, and customizable themes.',
@@ -17,6 +18,7 @@ export const work = {
             status: 'Live',
             type: 'SSH TUI',
             title: 'ssh.yorukot.me',
+            image: 'ssh-yorukot-me.png',
             href: 'https://github.com/yorukot/ssh.yorukot.me',
             description:
                 'An SSH-powered version of my personal website, built in Go so visitors can browse my intro and blog directly from the terminal.',

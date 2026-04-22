@@ -1,7 +1,7 @@
 export const navigationItems = [
     { label: 'Blog', href: '/blog/' },
     { label: 'About', href: '/#about' },
-    { label: 'My Work', href: '/#software' },
+    { label: 'Thanks', href: '/thanks' },
     { label: 'Contact', href: '/#contact' },
 ] as const;
 
