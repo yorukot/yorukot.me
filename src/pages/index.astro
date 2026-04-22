@@ -512,6 +512,17 @@ const homeTitle = 'Yorukot | Open-Source Developer';
         border-top: 1px solid var(--color-border);
         opacity: 0;
         transform: translateX(2rem);
+        transition:
+            background 180ms ease-out,
+            border-color 180ms ease-out;
+    }
+
+    .work-reveal-row:hover,
+    .work-reveal-row:focus-within {
+        border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+        background:
+            radial-gradient(circle at top right, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 24rem),
+            var(--color-background);
     }
 
     .work-list-frame {
