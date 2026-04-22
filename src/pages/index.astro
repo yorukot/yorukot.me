@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import IcBaselineDiscord from '~icons/ic/baseline-discord';
 import IcSharpEmail from '~icons/ic/sharp-email';
 import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
@@ -16,7 +17,7 @@ import { hero } from '../data/hero';
 import { site } from '../data/site';
 import { work } from '../data/work';
 import Layout from '../layouts/Layout.astro';
-import { absoluteAssetUrl, absoluteUrl } from '../lib/seo';
+import { absoluteAssetUrl, absoluteUrl, blogPostPath } from '../lib/seo';
 
 const interestIconMap = {
     openSource: MdiSourceBranch,
@@ -33,6 +34,19 @@ const contactIconMap = {
 
 type WorkItem = (typeof work.work)[number];
 type ContactChannel = (typeof contact.channels)[number];
+type BlogPost = Awaited<ReturnType<typeof getCollection<'blog'>>>[number];
+
+const featuredPosts: BlogPost[] = (await getCollection('blog'))
+    .filter((post: BlogPost) => post.data.featured)
+    .sort((a: BlogPost, b: BlogPost) => b.data.publish_date.getTime() - a.data.publish_date.getTime())
+    .slice(0, 3);
+
+const formatDate = (date: Date) =>
+    new Intl.DateTimeFormat('en', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+    }).format(date);
 
 const homeJsonLd = [
     {
@@ -109,13 +123,6 @@ const homeJsonLd = [
                 <div class="space-y-5 text-lg leading-8 text-text/80">
                     {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
                 </div>
-
-                <a
-                    class="about-blog-link inline-flex border border-border px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-primary no-underline transition-colors hover:border-primary hover:bg-primary hover:text-background focus-visible:border-primary focus-visible:bg-primary focus-visible:text-background focus-visible:outline-none"
-                    href="/blog/"
-                >
-                    Go to blog
-                </a>
 
                 <div class="grid grid-cols-[auto_1fr] gap-px border-y border-border bg-border text-sm uppercase tracking-[0.16em] text-text sm:grid-cols-[auto_1fr_auto_1fr_auto_1fr]">
                     {about.interests.map((interest) => (
@@ -227,6 +234,49 @@ const homeJsonLd = [
                     I write about open-source projects, terminal tools, backend systems, web experiments, and the
                     small decisions behind shipping software.
                 </p>
+
+                {
+                    featuredPosts.length > 0 && (
+                        <div class="border-y border-border">
+                            {featuredPosts.map((post: BlogPost) => (
+                                <article class="blog-preview-item border-t border-border py-8 first:border-t-0">
+                                    <div class="space-y-4">
+                                        <div class="flex flex-wrap items-center gap-3 font-mono text-sm uppercase tracking-[0.12em] text-text/60">
+                                            <time class="text-primary" datetime={post.data.publish_date.toISOString()}>
+                                                {formatDate(post.data.publish_date)}
+                                            </time>
+
+                                            {post.data.featured && (
+                                                <span class="inline-flex border border-primary px-2 py-1 text-xs text-primary">
+                                                    Featured
+                                                </span>
+                                            )}
+
+                                            {post.data.tags.slice(0, 3).map((tag: string) => (
+                                                <span class="border border-border px-2 py-1 text-xs text-text/60">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        <h3 class="text-xl font-bold leading-tight text-text sm:text-2xl">
+                                            <a
+                                                class="underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
+                                                href={blogPostPath(post.data.post_slug)}
+                                            >
+                                                {post.data.title}
+                                            </a>
+                                        </h3>
+
+                                        <p class="max-w-3xl text-base leading-7 text-text/70">
+                                            {post.data.description}
+                                        </p>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )
+                }
 
                 <a
                     class="about-blog-link inline-flex border border-border px-4 py-3 font-mono text-sm uppercase tracking-[0.14em] text-primary no-underline transition-colors hover:border-primary hover:bg-primary hover:text-background focus-visible:border-primary focus-visible:bg-primary focus-visible:text-background focus-visible:outline-none"

@@ -8,9 +8,13 @@ import { absoluteUrl, blogPostPath } from '../../lib/seo';
 
 type BlogPost = CollectionEntry<'blog'>;
 
-const posts: BlogPost[] = (await getCollection('blog')).sort(
-    (a: BlogPost, b: BlogPost) => b.data.publish_date.getTime() - a.data.publish_date.getTime(),
-);
+const posts: BlogPost[] = (await getCollection('blog')).sort((a: BlogPost, b: BlogPost) => {
+    if (a.data.featured !== b.data.featured) {
+        return Number(b.data.featured) - Number(a.data.featured);
+    }
+
+    return b.data.publish_date.getTime() - a.data.publish_date.getTime();
+});
 
 const formatDate = (date: Date) =>
     new Intl.DateTimeFormat('en', {

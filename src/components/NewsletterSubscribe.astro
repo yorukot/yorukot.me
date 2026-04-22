@@ -11,7 +11,6 @@ type Props = {
 };
 
 const {
-    eyebrow = '/newsletter',
     heading = 'Get new posts by email',
     description = 'Subscribe to Yorukot Blog for new essays, project notes, and experiments. After subscribing, check your inbox and verify your email.',
     variant = 'default',
@@ -25,7 +24,6 @@ const isMinimal = variant === 'minimal';
     aria-labelledby="newsletter-subscribe-heading"
 >
     <div class="newsletter-subscribe-copy">
-        {!isMinimal && <p class="newsletter-subscribe-kicker">{eyebrow}</p>}
         <h2 id="newsletter-subscribe-heading">{heading}</h2>
         <p>
             {description}
@@ -59,9 +57,7 @@ const isMinimal = variant === 'minimal';
 
             <div class="newsletter-subscribe-actions">
                 <button type="submit" data-newsletter-submit>Subscribe</button>
-                <p class="newsletter-subscribe-status" data-newsletter-status aria-live="polite">
-                    You will need to verify your email after subscribing.
-                </p>
+                <p class="newsletter-subscribe-status" data-newsletter-status aria-live="polite"></p>
             </div>
         </div>
 
@@ -171,9 +167,11 @@ const isMinimal = variant === 'minimal';
     }
 
     .newsletter-subscribe-fields label {
-        display: block;
+        display: flex;
+        align-items: center;
         background: var(--color-background);
-        padding: 1rem;
+        min-height: 3rem;
+        padding: 0.875rem 1rem;
     }
 
     .newsletter-subscribe-status,
@@ -196,12 +194,16 @@ const isMinimal = variant === 'minimal';
 
     .newsletter-subscribe input[type="email"],
     .newsletter-subscribe input[type="text"] {
+        display: block;
         width: 100%;
         border: 0;
         border-radius: 0;
         background: transparent;
         color: var(--color-text);
         font: inherit;
+        font-size: 1rem;
+        line-height: 1.2;
+        min-height: 1.5rem;
         outline: none;
     }
 
