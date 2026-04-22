@@ -1,6 +1,7 @@
 ---
 import IcBaselineDiscord from '~icons/ic/baseline-discord';
 import IcSharpEmail from '~icons/ic/sharp-email';
+import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
 import MdiConsoleLine from '~icons/mdi/console-line';
 import MdiGithub from '~icons/mdi/github';
 import MdiHeart from '~icons/mdi/heart';
@@ -172,20 +173,21 @@ const homeJsonLd = [
                                     <h3 class="text-xl font-bold text-text">
                                         {'href' in item ? (
                                             <a
-                                                class="underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
+                                                class="group inline-flex items-center gap-2 underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
                                                 href={item.href}
                                                 target={item.href.startsWith('http') ? '_blank' : undefined}
                                                 rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
                                             >
-                                                {item.title}
+                                                <span>{item.title}</span>
+                                                <MdiArrowTopRight
+                                                    class="shrink-0 text-base text-primary transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-focus-visible:-translate-y-0.5 group-focus-visible:translate-x-0.5"
+                                                    aria-hidden="true"
+                                                />
                                             </a>
                                         ) : (
                                             item.title
                                         )}
                                     </h3>
-                                    <span class="border border-border px-2 py-1 text-xs uppercase tracking-[0.14em] text-text/70">
-                                        {item.type}
-                                    </span>
                                 </div>
                             </div>
 
