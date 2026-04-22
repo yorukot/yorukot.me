@@ -2,7 +2,7 @@ export const site = {
     name: 'Yorukot',
     title: 'Yorukot',
     description:
-        'Yorukot is a Taiwan-based developer building open-source tools, terminal experiences, backend systems, and full-stack web apps.',
+        'Hey there! I build open-source tools, terminal experiences, backend systems, and full-stack web apps.',
     url: 'https://yorukot.me',
     language: 'en',
     locale: 'en_US',
