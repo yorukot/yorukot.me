@@ -1,14 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
 import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
+import { getPublishedBlogPosts } from '../../data/blog';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 import { absoluteUrl, blogPostPath } from '../../lib/seo';
 
-type BlogPost = CollectionEntry<'blog'>;
+type BlogPost = Awaited<ReturnType<typeof getPublishedBlogPosts>>[number];
 
-const posts: BlogPost[] = (await getCollection('blog')).sort((a: BlogPost, b: BlogPost) => {
+const posts: BlogPost[] = (await getPublishedBlogPosts()).sort((a: BlogPost, b: BlogPost) => {
     if (a.data.featured !== b.data.featured) {
         return Number(b.data.featured) - Number(a.data.featured);
     }

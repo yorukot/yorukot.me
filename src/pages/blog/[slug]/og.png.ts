@@ -1,9 +1,9 @@
-import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { getPublishedBlogPosts } from '../../../data/blog';
 import { renderOgImage } from '../../../lib/og';
 
 export async function getStaticPaths() {
-    const posts = await getCollection('blog');
+    const posts = await getPublishedBlogPosts();
 
     return posts.map((post) => ({
         params: { slug: post.data.post_slug },

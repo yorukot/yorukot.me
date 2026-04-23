@@ -1,7 +1,7 @@
 ---
-import { getCollection, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
 import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
+import { getPublishedBlogPosts } from '../../data/blog';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 import {
@@ -11,13 +11,13 @@ import {
     blogPostPath,
 } from '../../lib/seo';
 
-type BlogPost = CollectionEntry<'blog'>;
+type BlogPost = Awaited<ReturnType<typeof getPublishedBlogPosts>>[number];
 type Props = {
     post: BlogPost;
 };
 
 export async function getStaticPaths() {
-    const posts = await getCollection('blog');
+    const posts = await getPublishedBlogPosts();
 
     return posts.map((post: BlogPost) => ({
         params: { slug: post.data.post_slug },

@@ -1,11 +1,11 @@
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { getPublishedBlogPosts } from '../data/blog';
 import { site } from '../data/site';
 import { blogPostPath } from '../lib/seo';
 
 export const GET: APIRoute = async (context) => {
-    const posts = (await getCollection('blog')).sort(
+    const posts = (await getPublishedBlogPosts()).sort(
         (a, b) => b.data.publish_date.getTime() - a.data.publish_date.getTime(),
     );
 

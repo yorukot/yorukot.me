@@ -1,5 +1,5 @@
-import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { getPublishedBlogPosts } from '../data/blog';
 import { absoluteUrl } from '../lib/seo';
 
 export const prerender = true;
@@ -22,7 +22,7 @@ type SitemapEntry = {
 const formatSitemapDate = (date: Date) => date.toISOString().slice(0, 10);
 
 export const GET: APIRoute = async () => {
-    const posts = await getCollection('blog');
+    const posts = await getPublishedBlogPosts();
     const entries: SitemapEntry[] = [
         { url: absoluteUrl('/') },
         { url: absoluteUrl('/blog/') },

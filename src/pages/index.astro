@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content';
 import IcBaselineDiscord from '~icons/ic/baseline-discord';
 import IcSharpEmail from '~icons/ic/sharp-email';
 import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
@@ -15,6 +14,7 @@ import { contact } from '../data/contact';
 import { hero } from '../data/hero';
 import { site } from '../data/site';
 import { work } from '../data/work';
+import { getPublishedBlogPosts } from '../data/blog';
 import Layout from '../layouts/Layout.astro';
 import { absoluteAssetUrl, absoluteUrl, blogPostPath } from '../lib/seo';
 
@@ -33,9 +33,9 @@ const contactIconMap = {
 
 type WorkItem = (typeof work.work)[number];
 type ContactChannel = (typeof contact.channels)[number];
-type BlogPost = Awaited<ReturnType<typeof getCollection<'blog'>>>[number];
+type BlogPost = Awaited<ReturnType<typeof getPublishedBlogPosts>>[number];
 
-const featuredPosts: BlogPost[] = (await getCollection('blog'))
+const featuredPosts: BlogPost[] = (await getPublishedBlogPosts())
     .filter((post: BlogPost) => post.data.featured)
     .sort((a: BlogPost, b: BlogPost) => b.data.publish_date.getTime() - a.data.publish_date.getTime())
     .slice(0, 3);

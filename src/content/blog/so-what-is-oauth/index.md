@@ -7,6 +7,7 @@ featured: true
 tags: ['web', 'web-security']
 description: In this blog post, we will explore the OAuth protocol, its purpose, and how it works. We will also take a closer look at its inner workings and the reasons behind its design.
 lang: en
+draft: true
 ---
 
 這篇文章會說明 OAuth 的基本概念，這是一個我個人的學習筆記，但基本上應該會盡可能的正確，歡迎把它拿來當作學習用的資源。
