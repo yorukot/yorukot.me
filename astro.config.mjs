@@ -54,6 +54,39 @@ const demoteMarkdownHeadings = () => {
   };
 };
 
+const externalMarkdownLinks = () => {
+  /**
+   * @param {string} href
+   */
+  const isExternalHref = (href) =>
+    /^(https?:)?\/\//.test(href) || href.startsWith("mailto:");
+
+  /**
+   * @param {any} node
+   */
+  const visit = (node) => {
+    if (node?.type === "element" && node.tagName === "a") {
+      const href = node.properties?.href;
+
+      if (typeof href === "string" && isExternalHref(href)) {
+        node.properties.target = "_blank";
+        node.properties.rel = "noreferrer";
+      }
+    }
+
+    if (Array.isArray(node?.children)) {
+      node.children.forEach(visit);
+    }
+  };
+
+  /**
+   * @param {any} tree
+   */
+  return (tree) => {
+    visit(tree);
+  };
+};
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://yorukot.me",
@@ -62,7 +95,11 @@ export default defineConfig({
     prerenderEnvironment: "node",
   }),
   markdown: {
-    rehypePlugins: [demoteMarkdownHeadings, optimizeLocalMarkdownImages],
+    rehypePlugins: [
+      demoteMarkdownHeadings,
+      optimizeLocalMarkdownImages,
+      externalMarkdownLinks,
+    ],
   },
   vite: {
     plugins: [
