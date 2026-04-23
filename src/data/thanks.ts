@@ -8,6 +8,11 @@ export const thanks = {
         description:
             'This page is for the people and teams who keep open-source tools, articles, and late-night shipping sessions alive.',
     },
+    sponsorNote: {
+        text: "If you've donated or helped support my work in any way, feel free to email me and I'll add you to this page.",
+        emailLabel: 'hi@yorukot.me',
+        href: 'mailto:hi@yorukot.me',
+    },
     donationOptions: [
         {
             label: 'SPONSORS',

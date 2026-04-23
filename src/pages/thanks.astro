@@ -61,7 +61,9 @@ const floatingHearts = [
                     {thanks.hero.eyebrow}
                 </p>
                 <h1 class="text-5xl font-bold uppercase tracking-[0.12em] text-text sm:text-6xl">
-                    {thanks.hero.title}
+                    {thanks.hero.titleLines.map((line) => (
+                        <span class="thanks-hero-title-line block">{line}</span>
+                    ))}
                 </h1>
                 <p class="mx-auto max-w-3xl text-lg leading-8 text-text/75">
                     {thanks.hero.description}
@@ -187,6 +189,7 @@ const floatingHearts = [
                     </section>
                 ))}
             </div>
+
         </div>
     </section>
 
@@ -241,6 +244,21 @@ const floatingHearts = [
                         </a>
                     ))}
                 </div>
+
+                <section class="border border-border bg-background p-5 sm:p-6">
+                    <div class="space-y-2">
+                        <h3 class="font-mono text-sm uppercase tracking-[0.16em] text-primary">
+                            Add your support
+                        </h3>
+                        <p class="text-sm leading-7 text-text/70 sm:text-base">
+                            {thanks.sponsorNote.text}{' '}
+                            <a class="brand-link" href={thanks.sponsorNote.href}>
+                                {thanks.sponsorNote.emailLabel}
+                            </a>
+                            .
+                        </p>
+                    </div>
+                </section>
             </div>
         </div>
     </section>
