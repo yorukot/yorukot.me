@@ -4,7 +4,7 @@ import warpBanner from '../assets/thanks/warp-banner.png';
 export const thanks = {
     hero: {
         eyebrow: '/thanks',
-        title: 'Back the work. Fund the next build.',
+        titleLines: ['Back the work.', 'Fund the next build.'],
         description:
             'This page is for the people and teams who keep open-source tools, articles, and late-night shipping sessions alive.',
     },
