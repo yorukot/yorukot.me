@@ -33,24 +33,27 @@ lang: en
   - [8. Access Token Request](#8.-access-token-request)
   - [9. Access Token Response](#9.-access-token-response)
   - [10-13. Protected Resource Access](#10-13.-protected-resource-access)
+- [PKCE (Proof Key for Code Exchange)](#pkce-proof-key-for-code-exchange)
 - [Summary](#summary)
 - [References](#references)
 
 # Why We Need OAuth
 
-Before OAuth, if you wanted to access data from services like Google or Facebook, one ugly pattern was what some early apps, such as Yelp, did: ask users for their email and password directly, then log in on their behalf and scrape or fetch the data.
+Before OAuth, if an app wanted access to data from services like Google or Facebook, one ugly pattern was to ask users for their email address and password directly, log in on their behalf, and then scrape or fetch the data from there.
+
+That was not just awkward. It was a terrible security model.
 
 ![Before OAuth](./before-oauth.png)
 
-By today's standards, that approach is terrible. But it did exist, and even when companies said "don't do this," users usually did not care. They just wanted to import friends, contacts, or profile data as quickly as possible.
+Still, it happened. Even when companies explicitly told developers not to do it, users usually did not care. They just wanted to import their friends, contacts, or profile data as quickly as possible.
 
-That was the context in which OAuth emerged. In 2006, the initial idea was proposed by Blaine Cook, who was then at Twitter. DeWitt Clinton from Google joined the discussion, and later Eran Hammer became heavily involved and had major influence on the early drafts.
+That was the environment OAuth came out of. In 2006, the initial idea was proposed by Blaine Cook, who was at Twitter at the time. DeWitt Clinton from Google joined the discussion, and Eran Hammer later had a major influence on the early drafts.
 
-After several rounds of discussion, OAuth 1.0 was published as RFC 5849 in April 2010, but [RFC 5849](https://datatracker.ietf.org/doc/html/rfc5849). is Informational rather than Standards Track. Two years later, after more developer feedback, OAuth 2.0 was published in October 2012 as [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749). It was easier to implement and more practical at scale, so it spread very quickly, even though some security concerns remained.
+After several rounds of discussion, OAuth 1.0 was published as [RFC 5849](https://datatracker.ietf.org/doc/html/rfc5849) in April 2010. It is an Informational RFC rather than a Standards Track RFC. Two years later, after more developer feedback, OAuth 2.0 was published as [RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749) in October 2012. It was easier to implement and more practical at scale, so it spread very quickly, even though some security concerns remained.
 
-Since OAuth 1.0 is now mostly historical, everything below refers to OAuth 2.0 unless I say otherwise.
+Since OAuth 1.0 is mostly historical at this point, everything below refers to OAuth 2.0 unless I say otherwise.
 
-OAuth 2.0 also became so widely used that many follow-up RFCs were later published to patch security gaps, define extensions, and make the ecosystem more usable in real-world scenarios. That is why the OAuth spec family now looks a bit like a maze.
+OAuth 2.0 became so widely used that a long list of follow-up RFCs had to be published to patch security gaps, define extensions, and make the ecosystem more usable in real systems. That is why the OAuth spec family now feels a bit like a maze.
 
 ![OAuth maze](./oauth-maze.png)
 
@@ -60,17 +63,17 @@ As a side note, OAuth 2.1 is still being standardized. If you want to follow its
 
 # The Roles of OAuth 2.0
 
-Before looking at the full flow, we first need to understand the roles defined by [Section 1.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-1.1).
+Before looking at the full flow, we need to understand the roles defined in [Section 1.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-1.1).
 
-To make this easier to explain, let's use a simple scenario. Imagine you have a Google account called `yorukot`, and you want to let Microsoft access `yorukot`'s Gmail data.
+To make this easier to picture, let us use a simple example. Imagine you have a Google account called `yorukot`, and you want to let Microsoft access `yorukot`'s Gmail data.
 
 With that setup, the roles become much easier to see.
 
 ## Resource Owner
 
-The resource owner is the party capable of granting access to a protected resource. Usually this is a person, though it does not have to be.
+The resource owner is the party that can grant access to a protected resource. In most cases, this is a person, though it does not have to be.
 
-In our example, you are the resource owner.
+In this example, you are the resource owner.
 
 ## Resource Server
 
@@ -82,13 +85,13 @@ The resource server protects that data and only serves it when the client presen
 
 The client is the application that wants to access your data. In this example, that is Microsoft.
 
-Here, the word "client" does not mean the browser or the user's device. It means the application that wants to access the resource owner's data.
+This is one point that trips people up: "client" here does not mean the browser or the user's device. It means the application that wants access to the resource owner's data.
 
 ## Authorization Server
 
 The authorization server is the component that authenticates the user, collects consent, and issues access tokens to the client.
 
-One thing that often confuses people: the authorization server is not the same thing as the resource server. In many real systems they are the same backend, and they may even look like one product from the outside, but conceptually they are different roles.
+One thing that often confuses people is that the authorization server is not the same thing as the resource server. In many real systems they are backed by the same company, and from the outside they may even look like one product, but conceptually they are different roles.
 
 If you want a simple mental model, think of them as two services:
 
@@ -101,7 +104,7 @@ OAuth 2.0 defines two client types based on whether the client can authenticate 
 
 ## Confidential Client
 
-A confidential client can authenticate securely with the authorization server. In practice, this usually means it can safely store a `client_secret`.
+A confidential client can authenticate securely with the authorization server. In practice, that usually means it can safely store a `client_secret`.
 
 Most confidential clients have a backend server, which gives them a private place to store credentials and perform the token exchange.
 
@@ -113,15 +116,15 @@ A public client cannot authenticate securely with the authorization server. A mo
 
 That does not mean the app is automatically insecure. It means you cannot trust it to keep long-term secrets like a `client_secret`.
 
-To improve security for public clients, OAuth uses [RFC 7636 - PKCE (Proof Key for Code Exchange)](https://datatracker.ietf.org/doc/html/rfc7636). I won't cover PKCE in depth here, because it deserves its own article.
+To improve security for public clients, OAuth uses [RFC 7636 - PKCE (Proof Key for Code Exchange)](https://datatracker.ietf.org/doc/html/rfc7636). I will come back to PKCE later, but I will keep it high-level here because it deserves its own post.
 
 # OAuth 2.0 Authorization Code Flow
 
-This article focuses on the OAuth 2.0 authorization code flow, which is defined in [Section 4.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1). There are other flows in OAuth 2.0, but this is the one you will see most often in modern systems.
+This article focuses on the OAuth 2.0 authorization code flow, which is defined in [Section 4.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1). OAuth 2.0 includes other flows too, but this is the one you will see most often in modern systems.
 
 ![OAuth 2.0 flow](./oauth-2.0-flow.png)
 
-> I also attatch the excalidraw file of the diagram here: [oauth-2.0-flow.excalidraw](./oauth-2.0-flow.excalidraw). You can open it with [Excalidraw](https://excalidraw.com/) and edit it as you like.
+> I also attached the Excalidraw file for this diagram here: [oauth-2.0-flow.excalidraw](./oauth-2.0-flow.excalidraw). You can open it in [Excalidraw](https://excalidraw.com/) and edit it if you want.
 
 > Google and Microsoft appear in the diagram only to make the story easier to follow. They are just examples.
 
@@ -160,7 +163,7 @@ GET {authorization_endpoint}?
   &state={state}
 ```
 
-Let's go through the important parameters.
+Let us walk through the important parameters.
 
 ### Response Type
 
@@ -169,7 +172,7 @@ The `response_type` tells the authorization server what the client wants back.
 | Response Type              | Description                                                                                                                                                                                                   | RFC Reference                                                                            |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `code`                     | Requests an authorization code.                                                                                                                                                                               | [Section 4.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1)     |
-| `token`                    | Requests an access token directly via the implicit flow. The implicit grant is deprecated in [current best practice](https://datatracker.ietf.org/doc/html/rfc9700); new clients should generally not use it. | [Section 4.2.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.2.1) |
+| `token`                    | Requests an access token directly via the implicit flow. The implicit grant is deprecated in [current best practice](https://datatracker.ietf.org/doc/html/rfc9700), so new clients should generally avoid it. | [Section 4.2.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.2.1) |
 | registered extension value | Extensions can define additional response types.                                                                                                                                                              | [Section 8.4 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-8.4)     |
 
 Reference: [Section 3.1.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.1)
@@ -184,7 +187,7 @@ Reference: [Section 2.2 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc67
 
 The `redirect_uri` also comes from [client registration](#0.-client-registration). It tells the authorization server where to send the user after the authorization step is finished.
 
-This must be controlled carefully. If an attacker can trick the authorization server into redirecting to a malicious URI, they may be able to steal authorization data.
+This needs to be controlled carefully. If an attacker can trick the authorization server into redirecting to a malicious URI, they may be able to steal authorization data.
 
 OAuth 2.0 originally allowed some flexibility here, but current best practice is much stricter. [Section 2.1 of RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1) recommends exact redirect URI matching.
 
@@ -192,12 +195,13 @@ Reference: [Section 3.1.2 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc
 
 ### Scope
 
-The `scope` defines what the client is asking to do with the user's data.
+The `scope` parameter defines what the client is asking to do with the user's data.
 
-Scopes are strings defined by the authorization server. For example, a client might want to read the user's avatar and email while also being able to edit the user's profile. In that case, the scope string might look something like this:
+Scopes are strings defined by the authorization server. For example, a client might want to read the user's avatar and email while also being able to edit the user's profile. In that case, the scope string might look like this:
 
 `user_avatar_read user_email_read user_profile_write`
-And in the URI Parameter we plus + to repensent the space:
+
+When that value is placed in a URL, the spaces are typically URL-encoded. In many examples you will see them represented with `+`, like this:
 
 `user_avatar_read+user_email_read+user_profile_write`
 
@@ -205,9 +209,9 @@ Reference: [Section 3.3 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc67
 
 ### State
 
-The `state` value connects the original authorization request to the callback that comes back later in [Step 7](#7.-redirect-to-callback-endpoint).
+The `state` value ties the original authorization request to the callback that comes back later in [Step 7](#7.-redirect-to-callback-endpoint).
 
-The client should generate a fresh value, store it, and verify it when the user returns. If you skip this, you leave yourself open to CSRF-style attacks.
+The client should generate a fresh value, store it, and verify it when the user returns. If you skip that step, you leave yourself open to CSRF-style attacks.
 
 Reference: [Section 10.12 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-10.12)
 
@@ -221,7 +225,7 @@ Once the authorization server receives the authorization request, it needs to ma
 So the authorization server typically shows pages that let the user:
 
 - log in if they are not already authenticated
-- review what app is requesting access
+- review which app is requesting access
 - review which scopes or resources are being requested
 - approve or deny the request
 
@@ -241,11 +245,11 @@ GET {redirect_uri}?
   &state={state}
 ```
 
-The response can also contain an error instead of a code. I won't cover the error cases here, but they are defined in [Section 4.1.2.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1).
+The response can also contain an error instead of a code. I will not cover the error cases here, but they are defined in [Section 4.1.2.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1).
 
 The `code` is a short-lived credential that the client can exchange for an access token. According to the RFC, its lifetime should be short and is typically around 10 minutes or less.
 
-> If you do use PKCE in OAuth work flow, you can treat state as a optional parameter, because PKCE already provides strong CSRF protection. However, if you do not use PKCE, state is recommand. 
+> If you are using PKCE, some people treat `state` as less important because PKCE already protects the code exchange. I still think it is a good habit to keep `state` for request correlation and CSRF protection. If you are not using PKCE, `state` is strongly recommended.
 
 At this point, the client should verify the `state` value before doing anything else.
 
@@ -255,7 +259,7 @@ Reference: [Section 4.1.2 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc
 
 After the client receives the callback, it sends the authorization code to the token endpoint.
 
-This request is made server-to-server for confidential clients, and it is a `POST`, not a browser redirect.
+For confidential clients, this request is made server-to-server. It is a `POST`, not a browser redirect.
 
 ```http
 POST {token_endpoint}
@@ -274,21 +278,28 @@ grant_type=authorization_code
 | `code` | The authorization code received in [Step 7](#7.-redirect-to-callback-endpoint). |
 | `redirect_uri` | Must match the redirect URI used in the original authorization request. |
 | `client_id` | The client identifier from [Step 0](#0.-client-registration). |
-| `client_secret` | The client secret from [Step 0](#0.-client-registration), used by confidential clients. if the client already authication with authorization server it is a optional. |
+| `client_secret` | The client secret from [Step 0](#0.-client-registration), used by confidential clients. If the client authenticates with another supported method, this parameter may be omitted from the body. |
 
-#### client_secret_post and client_secret_basic
-The above request is using `client_secret_post` authentication method, which means the client credentials are sent in the request body. There is also another method called `client_secret_basic`, where the client credentials are sent in the HTTP `Authorization` header using Basic authentication.
+### `client_secret_post` and `client_secret_basic`
 
-And the recommand authentication method is actually the client_secret_basic it is the MUST support for the authorization server.
+The example above uses the `client_secret_post` authentication method, which means the client credentials are sent in the request body.
+
+There is also another method called `client_secret_basic`, where the client credentials are sent in the HTTP `Authorization` header using Basic authentication.
+
+In practice, `client_secret_basic` is generally the recommended choice, and [Section 2.3.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1) makes support for HTTP Basic authentication a requirement for the authorization server.
 
 For example:
-```
+
+```http
 Authorization: Basic czZCaGRSa3F0Mzo3RmpmcDBaQnIxS3REUmJuZlZkbUl3
 ```
 
 One important note: `client_secret` is for confidential clients. Public clients do not rely on it, and modern public-client flows usually use PKCE instead.
 
-Reference: [Section 4.1.3 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3) [Section 2.3.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1)
+References:
+
+- [Section 4.1.3 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3)
+- [Section 2.3.1 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1)
 
 ## 9. Access Token Response
 
@@ -308,13 +319,13 @@ Pragma: no-cache
 }
 ```
 
-| Parameter       | Description                                                                                        |
-| --------------- | -------------------------------------------------------------------------------------------------- |
-| `access_token`  | The credential the client uses to call the resource server.                                        |
-| `token_type`    | The token usage type, most commonly `Bearer`.                                                      |
-| `expires_in`    | The token lifetime in seconds. For example, `3600` means one hour.                                 |
-| `refresh_token` | Optional. A token used to obtain a new access token later without asking the user to re-authorize. |
-| `scope`         | Optional. If present, this indicates the granted scope.                                            |
+| Parameter       | Description                                                                                           |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| `access_token`  | The credential the client uses to call the resource server.                                           |
+| `token_type`    | The token usage type, most commonly `Bearer`.                                                         |
+| `expires_in`    | The token lifetime in seconds. For example, `3600` means one hour.                                    |
+| `refresh_token` | Optional. A token used to obtain a new access token later without asking the user to authorize again. |
+| `scope`         | Optional. If present, this indicates the granted scope.                                               |
 
 References:
 
@@ -323,7 +334,7 @@ References:
 
 ## 10-13. Protected Resource Access
 
-After the client has the access token, it can call the resource server.
+Once the client has the access token, it can call the resource server.
 
 For example, if the token type is `Bearer`, the client typically sends it in the HTTP `Authorization` header like this:
 
@@ -333,26 +344,69 @@ Authorization: Bearer {access_token}
 
 The exact API calls after that are application-specific, so OAuth 2.0 itself does not define every detail of the resource request.
 
-One thing worth mentioning is token validation. In some architectures, the resource server validates tokens directly. In others, it asks the authorization server about the token through introspection. That is standardized in [RFC 7662 - OAuth 2.0 Token Introspection](https://datatracker.ietf.org/doc/html/rfc7662).
+One thing worth mentioning here is token validation. In some architectures, the resource server validates tokens directly. In others, it asks the authorization server about the token through introspection. That is standardized in [RFC 7662 - OAuth 2.0 Token Introspection](https://datatracker.ietf.org/doc/html/rfc7662).
 
 # PKCE (Proof Key for Code Exchange)
 
-PKCE is a enhance of the OAuth code exchange. The original OAuth flow are susceptible to the authorization code interception attack. So we have PKCE to ehcnace it.
+PKCE is an enhancement to the OAuth authorization code flow. It was introduced to protect against authorization code interception attacks.
 
-## The Original Flow Issue
-![Original Token Exchange Flow](./original-token-exchange-flow.png)
+## The Original Problem in Code Exchange
+The original problem was simple: if an attacker managed to steal the authorization code before the legitimate client exchanged it at the token endpoint, they might be able to redeem that code first and get the access token.
 
-You can see the original flow seems ok and we even have a `client_ecret` when we doing the exchange. what is the issue? so it is because we see it in the 
+![Authorization code interception attack](./authorization-code-interception-attack.png)
 
+> Source: adapted from Figure 1, "Authorization Code Interception Attack," in [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636#section-1).
+
+You might think that why we need this? isn't we already have the `client_secret_basic` and `client_secret_post` etc?
+
+It is because what we are dealing here is the public client which mean the client actually do not have the abality to store the `client_secret`.  
+
+## PKCE Flow
+![PKCE Flow Diagram](./pkce-flow-diagram.png)
+
+PKCE adds a proof step to the flow.
+
+###### code_verifier
+This is a random string that generate by the cleint
+
+Reference: [Section 4.1 of RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636#section-4.1)
+###### code_challenge_method
+`code_challenge_method` is the way that you hash the code_verifier to generate `code_challenge`
+
+The `code_challenge_method`  can be `S256` or `plain` S256 stander for SHA256 and it is the MUST method to use if the cleint support.
+
+Reference: [Section 4.2 of RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636#section-4.2)
+###### code_challenge
+code_challenge is a string that generate by `hash(code_verifier)` note that the hash method is defined in the `code_challenge_method`
+
+Reference: [Section 4.2 of RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636#section-4.2)
+### 1-3. Authorization Request
+
+Extend the original authorization request with new parameters `code_challenge`.
+
+After the code_challenge send to the authorization server. and after server genearte the `authorizzation_code` it should association with the `code_challenge`. so we can verify that the `authorization_code` is the same from the original test later. 
+
+And in the end the server send the authorization code back to the cleint.
+### 4-6. Token Endpoint
+
+After the client get the authorization code. It can now send the original `code_verifier` and `code_challenge_method` to the Token ednpoint.
+
+In the TOken endpoint the endpoint need to hash the `code_verify` with `code_chalenge_method` and check if the result is the same with the original `code_challenge` that is ossociation with `authoirzation_code`.
+
+Now if that match we can send the `access_token` and `refresh_token` (option) back to the user.
+
+## Do I Really need PKCE
+
+PKCE is the Best current practice that is defined in the [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700) So not mattter your client type you should use it. and it is a MUST use in the public client. Alought the Confidential client is safe enought to not use the PKCE in most of the case. but we still can add a layer of prevent for the securety reason.
 # Summary
 
-OAuth is a complicated authorization framework. Even in this article, I've skipped a lot, especially topics like PKCE, OpenID Connect, token introspection details, and many of the newer security recommendations.
+OAuth is a complicated authorization framework. Even in this article, I skipped a lot, especially PKCE details, OpenID Connect, token introspection internals, and many of the newer security recommendations.
 
 Still, the core idea is simple: do not hand your password to every third-party app that wants your data. Instead, let an authorization server issue limited tokens with limited scope.
 
-That said, OAuth is complicated enough that people misuse it all the time. The most common example is using OAuth itself as if it were an authentication framework. OAuth is about authorization. If you want a standard layer for identity, that is usually where OpenID Connect (OIDC) comes in.
+That said, OAuth is complicated enough that people misuse it all the time. The most common example is treating OAuth itself like an authentication framework. OAuth is about authorization. If you want a standard layer for identity, that is usually where OpenID Connect (OIDC) comes in.
 
-If you spot anything wrong in this article, email me at [hi@yorukot.me](mailto:hi@yorukot.me). I'll fix it as soon as I can.
+If you spot anything wrong in this article, email me at [hi@yorukot.me](mailto:hi@yorukot.me). I will fix it as soon as I can.
 
 ## References
 
