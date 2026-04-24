@@ -1,5 +1,5 @@
 ---
-title: So What Is OAuth? A Deep Dive into the OAuth Framework and How It Works
+title: So What Is OAuth? A Deep Dive into OAuth 2.0 and PKCE
 author:
   - Yorukot
 publish_date: 2026-04-24
@@ -8,7 +8,7 @@ featured: true
 tags:
   - web
   - web-security
-description: This post explains what OAuth is, why it exists, and how the OAuth 2.0 authorization code flow works.
+description: A practical deep dive into OAuth 2.0, covering why it exists, its core roles, the authorization code flow, access tokens, and PKCE.
 lang: en
 ---
 
@@ -42,6 +42,11 @@ lang: en
 - [Summary](#summary)
 - [References](#references)
 
+This article references many OAuth-related RFCs and Best Current Practice documents, and I will link to the relevant specifications whenever possible.
+
+A few details and recommendations come from newer guidance, especially [RFC 9700 - Best Current Practice for OAuth 2.0 Security](https://datatracker.ietf.org/doc/html/rfc9700). I will also cover PKCE, which is defined in [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636) and is now part of modern OAuth security practice.
+
+This is a detailed walkthrough of OAuth 2.0 and the authorization code flow, so it may take more than 20 minutes to read. If you find it helpful, feel free to share it. Thanks!
 # Why We Need OAuth
 
 Before OAuth, if an app wanted access to data from services like Google or Facebook, one ugly pattern was to ask users for their email address and password directly, log in on their behalf, and then scrape or fetch the data from there.
@@ -90,7 +95,7 @@ The resource server protects that data and only serves it when the client presen
 
 The client is the application that wants to access your data. In this example, that is the Microsoft application.
 
-This is one point that trips people up: "client" here does not mean the browser or the user's device. It means the application that wants access to the resource owner's data.
+This is one point that trips people up, "client" here does not mean the browser or the user's device. It means the application that wants access to the resource owner's data.
 
 ## Authorization Server
 
@@ -303,7 +308,7 @@ For example:
 Authorization: Basic czZCaGRSa3F0Mzo3RmpmcDBaQnIxS3REUmJuZlZkbUl3
 ```
 
-One important note: `client_secret` is for confidential clients. Public clients do not rely on it, and modern public-client flows usually use PKCE instead.
+One important note, `client_secret` is for confidential clients. Public clients do not rely on it, and modern public-client flows usually use PKCE instead.
 
 For a public client using PKCE, the request usually looks more like this:
 
@@ -368,7 +373,7 @@ The exact API calls after that are application-specific, so OAuth 2.0 itself doe
 
 One thing worth mentioning here is token validation. In some architectures, the resource server validates tokens directly. In others, it asks the authorization server about the token through introspection. That is standardized in [RFC 7662 - OAuth 2.0 Token Introspection](https://datatracker.ietf.org/doc/html/rfc7662).
 
-Bearer tokens are called bearer tokens for a reason: whoever holds the token can use it. That is why TLS and careful token handling matter so much.
+Bearer tokens stand for whoever holds the token can use it. That is why TLS and careful token handling matter so much.
 
 # PKCE (Proof Key for Code Exchange)
 
@@ -376,7 +381,7 @@ PKCE is an enhancement to the OAuth authorization code flow. It was introduced t
 
 ## The Original Problem in Code Exchange
 
-The original problem was simple: if an attacker managed to steal the authorization code before the legitimate client exchanged it at the token endpoint, they might be able to redeem that code first and get the access token.
+If an attacker managed to steal the authorization code before the legitimate client exchanged it at the token endpoint, they might be able to redeem that code first and get the access token.
 
 ![Authorization code interception attack](./authorization-code-interception-attack.png)
 
