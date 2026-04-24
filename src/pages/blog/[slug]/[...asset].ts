@@ -35,10 +35,6 @@ const collectAssetPaths = async (dir: string, prefix = ''): Promise<string[]> =>
                 return collectAssetPaths(absolutePath, relativePath);
             }
 
-            if (entry.name === 'index.md') {
-                return [];
-            }
-
             return [relativePath];
         }),
     );
@@ -78,10 +74,6 @@ export const GET: APIRoute = async ({ params }) => {
     const expectedRoot = path.resolve(blogContentRoot, slug);
 
     if (!resolvedSourcePath.startsWith(expectedRoot + path.sep) && resolvedSourcePath !== expectedRoot) {
-        return new Response(null, { status: 404 });
-    }
-
-    if (path.basename(resolvedSourcePath) === 'index.md') {
         return new Response(null, { status: 404 });
     }
 
