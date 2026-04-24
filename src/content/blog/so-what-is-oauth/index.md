@@ -136,7 +136,7 @@ This article focuses on the OAuth 2.0 authorization code flow, which is defined 
 
 ![OAuth 2.0 flow](./oauth-2.0-flow.png)
 
-> I also attached the Excalidraw file for this diagram here: [flow.excalidraw](./flow.excalidraw). You can open it in [Excalidraw](https://excalidraw.com/) and edit it if you want.
+> I also attached the Excalidraw file for this diagram here: [oauth-flow.excalidraw](/blog/so-what-is-oauth/oauth-flow.excalidraw). You can open it in [Excalidraw](https://excalidraw.com/) and edit it if you want.
 
 > Google and Microsoft appear in the diagram only to make the story easier to follow. They are just examples.
 
@@ -395,7 +395,7 @@ The reason is that PKCE mainly solves a problem for public clients, and public c
 
 ![PKCE Flow Diagram](./pkce-flow-diagram.png)
 
-> I also attached the Excalidraw file for this diagram here: [flow.excalidraw](./flow.excalidraw). You can open it in [Excalidraw](https://excalidraw.com/) and edit it if you want.
+> I also attached the Excalidraw file for this diagram here: [oauth-flow.excalidraw](/blog/so-what-is-oauth/oauth-flow.excalidraw). You can open it in [Excalidraw](https://excalidraw.com/) and edit it if you want.
 
 PKCE adds a proof step to the flow.
 
