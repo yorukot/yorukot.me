@@ -128,7 +128,7 @@ That does not mean the app is automatically insecure. It means you cannot trust 
 
 Also, the `client_id` is not a secret. It identifies the client, but it does not authenticate the client by itself.
 
-To improve security for public clients, OAuth uses [RFC 7636 - PKCE (Proof Key for Code Exchange)](https://datatracker.ietf.org/doc/html/rfc7636). I will come back to PKCE later, but I will keep it high-level here because it deserves its own post.
+To improve security for public clients, OAuth uses [RFC 7636 - PKCE (Proof Key for Code Exchange)](https://datatracker.ietf.org/doc/html/rfc7636). I will come back to PKCE later.
 
 # OAuth 2.0 Authorization Code Flow
 
@@ -175,7 +175,7 @@ GET {authorization_endpoint}?
   &state={state}
 ```
 
-In modern deployments, authorization code requests usually also include PKCE parameters such as `code_challenge` and `code_challenge_method`. The authorization endpoint must also be protected with HTTPS/TLS.
+In modern deployments, authorization code requests usually also include PKCE parameters such as `code_challenge` and `code_challenge_method`. We will cover PKCE later, so for now just keep these parameters in mind. Because this endpoint handles the user’s login and consent flow, it must be protected with HTTPS/TLS.
 
 Let us walk through the important parameters.
 
@@ -310,19 +310,6 @@ Authorization: Basic czZCaGRSa3F0Mzo3RmpmcDBaQnIxS3REUmJuZlZkbUl3
 
 One important note, `client_secret` is for confidential clients. Public clients do not rely on it, and modern public-client flows usually use PKCE instead.
 
-For a public client using PKCE, the request usually looks more like this:
-
-```http
-POST {token_endpoint}
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=authorization_code
-&code={code}
-&redirect_uri={redirect_uri}
-&client_id={client_id}
-&code_verifier={code_verifier}
-```
-
 References:
 
 - [Section 4.1.3 of RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.3)
@@ -372,8 +359,6 @@ Authorization: Bearer {access_token}
 The exact API calls after that are application-specific, so OAuth 2.0 itself does not define every detail of the resource request.
 
 One thing worth mentioning here is token validation. In some architectures, the resource server validates tokens directly. In others, it asks the authorization server about the token through introspection. That is standardized in [RFC 7662 - OAuth 2.0 Token Introspection](https://datatracker.ietf.org/doc/html/rfc7662).
-
-Bearer tokens stand for whoever holds the token can use it. That is why TLS and careful token handling matter so much.
 
 # PKCE (Proof Key for Code Exchange)
 
