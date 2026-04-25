@@ -129,7 +129,7 @@ const formatDate = (date: Date) =>
                     <h1 class="text-3xl font-bold leading-tight text-text sm:text-5xl">
                         {post.data.title}
                     </h1>
-                    <p class="max-w-3xl text-lg leading-8 text-text/70">
+                    <p class="blog-copy max-w-3xl text-lg leading-8 text-text/70">
                         {post.data.description}
                     </p>
                 </div>
@@ -178,8 +178,13 @@ const formatDate = (date: Date) =>
         outline-offset: -1px;
     }
 
+    .blog-copy {
+        font-family: "Inter", var(--font-sans);
+    }
+
     .markdown-content {
         color: var(--color-text);
+        font-family: "Inter", var(--font-sans);
         font-size: 1.0625rem;
         line-height: 1.8;
     }
@@ -194,6 +199,7 @@ const formatDate = (date: Date) =>
     .markdown-content :global(h4),
     .markdown-content :global(h5),
     .markdown-content :global(h6) {
+        font-family: var(--font-sans);
         color: var(--color-text);
         font-weight: 700;
         line-height: 1.2;

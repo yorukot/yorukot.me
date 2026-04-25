@@ -63,7 +63,7 @@ const itemListJsonLd = {
             <div class="space-y-4">
                 <p class="font-mono text-sm uppercase tracking-[0.16em] text-primary">/blog</p>
                 <h1 class="text-5xl font-bold uppercase tracking-[0.12em] text-text sm:text-6xl">Blog</h1>
-                <p class="max-w-2xl text-lg leading-8 text-text/70">
+                <p class="blog-copy max-w-2xl text-lg leading-8 text-text/70">
                     Notes, experiments, and the occasional write-up.
                 </p>
             </div>
@@ -103,7 +103,7 @@ const itemListJsonLd = {
                                         </a>
                                     </h2>
 
-                                    <p class="text-base leading-7 text-text/70">
+                                    <p class="blog-copy text-base leading-7 text-text/70">
                                         {post.data.description}
                                     </p>
                                 </div>
@@ -111,7 +111,7 @@ const itemListJsonLd = {
                         ))}
                     </div>
                 ) : (
-                    <p class="border-y border-border py-8 text-lg text-text/70">No posts yet.</p>
+                    <p class="blog-copy border-y border-border py-8 text-lg text-text/70">No posts yet.</p>
                 )
             }
         </div>
@@ -122,5 +122,9 @@ const itemListJsonLd = {
     .blog-shell {
         width: min(100%, 72rem);
         margin: 0 auto;
+    }
+
+    .blog-copy {
+        font-family: "Inter", var(--font-sans);
     }
 </style>
