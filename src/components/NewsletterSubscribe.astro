@@ -12,7 +12,7 @@ type Props = {
 
 const {
     heading = 'Get new posts by email',
-    description = 'Subscribe to Yorukot Blog for new essays, project notes, and experiments. After subscribing, check your inbox and verify your email.',
+    description = 'Subscribe to Yorukot Blog for new essays, project notes, and experiments.',
     variant = 'default',
 } = Astro.props;
 
@@ -68,14 +68,14 @@ const isMinimal = variant === 'minimal';
                 </svg>
             </div>
             <div class="newsletter-subscribe-success-copy">
-                <p data-newsletter-success-line>Almost there.</p>
-                <p data-newsletter-success-line>Check your inbox and verify your email to finish subscribing.</p>
+                <p data-newsletter-success-line>You're subscribed.</p>
+                <p data-newsletter-success-line>New posts will arrive by email.</p>
             </div>
         </div>
 
         <noscript>
             <div class="newsletter-subscribe-noscript">
-                JavaScript is off. Submitting will open listmonk so you can finish subscribing.
+                JavaScript is off. Submitting will continue through listmonk.
             </div>
         </noscript>
     </form>
@@ -446,7 +446,7 @@ const isMinimal = variant === 'minimal';
                     form.reset();
                     body.hidden = true;
                     success.hidden = false;
-                    status.textContent = 'Almost there. Check your inbox and verify your email to finish subscribing.';
+                    status.textContent = "You're subscribed. New posts will arrive by email.";
                     status.setAttribute('data-state', 'success');
                     return;
                 }
@@ -525,7 +525,7 @@ const isMinimal = variant === 'minimal';
                         }, '-=180');
                 });
 
-                status.textContent = 'Almost there. Check your inbox and verify your email to finish subscribing.';
+                status.textContent = "You're subscribed. New posts will arrive by email.";
                 status.setAttribute('data-state', 'success');
             } catch (error) {
                 status.textContent = error instanceof Error ? error.message : 'Subscription failed. Please try again.';
