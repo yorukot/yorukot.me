@@ -1,10 +1,25 @@
 ---
+import type { ImageMetadata } from 'astro';
 import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
 import MdiHeart from '~icons/mdi/heart';
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
 import { thanks } from '../data/thanks';
 import { absoluteUrl } from '../lib/seo';
+
+type BannerSource = ImageMetadata | string;
+
+const getBannerImageProps = (source: BannerSource) => {
+    if (typeof source === 'string') {
+        return { src: source };
+    }
+
+    return {
+        src: source.src,
+        width: source.width,
+        height: source.height,
+    };
+};
 
 const title = `Thanks | ${site.name}`;
 const description =
@@ -118,9 +133,7 @@ const floatingHearts = [
                                     >
                                         <img
                                             class="special-thanks-banner-image"
-                                            src={sponsor.banner.src.src}
-                                            width={sponsor.banner.src.width}
-                                            height={sponsor.banner.src.height}
+                                            {...getBannerImageProps(sponsor.banner.src)}
                                             alt={sponsor.banner.alt}
                                             loading="lazy"
                                         />
@@ -178,9 +191,7 @@ const floatingHearts = [
                             >
                                 <img
                                     class="special-thanks-banner-image"
-                                    src={group.banner.src.src}
-                                    width={group.banner.src.width}
-                                    height={group.banner.src.height}
+                                    {...getBannerImageProps(group.banner.src)}
                                     alt={group.banner.alt}
                                     loading="lazy"
                                 />
@@ -190,6 +201,52 @@ const floatingHearts = [
                 ))}
             </div>
 
+        </div>
+    </section>
+
+    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" data-reveal-section>
+        <div class="thanks-shell space-y-10">
+            <div>
+                <h2
+                    class="about-reveal about-reveal-heading text-4xl font-bold uppercase tracking-[0.12em] text-text sm:text-5xl"
+                    data-section-reveal
+                >
+                    <span>CONTRIBUTORS</span>
+                </h2>
+            </div>
+
+            <article class="relative overflow-hidden border-y border-border bg-background p-6 sm:p-8">
+                <div class="relative z-10 space-y-6">
+                    <div class="recognition-copy">
+                        <p class="max-w-3xl text-base leading-7 text-text/70">
+                            {thanks.contributors.description}
+                        </p>
+                    </div>
+
+                    <div class="contributors-banner">
+                        <picture>
+                            <source
+                                media="(max-width: 639px)"
+                                srcset={thanks.contributors.image.mobileSrc}
+                            />
+                            <source
+                                media="(max-width: 1023px)"
+                                srcset={thanks.contributors.image.tabletSrc}
+                            />
+                            <source
+                                media="(max-width: 1279px)"
+                                srcset={thanks.contributors.image.laptopSrc}
+                            />
+                            <img
+                                class="contributors-banner-image"
+                                {...getBannerImageProps(thanks.contributors.image.src)}
+                                alt={thanks.contributors.image.alt}
+                                loading="lazy"
+                            />
+                        </picture>
+                    </div>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -328,6 +385,17 @@ const floatingHearts = [
         width: min(100%, 20rem);
         overflow: hidden;
         background: var(--color-background);
+    }
+
+    .contributors-banner {
+        overflow: hidden;
+        background: var(--color-background);
+    }
+
+    .contributors-banner-image {
+        display: block;
+        width: 100%;
+        height: auto;
     }
 
     .recognition-row {
