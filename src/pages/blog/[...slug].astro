@@ -160,6 +160,120 @@ const formatDate = (date: Date) =>
             <NewsletterSubscribe />
         </div>
     </article>
+
+    <div
+        class="blog-image-lightbox"
+        data-blog-image-lightbox
+        role="dialog"
+        aria-modal="true"
+        aria-label="Expanded blog image"
+        hidden
+    >
+        <button
+            class="blog-image-lightbox-close"
+            type="button"
+            data-blog-image-lightbox-close
+            aria-label="Close expanded image"
+        >
+            Close
+        </button>
+        <img class="blog-image-lightbox-image" data-blog-image-lightbox-image alt="" />
+    </div>
+
+    <script>
+        const markdownImages = Array.from(
+            document.querySelectorAll('.markdown-content img'),
+        );
+        const lightbox = document.querySelector('[data-blog-image-lightbox]');
+        const lightboxImage = document.querySelector('[data-blog-image-lightbox-image]');
+        const closeButton = document.querySelector('[data-blog-image-lightbox-close]');
+        let activeImage: HTMLImageElement | null = null;
+        let closeTimer = 0;
+        let previousBodyOverflow = '';
+
+        const closeLightbox = () => {
+            if (!(lightbox instanceof HTMLElement) || !(lightboxImage instanceof HTMLImageElement)) {
+                return;
+            }
+
+            lightbox.dataset.state = 'closing';
+
+            window.clearTimeout(closeTimer);
+            closeTimer = window.setTimeout(() => {
+                lightbox.hidden = true;
+                lightboxImage.removeAttribute('src');
+                lightboxImage.alt = '';
+                delete lightbox.dataset.state;
+                document.body.style.overflow = previousBodyOverflow;
+
+                if (activeImage instanceof HTMLElement) {
+                    activeImage.focus();
+                }
+
+                activeImage = null;
+            }, 180);
+        };
+
+        const openLightbox = (image: HTMLImageElement) => {
+            if (
+                !(image instanceof HTMLImageElement) ||
+                !(lightbox instanceof HTMLElement) ||
+                !(lightboxImage instanceof HTMLImageElement)
+            ) {
+                return;
+            }
+
+            window.clearTimeout(closeTimer);
+            activeImage = image;
+            previousBodyOverflow = document.body.style.overflow;
+            lightboxImage.src = image.currentSrc || image.src;
+            lightboxImage.alt = image.alt;
+            lightbox.dataset.state = 'opening';
+            lightbox.hidden = false;
+            document.body.style.overflow = 'hidden';
+
+            window.requestAnimationFrame(() => {
+                lightbox.dataset.state = 'open';
+            });
+
+            if (closeButton instanceof HTMLElement) {
+                closeButton.focus();
+            }
+        };
+
+        markdownImages.forEach((image) => {
+            if (!(image instanceof HTMLImageElement)) {
+                return;
+            }
+
+            image.tabIndex = 0;
+            image.role = 'button';
+            image.setAttribute('aria-label', image.alt ? `Expand image: ${image.alt}` : 'Expand image');
+
+            image.addEventListener('click', () => openLightbox(image));
+            image.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openLightbox(image);
+                }
+            });
+        });
+
+        closeButton?.addEventListener('click', closeLightbox);
+        lightboxImage?.addEventListener('click', closeLightbox);
+
+        lightbox?.addEventListener('click', (event) => {
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && lightbox instanceof HTMLElement && !lightbox.hidden) {
+                closeLightbox();
+            }
+        });
+    </script>
 </Layout>
 
 <style>
@@ -336,5 +450,99 @@ const formatDate = (date: Date) =>
         display: block;
         max-width: 100%;
         border: 1px solid var(--color-border);
+        cursor: zoom-in;
+        transition:
+            border-color 180ms ease-out,
+            opacity 180ms ease-out;
+    }
+
+    .markdown-content :global(img:hover),
+    .markdown-content :global(img:focus-visible) {
+        border-color: var(--color-primary);
+        opacity: 0.92;
+        outline: none;
+    }
+
+    .blog-image-lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        padding: 4rem 1rem 1rem;
+        background: color-mix(in srgb, var(--color-background) 88%, transparent);
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        transition: opacity 180ms ease-out;
+    }
+
+    .blog-image-lightbox[hidden] {
+        display: none;
+    }
+
+    .blog-image-lightbox[data-state="open"] {
+        opacity: 1;
+    }
+
+    .blog-image-lightbox-image {
+        max-width: min(96vw, 100%);
+        max-height: 88vh;
+        border: 1px solid var(--color-border);
+        object-fit: contain;
+        background: var(--color-background);
+        cursor: zoom-out;
+        opacity: 0;
+        transform: scale(0.96);
+        transition:
+            opacity 180ms ease-out,
+            transform 180ms ease-out;
+    }
+
+    .blog-image-lightbox[data-state="open"] .blog-image-lightbox-image {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .blog-image-lightbox-close {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        padding: 0.65rem 0.8rem;
+        color: var(--color-text);
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition:
+            border-color 180ms ease-out,
+            color 180ms ease-out;
+    }
+
+    .blog-image-lightbox-close:hover,
+    .blog-image-lightbox-close:focus-visible {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        outline: none;
+    }
+
+    @media (min-width: 800px) {
+        .blog-image-lightbox {
+            padding: 4.5rem 2rem 2rem;
+        }
+
+        .blog-image-lightbox-image {
+            max-width: 94vw;
+            max-height: 86vh;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .blog-image-lightbox,
+        .blog-image-lightbox-image {
+            transition: none;
+        }
     }
 </style>
