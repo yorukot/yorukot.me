@@ -6,6 +6,7 @@ const year = new Date().getFullYear();
 const isExternalHref = (href: string) => href.startsWith('http');
 const footerNavigationItems = [
     ...navigationItems,
+    { label: 'Resume', href: 'https://resume.yorukot.me' },
     { label: 'RSS', href: site.rssPath },
 ] as const;
 ---

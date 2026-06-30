@@ -14,6 +14,7 @@ export const socialLinks = [
 
 export const footerLinks = [
     { label: 'GitHub', href: 'https://yorukot.me/github' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/yorukot' },
     { label: 'Sponsor', href: 'https://yorukot.me/sponsor' },
     { label: 'Telegram', href: 'https://yorukot.me/telegram' },
     { label: 'Email', href: 'mailto:hi@yorukot.me' },
