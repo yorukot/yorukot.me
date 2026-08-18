@@ -1,5 +1,17 @@
 import ncseBanner from '../assets/thanks/ncse-banner.png';
-import warpBanner from '../assets/thanks/warp-banner.png';
+
+type SponsorTier = {
+    tier: string;
+    sponsors: Array<{
+        name: string;
+        href: string;
+        note: string;
+        banner: {
+            src: typeof ncseBanner;
+            alt: string;
+        };
+    }>;
+};
 
 const contributorImageUrl = (perRow: number) =>
     `https://gthanks.yorukot.me/image?target=yorukot&include_bots=false&per_row=${perRow}&shape=square&limit=1000`;
@@ -37,22 +49,7 @@ export const thanks = {
             description: '',
         },
     ],
-    sponsorTiers: [
-        {
-            tier: 'Sponsors',
-            sponsors: [
-                {
-                    name: 'Warp',
-                    href: 'https://www.warp.dev/?utm_source=github&utm_medium=referral&utm_campaign=superfile',
-                    note: 'Sponsors superfile and helps keep its development moving.',
-                    banner: {
-                        src: warpBanner,
-                        alt: 'Warp sponsor banner',
-                    },
-                },
-            ],
-        },
-    ],
+    sponsorTiers: [] as SponsorTier[],
     specialThanks: [
         {
             title: 'NCSE',
