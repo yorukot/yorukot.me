@@ -21,7 +21,7 @@ export const shortlinks = [
     href: "mailto:hi@yorukot.me",
   },
   {
-    slug: "cal",
+    slug: ["cal", "calendar"],
     href: "https://calendar.google.com/calendar/embed?src=yorukot.hsiao%40gmail.com&ctz=Asia%2FTaipei",
   },
   {

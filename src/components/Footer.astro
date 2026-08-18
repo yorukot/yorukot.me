@@ -3,10 +3,11 @@ import { footerLinks, navigationItems } from "../data/navigation";
 import { site } from "../data/site";
 
 const year = new Date().getFullYear();
-const isExternalHref = (href: string) => href.startsWith('http');
+const opensInNewTab = (item: { href: string; externalDestination?: boolean }) =>
+    item.externalDestination || item.href.startsWith('http');
 const footerNavigationItems = [
     ...navigationItems,
-    { label: 'Calendar', href: '/cal' },
+    { label: 'Calendar', href: '/cal', externalDestination: true },
     { label: 'Resume', href: 'https://resume.yorukot.me' },
     { label: 'RSS', href: site.rssPath },
 ] as const;
@@ -40,8 +41,8 @@ const footerNavigationItems = [
                     <a
                         class="footer-link scramble-link"
                         href={item.href}
-                        target={isExternalHref(item.href) ? '_blank' : undefined}
-                        rel={isExternalHref(item.href) ? 'noreferrer' : undefined}
+                        target={opensInNewTab(item) ? '_blank' : undefined}
+                        rel={opensInNewTab(item) ? 'noreferrer' : undefined}
                     >
                         <span class="scramble-link-label" data-scramble-text>{item.label}</span>
                     </a>
@@ -53,8 +54,8 @@ const footerNavigationItems = [
                     <a
                         class="footer-link scramble-link"
                         href={item.href}
-                        target={isExternalHref(item.href) ? '_blank' : undefined}
-                        rel={isExternalHref(item.href) ? 'noreferrer' : undefined}
+                        target={opensInNewTab(item) ? '_blank' : undefined}
+                        rel={opensInNewTab(item) ? 'noreferrer' : undefined}
                     >
                         <span class="scramble-link-label" data-scramble-text>{item.label}</span>
                     </a>
