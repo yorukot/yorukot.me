@@ -23,10 +23,7 @@ const contributorsImageMobile = contributorImageUrl(8);
 
 export const thanks = {
     hero: {
-        eyebrow: '/thanks',
-        titleLines: ['Back the work.', 'Fund the next build.'],
-        description:
-            'This page is for the people and teams who keep open-source tools, articles, and late-night shipping sessions alive.',
+        titleLines: ['Thanks for Supporting'],
     },
     sponsorNote: {
         text: "If you've donated or helped support my work in any way, feel free to email me and I'll add you to this page.",
