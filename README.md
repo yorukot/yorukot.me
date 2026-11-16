@@ -6,7 +6,7 @@
 
 This is the source for `yorukot.me`, a personal website and blog. 
 
-It includes a landing page, blog, shortlinks, newsletter subscription endpoint, RSS feed, sitemap, and generated Open Graph images.
+It includes a landing page, blog, shortlinks, RSS feed, sitemap, and generated Open Graph images.
 
 You can also access the website experience over SSH with:
 

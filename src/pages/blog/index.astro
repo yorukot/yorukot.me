@@ -1,5 +1,4 @@
 ---
-import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
 import { getPublishedBlogPosts } from '../../data/blog';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
@@ -67,8 +66,6 @@ const itemListJsonLd = {
                     Notes, experiments, and the occasional write-up.
                 </p>
             </div>
-
-            <NewsletterSubscribe variant="minimal" />
 
             {
                 posts.length ? (

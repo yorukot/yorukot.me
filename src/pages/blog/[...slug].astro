@@ -1,6 +1,5 @@
 ---
 import { render } from 'astro:content';
-import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
 import { getPublishedBlogPosts } from '../../data/blog';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
@@ -155,10 +154,6 @@ const formatDate = (date: Date) =>
                 <Content />
             </div>
         </div>
-
-        <div class="blog-post-newsletter">
-            <NewsletterSubscribe />
-        </div>
     </article>
 
     <div
@@ -280,11 +275,6 @@ const formatDate = (date: Date) =>
     .blog-post-shell {
         width: min(100%, 48rem);
         margin: 0 auto;
-    }
-
-    .blog-post-newsletter {
-        width: min(100%, 64rem);
-        margin: 4rem auto 0;
     }
 
     .blog-ssh-copy:focus-visible {
