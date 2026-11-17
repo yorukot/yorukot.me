@@ -15,7 +15,6 @@ export const site = {
     social: {
         github: 'https://github.com/yorukot',
         telegram: 'https://t.me/yorukot',
-        youtube: 'https://www.youtube.com/@yorukot',
         kofi: 'https://ko-fi.com/yorukot',
     },
     sshCommand: 'ssh ssh.yorukot.me',

@@ -19,5 +19,4 @@ export const footerLinks = [
     { label: 'Telegram', href: 'https://yorukot.me/telegram' },
     { label: 'Email', href: 'mailto:hi@yorukot.me' },
     { label: 'Discord', href: 'https://yorukot.me/discord' },
-    { label: 'YouTube', href: 'https://yorukot.me/youtube' },
 ] as const;
