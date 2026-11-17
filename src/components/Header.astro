@@ -94,7 +94,16 @@ const brandLabel = site.name.toUpperCase();
                                 aria-label={item.label}
                             >
                                 <span class="header-link-content header-link-content-icon">
-                                    <Icon class={item.icon === 'sponsor' ? 'sponsor-heart' : undefined} />
+                                    {item.icon === 'sponsor' ? (
+                                        <span class="sponsor-heart">
+                                            <Icon />
+                                            <span class="sponsor-heart-tint">
+                                                <Icon />
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        <Icon />
+                                    )}
                                 </span>
                             </a>
                         );
@@ -257,14 +266,27 @@ const brandLabel = site.name.toUpperCase();
         font-size: 1.25rem;
     }
 
+    /* Only transform and opacity animate, so the heartbeat runs on the compositor without
+       restyling or repainting every frame; the red is a crossfaded copy rather than a color tween. */
     .sponsor-heart {
+        position: relative;
+        display: inline-flex;
         animation: sponsor-heartbeat 1.6s ease-in-out infinite;
-        color: currentColor;
         transform-origin: center;
     }
 
+    .sponsor-heart-tint {
+        position: absolute;
+        inset: 0;
+        display: inline-flex;
+        color: hsl(0 84% 60%);
+        opacity: 0;
+        animation: sponsor-heartbeat-tint 1.6s ease-in-out infinite;
+    }
+
     @media (prefers-reduced-motion: reduce) {
-        .sponsor-heart {
+        .sponsor-heart,
+        .sponsor-heart-tint {
             animation: none;
         }
     }
@@ -274,18 +296,29 @@ const brandLabel = site.name.toUpperCase();
         42%,
         70%,
         100% {
-            color: currentColor;
             transform: scale(1);
         }
 
         52% {
-            color: hsl(0 84% 60%);
             transform: scale(1.22);
         }
 
         60% {
-            color: hsl(0 84% 60%);
             transform: scale(0.96);
+        }
+    }
+
+    @keyframes sponsor-heartbeat-tint {
+        0%,
+        42%,
+        70%,
+        100% {
+            opacity: 0;
+        }
+
+        52%,
+        60% {
+            opacity: 1;
         }
     }
 </style>
