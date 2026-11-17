@@ -78,7 +78,7 @@ export async function renderOgImage({
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    backgroundColor: '#000000',
+                    backgroundColor: '#0f0e10',
                     color: '#d7d7d7',
                     padding: '58px 64px',
                     fontFamily,
@@ -126,7 +126,7 @@ export async function renderOgImage({
                             display: 'flex',
                             alignItems: 'center',
                             gap: '16px',
-                            color: '#ff8b2b',
+                            color: '#e7a355',
                             fontSize: 28,
                             fontWeight: 700,
                             textTransform: 'uppercase',
@@ -229,7 +229,7 @@ export async function renderOgImage({
                     {
                         style: {
                             display: 'flex',
-                            color: '#ff8b2b',
+                            color: '#e7a355',
                             fontSize: 32,
                             fontWeight: 700,
                         },

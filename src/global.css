@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-    --background: hsl(0 0% 0%);
-    --border: hsl(0 0% 19%);
+    --background: hsl(262 6% 6%);
+    --border: hsl(262 3% 19%);
     --text: hsl(0 0% 78%);
-    --primary: hsl(27, 99%, 59%);
+    --primary: hsl(32 75% 62%);
     --success: hsl(145 63% 49%);
 
     --boids-node: hsl(0 0% 95%);
