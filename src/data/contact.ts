@@ -1,12 +1,15 @@
 export const contact = {
     heading: 'CONTACT',
-    intro: 'Reach me directly, follow the code, support the open-source work I keep building, or get in touch about work opportunities.',
+    email: {
+        title: 'Get in touch',
+        note: 'I love getting emails, so feel free to write me about anything.',
+        href: 'mailto:hi@yorukot.me',
+        value: 'hi@yorukot.me',
+    },
     donate: {
         label: 'Donate',
-        title: 'Support my work',
         href: 'https://yorukot.me/sponsor',
-        description:
-            'Help keep the tools, experiments, and open-source projects moving.',
+        value: 'Ko-fi',
     },
     channels: [
         {

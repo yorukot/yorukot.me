@@ -2,37 +2,33 @@
 import IcBaselineDiscord from '~icons/ic/baseline-discord';
 import IcSharpEmail from '~icons/ic/sharp-email';
 import MdiArrowTopRight from '~icons/mdi/arrow-top-right';
-import MdiConsoleLine from '~icons/mdi/console-line';
 import MdiGithub from '~icons/mdi/github';
 import MdiHeart from '~icons/mdi/heart';
-import MdiSourceBranch from '~icons/mdi/source-branch';
 import MdiTelegram from '~icons/mdi/telegram';
-import MdiWeb from '~icons/mdi/web';
 import BoidsBackground from '../components/BoidsBackground.astro';
-import { about } from '../data/about';
+import { Content as AboutContent } from '../data/about.md';
 import { contact } from '../data/contact';
-import { hero } from '../data/hero';
 import { site } from '../data/site';
 import { work } from '../data/work';
 import { getPublishedBlogPosts } from '../data/blog';
 import Layout from '../layouts/Layout.astro';
 import { absoluteAssetUrl, absoluteUrl, blogPostPath } from '../lib/seo';
 
-const interestIconMap = {
-    openSource: MdiSourceBranch,
-    terminal: MdiConsoleLine,
-    web: MdiWeb,
-};
-
 const contactIconMap = {
     Email: IcSharpEmail,
     GitHub: MdiGithub,
     Discord: IcBaselineDiscord,
     Telegram: MdiTelegram,
+    Donate: MdiHeart,
 };
 
-type WorkItem = (typeof work.work)[number];
-type ContactChannel = (typeof contact.channels)[number];
+type WorkItem = Omit<(typeof work.work)[number], 'href'> & { href?: string };
+type ContactChannel = { label: keyof typeof contactIconMap; href: string; value: string };
+
+const sideChannels: ContactChannel[] = [
+    ...contact.channels.filter((item) => item.label !== 'Email'),
+    contact.donate,
+];
 type BlogPost = Awaited<ReturnType<typeof getPublishedBlogPosts>>[number];
 
 const featuredPosts: BlogPost[] = (await getPublishedBlogPosts())
@@ -91,57 +87,11 @@ const homeTitle = 'Yorukot | Open-Source Developer';
     <section class="hero-section relative isolate overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <BoidsBackground />
 
-        <div class="hero-content relative z-10 flex items-end">
-            <div class="select-none space-y-4">
-                <p class="hero-intro font-medium tracking-[0.12em] text-text">
-                    <span data-hero-intro></span><span
-                        class="hero-intro-caret ml-1 inline-block h-[1em] w-px translate-y-[0.12em] bg-primary opacity-0"
-                        data-hero-intro-caret
-                        aria-hidden="true"></span>
-                </p>
-
-                <h1
-                    class="hero-headline uppercase tracking-[0.26em] text-text font-extrabold"
-                    data-random-clone-text
-                >
-                    <span data-random-clone-label>{hero.headline}</span>
-                </h1>
-            </div>
-        </div>
-    </section>
-
-    <section class="border-t border-border px-6 py-20 sm:px-10 sm:py-24" id="about" data-reveal-section>
-        <div class="home-content flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
-            <div class="space-y-5 lg:max-w-sm">
-                <h2
-                    class="about-reveal about-reveal-heading text-5xl uppercase text-text font-bold"
-                    data-section-reveal
-                >
-                    <span>{about.heading}</span>
-                </h2>
-            </div>
-            <div class="space-y-8 text-text lg:max-w-2xl">
+        <div class="hero-content relative z-10 flex items-center justify-center">
+            <div class="max-w-2xl space-y-5">
+                <h1 class="sr-only">{site.author}</h1>
                 <div class="space-y-5 text-lg leading-8 text-text/80">
-                    {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-                </div>
-
-                <div class="grid grid-cols-[auto_1fr] gap-px border-y border-border bg-border text-sm uppercase tracking-[0.16em] text-text sm:grid-cols-[auto_1fr_auto_1fr_auto_1fr]">
-                    {about.interests.map((interest) => (
-                        <>
-                            {(() => {
-                                const Icon = interestIconMap[interest.icon];
-
-                                return (
-                                    <div class="flex min-h-14 items-center justify-center bg-background px-4 text-xl text-primary">
-                                        <Icon aria-hidden="true" />
-                                    </div>
-                                );
-                            })()}
-                            <div class="flex min-h-14 items-center bg-background px-4">
-                                <span>{interest.label}</span>
-                            </div>
-                        </>
-                    ))}
+                    <AboutContent />
                 </div>
             </div>
         </div>
@@ -159,27 +109,17 @@ const homeTitle = 'Yorukot | Open-Source Developer';
             </div>
 
             <div class="space-y-8 text-text">
-                <p class="text-lg leading-8 text-text/80">
-                    {work.intro}
-                </p>
-
                 <div class="work-list-frame grid border-y border-border bg-background">
                     {work.work.map((item: WorkItem) => (
                         <article class="work-reveal-row bg-background text-text" data-work-reveal>
                             <div class="space-y-4 px-0 py-5 sm:px-5">
-                                <div class="flex items-start justify-between gap-4">
-                                    <div class="font-mono text-sm text-primary">
-                                        {item.id}
-                                    </div>
-
-                                    <span class="inline-flex shrink-0 border border-primary px-2 py-1 text-xs uppercase tracking-[0.14em] text-primary">
-                                        {item.status}
-                                    </span>
+                                <div class="font-mono text-sm text-primary">
+                                    {item.id}
                                 </div>
 
                                 <div class="flex flex-wrap items-center gap-3">
                                     <h3 class="text-xl font-bold text-text">
-                                        {'href' in item ? (
+                                        {item.href ? (
                                             <a
                                                 class="group inline-flex items-center gap-2 underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary focus-visible:text-primary focus-visible:decoration-primary focus-visible:outline-none"
                                                 href={item.href}
@@ -203,14 +143,6 @@ const homeTitle = 'Yorukot | Open-Source Developer';
                                 <p class="text-base leading-7 text-text/70">
                                     {item.description}
                                 </p>
-
-                                <div class="mt-5 flex flex-wrap gap-2">
-                                    {item.tags.map((tag: string) => (
-                                        <span class="border border-border px-2 py-1 font-mono text-xs uppercase tracking-[0.12em] text-text/60">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
                             </div>
                         </article>
                     ))}
@@ -232,8 +164,7 @@ const homeTitle = 'Yorukot | Open-Source Developer';
 
             <div class="space-y-8 text-text">
                 <p class="text-lg leading-8 text-text/80">
-                    I write about open-source projects, terminal tools, backend systems, web experiments, and the
-                    small decisions behind shipping software.
+                    I write about anything I find interesting, no matter what it is.
                 </p>
 
                 {
@@ -246,18 +177,6 @@ const homeTitle = 'Yorukot | Open-Source Developer';
                                             <time class="text-primary" datetime={post.data.publish_date.toISOString()}>
                                                 {formatDate(post.data.publish_date)}
                                             </time>
-
-                                            {post.data.featured && (
-                                                <span class="inline-flex border border-primary px-2 py-1 text-xs text-primary">
-                                                    Featured
-                                                </span>
-                                            )}
-
-                                            {post.data.tags.slice(0, 3).map((tag: string) => (
-                                                <span class="border border-border px-2 py-1 text-xs text-text/60">
-                                                    #{tag}
-                                                </span>
-                                            ))}
                                         </div>
 
                                         <h3 class="text-xl font-bold leading-tight text-text sm:text-2xl">
@@ -302,40 +221,30 @@ const homeTitle = 'Yorukot | Open-Source Developer';
             </div>
 
             <div class="space-y-8 text-text">
-                <p class="text-lg leading-8 text-text/80">
-                    {contact.intro}
-                </p>
-
                 <div class="grid gap-px border-y border-border bg-border lg:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
                     <a
-                        class="donate-panel group relative isolate grid min-h-72 overflow-hidden bg-background p-6 text-text no-underline transition-colors focus-visible:outline-none sm:p-8 lg:grid-cols-[7rem_1fr] lg:gap-5"
-                        href={contact.donate.href}
-                        target="_blank"
-                        rel="noreferrer"
+                        class="email-panel group relative isolate grid min-h-72 overflow-hidden bg-background p-6 text-text no-underline transition-colors focus-visible:outline-none sm:p-8"
+                        href={contact.email.href}
                     >
-                        <span class="donate-panel-logo" aria-hidden="true">
-                            <MdiHeart />
+                        <span class="email-panel-logo" aria-hidden="true">
+                            <IcSharpEmail />
                         </span>
 
-                        <div class="relative z-10 font-mono text-sm uppercase tracking-[0.14em] text-primary transition-colors group-hover:text-background group-focus-visible:text-background">
-                            /{contact.donate.label}
-                        </div>
-
-                        <div class="relative z-10 mt-8 space-y-5 lg:mt-0">
+                        <div class="relative z-10 space-y-5">
                             <h3 class="max-w-xl text-4xl font-bold uppercase text-current transition-colors sm:text-5xl">
-                                {contact.donate.title}
+                                {contact.email.title}
                             </h3>
-                            <p class="max-w-xl text-lg leading-8 text-text/70 transition-colors group-hover:text-background/70 group-focus-visible:text-background/70">
-                                {contact.donate.description}
+                            <p class="max-w-md text-base leading-7 text-text/70 transition-colors group-hover:text-background/70 group-focus-visible:text-background/70">
+                                {contact.email.note}
                             </p>
                             <div class="inline-flex border border-border px-3 py-2 font-mono text-sm text-primary transition-colors group-hover:border-background group-hover:text-background group-focus-visible:border-background group-focus-visible:text-background">
-                                Ko-fi
+                                {contact.email.value}
                             </div>
                         </div>
                     </a>
 
                     <div class="grid gap-px bg-border">
-                        {contact.channels.map((item: ContactChannel) => {
+                        {sideChannels.map((item: ContactChannel) => {
                             const Icon = contactIconMap[item.label];
 
                             return (
@@ -372,11 +281,12 @@ const homeTitle = 'Yorukot | Open-Source Developer';
 <style>
     .home-content {
         width: 100%;
-        max-width: 72rem;
+        max-width: 56rem;
         margin-inline: auto;
     }
 
     .hero-section {
+        --boids-opacity: 0.25;
         min-height: calc(100vh - 4rem);
     }
 
@@ -394,28 +304,13 @@ const homeTitle = 'Yorukot | Open-Source Developer';
         }
     }
 
-    .hero-headline {
-        font-size: clamp(1rem, 9vw, 6rem);
-        line-height: 1;
-    }
-
-    .hero-intro {
-        font-size: clamp(1rem, 3vw, 1.875rem);
-        line-height: 1.2;
-    }
-
-    .hero-intro-caret.is-visible {
-        opacity: 1;
-        animation: hero-intro-caret-blink 700ms steps(1) infinite;
-    }
-
-    .donate-panel:hover,
-    .donate-panel:focus-visible {
+    .email-panel:hover,
+    .email-panel:focus-visible {
         background: var(--color-text);
         color: var(--color-background);
     }
 
-    .donate-panel-logo {
+    .email-panel-logo {
         position: absolute;
         right: 1.5rem;
         bottom: -1rem;
@@ -433,8 +328,8 @@ const homeTitle = 'Yorukot | Open-Source Developer';
         -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 100%);
     }
 
-    .donate-panel:hover .donate-panel-logo,
-    .donate-panel:focus-visible .donate-panel-logo {
+    .email-panel:hover .email-panel-logo,
+    .email-panel:focus-visible .email-panel-logo {
         opacity: 0.16;
         transform: translateX(0) rotate(-8deg);
     }
@@ -544,21 +439,11 @@ const homeTitle = 'Yorukot | Open-Source Developer';
             transform: none;
         }
     }
-
-    @keyframes hero-intro-caret-blink {
-        50% {
-            opacity: 0;
-        }
-    }
 </style>
 
 <script>
-    import { animate, onScroll, splitText, utils } from 'animejs';
-    import { hero } from '../data/hero';
+    import { animate, onScroll } from 'animejs';
 
-    const intro = document.querySelector('[data-hero-intro]');
-    const introCaret = document.querySelector('[data-hero-intro-caret]');
-    const label = document.querySelector('[data-random-clone-label]');
     const revealSections = document.querySelectorAll('[data-reveal-section]');
     const workRevealItems = document.querySelectorAll('[data-work-reveal]');
 
@@ -638,168 +523,5 @@ const homeTitle = 'Yorukot | Open-Source Developer';
                 });
             });
         }
-    }
-
-    if (intro instanceof HTMLElement) {
-        const introRoles = hero.introRoles;
-        const introPrefix = hero.introPrefix;
-        const typewriterState = { count: 0 };
-        let introTimeoutId: number | undefined;
-        let previousRole: (typeof introRoles)[number] | undefined;
-
-        intro.textContent = '';
-
-        if (introCaret instanceof HTMLElement) {
-            introCaret.classList.add('is-visible');
-        }
-
-        const pickIntroRole = () => {
-            const availableRoles = introRoles.filter((role) => role !== previousRole);
-            const role = availableRoles[utils.random(0, availableRoles.length - 1)];
-            previousRole = role;
-            return role;
-        };
-
-        const createIntroMessage = () => {
-            const role = pickIntroRole();
-            return `${introPrefix} ${role.article} ${role.label} and`;
-        };
-
-        const typeIntroMessage = (message: string, startIndex = introPrefix.length) => {
-            typewriterState.count = startIndex;
-            intro.textContent = message.slice(0, startIndex);
-
-            animate(typewriterState, {
-                count: message.length,
-                duration: (message.length - startIndex) * 80,
-                ease: 'linear',
-                onUpdate: () => {
-                    intro.textContent = message.slice(0, Math.floor(typewriterState.count));
-                },
-                onComplete: () => {
-                    intro.textContent = message;
-                    introTimeoutId = window.setTimeout(() => {
-                        eraseIntroMessage(message);
-                    }, 2600);
-                },
-            });
-        };
-
-        const eraseIntroMessage = (message: string) => {
-            typewriterState.count = message.length;
-
-            animate(typewriterState, {
-                count: introPrefix.length,
-                duration: (message.length - introPrefix.length) * 35,
-                ease: 'linear',
-                onUpdate: () => {
-                    intro.textContent = message.slice(0, Math.ceil(typewriterState.count));
-                },
-                onComplete: () => {
-                    intro.textContent = introPrefix;
-                    introTimeoutId = window.setTimeout(() => {
-                        typeIntroMessage(createIntroMessage());
-                    }, 400);
-                },
-            });
-        };
-
-        typeIntroMessage(createIntroMessage(), 0);
-
-        window.addEventListener(
-            'pagehide',
-            () => {
-                window.clearTimeout(introTimeoutId);
-            },
-            { once: true },
-        );
-    }
-
-    if (label instanceof HTMLElement) {
-        const { chars } = splitText(label, {
-            chars: {
-                wrap: 'clip',
-                clone: 'bottom',
-            },
-        });
-
-        const activeChars = new WeakSet();
-        const primaryChars = new WeakSet();
-        const cooldownUntil = new WeakMap();
-        const animatableChars = chars.filter((char) => char.textContent?.trim());
-        const directions = hero.cloneDirections;
-        let timeoutId: number | undefined;
-
-        animatableChars.forEach((char) => {
-            char.style.color = 'hsl(0 0% 100%)';
-        });
-
-        const triggerRandomClone = () => {
-            const now = Date.now();
-            const availableChars = animatableChars.filter(
-                (char) => !activeChars.has(char) && (cooldownUntil.get(char) ?? 0) <= now,
-            );
-            const nextChar = availableChars.length
-                ? utils.randomPick(availableChars)
-                : null;
-
-            if (nextChar) {
-                activeChars.add(nextChar);
-
-                const nextClone = nextChar.children[1];
-                const direction = directions[utils.random(0, directions.length - 1)];
-
-                if (nextClone instanceof HTMLElement) {
-                    nextClone.style.top = direction.top;
-                    nextClone.style.left = direction.left;
-                }
-
-                const isPrimary = primaryChars.has(nextChar);
-                const nextColor = isPrimary ? 'hsl(0 0% 100%)' : 'var(--primary)';
-
-                if (nextClone instanceof HTMLElement) {
-                    nextClone.style.color = nextColor;
-                }
-
-                animate(nextChar, {
-                    x: direction.x,
-                    y: direction.y,
-                    duration: utils.random(700, 1200),
-                    ease: 'inOut(2)',
-                    onComplete: () => {
-                        nextChar.style.transform = 'translateX(0%) translateY(0%)';
-                        nextChar.style.color = nextColor;
-
-                        if (isPrimary) {
-                            primaryChars.delete(nextChar);
-                        } else {
-                            primaryChars.add(nextChar);
-                        }
-
-                        if (nextClone instanceof HTMLElement) {
-                            nextClone.style.color = '';
-                        }
-
-                        cooldownUntil.set(nextChar, Date.now() + utils.random(1800, 3200));
-                        activeChars.delete(nextChar);
-                    },
-                });
-            }
-
-            timeoutId = window.setTimeout(
-                triggerRandomClone,
-                utils.random(1400, 2400),
-            );
-        };
-
-        timeoutId = window.setTimeout(triggerRandomClone, utils.random(900, 1600));
-
-        window.addEventListener(
-            'pagehide',
-            () => {
-                window.clearTimeout(timeoutId);
-            },
-            { once: true },
-        );
     }
 </script>
