@@ -87,9 +87,9 @@ const homeTitle = 'Yorukot | Open-Source Developer';
         <BoidsBackground />
 
         <div class="hero-content relative z-10 flex items-center justify-center">
-            <div class="max-w-2xl space-y-5">
+            <div class="w-full max-w-2xl py-12 sm:py-16">
                 <h1 class="sr-only">{site.author}</h1>
-                <div class="space-y-5 text-lg leading-8 text-text/80">
+                <div class="about-prose text-lg leading-8 text-text/80" data-boids-avoid>
                     <AboutContent />
                 </div>
             </div>
@@ -278,6 +278,68 @@ const homeTitle = 'Yorukot | Open-Source Developer';
 </Layout>
 
 <style>
+    .about-prose {
+        font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .about-prose > :global(* + *) {
+        margin-top: 1.25rem;
+    }
+
+    .about-prose :global(blockquote) {
+        border-left: 2px solid var(--color-primary);
+        padding-left: 1rem;
+        color: var(--color-text);
+        font-style: italic;
+    }
+
+    .about-prose :global(strong) {
+        color: var(--color-text);
+        font-weight: 700;
+    }
+
+    .about-prose :global(a) {
+        color: var(--color-primary);
+        text-decoration: underline;
+        text-decoration-color: var(--color-border);
+        text-underline-offset: 4px;
+        transition: text-decoration-color 200ms ease-out;
+    }
+
+    .about-prose :global(a:hover),
+    .about-prose :global(a:focus-visible) {
+        text-decoration-color: var(--color-primary);
+        outline: none;
+    }
+
+    .about-prose :global(ul) {
+        list-style: none;
+        padding: 0;
+    }
+
+    .about-prose :global(li) {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .about-prose :global(ul) {
+        display: grid;
+        row-gap: 0.25rem;
+        column-gap: 2rem;
+    }
+
+    @media (min-width: 640px) {
+        .about-prose :global(ul) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .about-prose :global(li)::before {
+        content: "›";
+        color: var(--color-primary);
+        font-family: ui-monospace, monospace;
+    }
+
     .home-content {
         width: 100%;
         max-width: 56rem;

@@ -1,7 +1,18 @@
-I'm Yorukot, a Taiwan-based developer and current college student at NYCU who likes building things that feel fast, useful, and a little bit personal.
+Hi! I'm Yoru.
 
-A lot of my work starts with curiosity. Sometimes that means improving a terminal workflow, sometimes it means designing a cleaner backend, and sometimes it is just a small idea I want to understand well enough to build myself.
+> My \*current\* life goal is to find a question or problem worth spending my lifetime on, even if I may never solve it.
 
-I spend most of my time around Go, system design, open source, and the terminal. My projects include superfile, a modern terminal file manager, along with bots, web apps, experiments, and other tools I make because I enjoy the process.
+I'm a Taiwan-based developer and a college student at NYCU. My work currently focuses on [open source](https://github.com/yorukot), [LLM engineering, and research](https://cerulean.works/). Besides my work, I also volunteer at conferences.
 
-Feel free to reach out if you'd like to chat. I'm also a big movie fan, and I'm currently available for work, so don't hesitate to get in touch if you'd like to hire me.
+I wouldn't say I specialize in any single field, and I don't like defining myself by a particular role. What I learn is basically random. It might start with a YouTube video, a blog post, or something I notice while walking down the street and decide to look up.
+
+A few things I like to do in my free time:
+
+- Scrolling through YouTube and blogs.
+- Watching TV shows and movies.
+- Exploring places with friends.
+- Doing/building useless things.
+- Reminiscing.
+- Walking around.
+
+I like receiving email. So please feel free to [reach out](mailto:hi@yorukot.me)!
